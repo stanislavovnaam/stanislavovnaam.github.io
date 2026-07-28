@@ -1,133 +1,62 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <title>Весёлое окно с мороженым — инструкция для детей</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f5f7fb;
-            color: #222;
-            line-height: 1.6;
-            margin: 0;
-            padding: 0;
-        }
-
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 20px 30px 40px;
-        }
-
-        h1 {
-            color: #1565c0;
-        }
-
-        h2 {
-            color: #1976d2;
-            margin-top: 28px;
-        }
-
-        h3 {
-            color: #1e88e5;
-            margin-top: 20px;
-        }
-
-        pre {
-            background: #212121;
-            color: #f5f5f5;
-            padding: 16px;
-            border-radius: 6px;
-            overflow-x: auto;
-            font-size: 13px;
-        }
-
-        code {
-            font-family: Consolas, Monaco, monospace;
-        }
-
-        .block {
-            margin-bottom: 18px;
-        }
-
-        .highlight {
-            background: #fffde7;
-            padding: 8px 12px;
-            border-radius: 6px;
-            border: 1px solid #fff59d;
-        }
-
-        ul,
-        ol {
-            margin-top: 6px;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>Весёлое окно с мороженым — по шагам для детей</title>
+  <style>
+    body { font-family: Arial, sans-serif; background:#f5f7fb; color:#222; line-height:1.6; margin:0; padding:0; }
+    .container { max-width: 900px; margin: 0 auto; padding: 20px 30px 40px; }
+    h1 { color:#1565c0; }
+    h2 { color:#1976d2; margin-top:28px; }
+    h3 { color:#1e88e5; margin-top:20px; }
+    pre { background:#212121; color:#f5f5f5; padding:14px; border-radius:6px; overflow-x:auto; font-size:13px; }
+    code { font-family: Consolas, Monaco, monospace; }
+    .block { margin-bottom:18px; }
+    .step-title { font-weight:bold; margin-bottom:6px; }
+    .tip { background:#fffde7; padding:8px 12px; border-radius:6px; border:1px solid #fff59d; margin-top:6px; }
+    ul, ol { margin-top:4px; }
+  </style>
 </head>
-
 <body>
-    <div class="container">
-        <h1>Весёлое окно с мороженым на Python</h1>
-        <p>Инструкция для детей 8–12 лет и их родителей/учителей.</p>
+  <div class="container">
+    <h1>Весёлое окно с мороженым на Python</h1>
 
-        <h2>1. Идея программы</h2>
+    <h2>0. Подготовка</h2>
+    <div class="block">
+      <ol>
+        <li>Установите <strong>Python 3</strong>.</li>
+        <li>Создайте папку, например <code>icecream_game</code>.</li>
+        <li>Скачайте картинку мороженого и назовите её <code>icecream.png</code>.</li>
+        <li>Положите картинку в эту папку.</li>
+        <li>Создайте файл <code>icecream_game.py</code> — сюда дети будут постепенно добавлять код.</li>
+      </ol>
+    </div>
 
-        <h3>1.1 Что делает наша программа</h3>
-        <div class="block">
-            <ul>
-                <li>Показывает окно с картинкой мороженого.</li>
-                <li>Пишет шутливый текст про мороженое.</li>
-                <li>Кнопка «Нет, не куплю» заставляет окно прыгать по экрану.</li>
-                <li>Кнопка «Хорошо, куплю» показывает сообщение о победе и закрывает программу.</li>
-            </ul>
-        </div>
-
-        <h3>1.2 Для чего это нужно</h3>
-        <div class="block">
-            <ul>
-                <li>Чтобы потренироваться писать программы с окнами.</li>
-                <li>Чтобы увидеть, как кнопки вызывают разные функции.</li>
-                <li>Чтобы поиграть с друзьями и родителями.</li>
-            </ul>
-        </div>
-
-        <h2>2. Подготовка перед кодом</h2>
-
-        <h3>2.1 Устанавливаем инструменты</h3>
-        <div class="block">
-            <ol>
-                <li>Установите <strong>Python 3</strong> (лучше версия 3.10 или новее).</li>
-                <li>Проверьте, что команда <code>python</code> работает в командной строке.</li>
-            </ol>
-        </div>
-
-        <h3>2.2 Готовим папку с файлами</h3>
-        <div class="block">
-            <ol>
-                <li>Создайте папку, например <code>icecream_game</code>.</li>
-                <li>Скачайте картинку мороженого и назовите её <code>icecream.png</code>.</li>
-                <li>Положите картинку в эту же папку.</li>
-                <li>Создайте файл <code>icecream_game.py</code> в этой папке.</li>
-            </ol>
-        </div>
-
-        <h2>3. Код программы</h2>
-
-        <h3>3.1 Общий вид</h3>
-        <div class="block">
-            <p>Ниже — весь код программы. Его можно просто скопировать в файл <code>icecream_game.py</code>. Комментарии (строки с <code>#</code>) помогают понять, что происходит.</p>
-        </div>
-
-        <h3>3.2 Полный код</h3>
-        <pre><code># Импортируем нужные модули
-# tkinter — чтобы рисовать окна и кнопки
-# random — чтобы окно прыгало по случайным местам
-# ctypes — нужен, чтобы спрятать окно из панели задач Windows
-import tkinter as tk
+    <h2>1. Шаг 1 — подключаем модули</h2>
+    <div class="block">
+      <div class="step-title">Что должен понять ребёнок</div>
+      <ul>
+        <li>Python может подключать «дополнительные инструменты» (модули).</li>
+        <li><code>tkinter</code> — для окон и кнопок.</li>
+        <li><code>random</code> — для случайных чисел (чтоб окно прыгало).</li>
+        <li><code>ctypes</code> — для работы с Windows (прячем окно из панели задач).</li>
+      </ul>
+      <div class="step-title">Что нужно написать в начале файла</div>
+      <pre><code>import tkinter as tk
 import random
 import ctypes
+</code></pre>
+    </div>
 
-# Это разные шутливые фразы,
-# которые будут меняться, когда ребёнок нажимает «Нет, не куплю»
+    <h2>2. Шаг 2 — список фраз и счётчик</h2>
+    <div class="block">
+      <div class="step-title">Идея шага</div>
+      <ul>
+        <li>Мы создаём список смешных фраз, которые окно будет говорить.</li>
+        <li>Нужен счётчик, чтобы знать, какая фраза сейчас используется.</li>
+      </ul>
+      <div class="step-title">Код для добавления после импорта</div>
+      <pre><code># Список шутливых фраз
 NO_TEXTS = [
     "Ну пожалуйста...",
     "Подумай ещё раз 😏",
@@ -136,17 +65,29 @@ NO_TEXTS = [
     "Ну хотя бы одно маленькое!"
 ]
 
-current_text = 0  # номер текущей фразы
+# Номер текущей фразы
+current_text = 0
+</code></pre>
+    </div>
 
-def on_close():
-    # Функция вызывается, если пользователь пытается нажать крестик.
-    # Мы ничего не делаем, чтобы окно нельзя было закрыть крестиком.
+    <h2>3. Шаг 3 — запрет закрытия крестиком и скрытие из панели задач</h2>
+    <div class="block">
+      <div class="step-title">Идея шага</div>
+      <ul>
+        <li>Когда пользователь нажимает крестик, мы не хотим, чтобы окно закрывалось.</li>
+        <li>Мы прячем окно из панели задач, чтобы оно было «секретным».</li>
+      </ul>
+
+      <h3>3.1 Функция для крестика</h3>
+      <pre><code>def on_close():
+    # Ничего не делаем, чтобы окно нельзя было закрыть крестиком
     pass
+</code></pre>
 
-def hide_from_taskbar(win):
+      <h3>3.2 Функция для скрытия из панели задач Windows</h3>
+      <pre><code>def hide_from_taskbar(win):
     """
-    Эта функция прячет окно из панели задач Windows.
-    Детям можно сказать: «мы делаем окно невидимым внизу экрана».
+    Прячет окно из панели задач Windows.
     """
     try:
         hwnd = ctypes.windll.user32.GetParent(win.winfo_id())
@@ -165,11 +106,20 @@ def hide_from_taskbar(win):
     except:
         # Если что-то пошло не так — просто ничего не делаем
         pass
+</code></pre>
+    </div>
 
-def move_popup():
-    """Эта функция двигает всплывающее окно в случайное место на экране.
-    Мы следим, чтобы окно не выходило за край.
-    """
+    <h2>4. Шаг 4 — движение окна и реакция на «Нет»</h2>
+    <div class="block">
+      <div class="step-title">Идея шага</div>
+      <ul>
+        <li>Мы хотим, чтобы окно прыгало по экрану.</li>
+        <li>Каждый раз при «Нет, не куплю» — новая фраза и новое место.</li>
+      </ul>
+
+      <h3>4.1 Функция движения окна</h3>
+      <pre><code>def move_popup():
+    """Двигает всплывающее окно в случайное место на экране."""
     popup.update_idletasks()
 
     screen_w = popup.winfo_screenwidth()   # ширина экрана
@@ -178,61 +128,77 @@ def move_popup():
     win_w = 520   # ширина окна
     win_h = 360   # высота окна
 
-    # Максимальные координаты, чтобы окно не вылезло за экран
-    max_x = max(0, screen_w - win_w)
+    max_x = max(0, screen_w - win_w)  # чтобы не вылез за край
     max_y = max(0, screen_h - win_h)
 
-    # Случайные координаты внутри экрана
     x = random.randint(0, max_x)
     y = random.randint(0, max_y)
 
-    # Перемещаем окно
     popup.geometry(f"{win_w}x{win_h}+{x}+{y}")
+</code></pre>
 
-def say_no():
-    """Что происходит, когда ребёнок нажимает кнопку «Нет, не куплю».
-    Меняем текст на следующий и двигаем окно.
-    """
+      <h3>4.2 Функция для кнопки «Нет, не куплю»</h3>
+      <pre><code>def say_no():
+    """Когда нажимают «Нет, не куплю»."""
     global current_text
     current_text = (current_text + 1) % len(NO_TEXTS)
     label.config(text=NO_TEXTS[current_text])
     move_popup()
+</code></pre>
 
-def say_yes():
-    """Что происходит, когда ребёнок нажимает «Хорошо, куплю».
-    Показываем сообщение о победе и через небольшой таймер
-    закрываем все окна.
-    """
+    </div>
+
+    <h2>5. Шаг 5 — победа и закрытие окон</h2>
+    <div class="block">
+      <div class="step-title">Идея шага</div>
+      <ul>
+        <li>При «Хорошо, куплю» окно должно сказать «Победа!».</li>
+        <li>Через короткое время все окна закрываются.</li>
+      </ul>
+
+      <h3>5.1 Функция для кнопки «Да»</h3>
+      <pre><code>def say_yes():
+    """Когда нажимают «Хорошо, куплю»."""
     label.config(
         text="Победа! 🍦\nМороженое будет куплено.\nОкна сейчас закроются."
     )
     popup.after(800, close_all)  # через 0.8 секунды вызываем закрытие
+</code></pre>
 
-def close_all():
+      <h3>5.2 Функция полного закрытия</h3>
+      <pre><code>def close_all():
     """Закрываем всплывающее окно и главное окно."""
     popup.destroy()
     root.destroy()
+</code></pre>
+    </div>
 
-def open_popup():
+    <h2>6. Шаг 6 — создаём окна и кнопки</h2>
+    <div class="block">
+      <div class="step-title">Идея шага</div>
+      <ul>
+        <li>Создаём всплывающее окно с мороженым и кнопками.</li>
+        <li>Создаём главное окно с одной кнопкой «Показать шутку».</li>
+      </ul>
+
+      <h3>6.1 Функция, которая создаёт всплывающее окно</h3>
+      <pre><code>def open_popup():
     """Создаём всплывающее окно с мороженым и кнопками."""
     global popup, label, ice_image, current_text
     current_text = 0  # начинаем с первой фразы
 
-    # Создаём новое окно поверх главного
     popup = tk.Toplevel(root)
     popup.title("Мороженое и кибер-шутка")
     popup.geometry("520x360")
     popup.resizable(False, False)
-    popup.configure(bg="#fff4d6")              # светлый фон
+    popup.configure(bg="#fff4d6")
     popup.protocol("WM_DELETE_WINDOW", on_close)
-    popup.overrideredirect(True)              # убираем рамку и заголовок
+    popup.overrideredirect(True)
 
-    # Верхний блок для картинки
     top_frame = tk.Frame(popup, bg="#fff4d6")
     top_frame.pack(pady=15)
 
-    # Пытаемся загрузить файл icecream.png.
-    # Если файла нет, показываем эмодзи.
+    # Картинка мороженого или эмодзи
     try:
         ice_image = tk.PhotoImage(file="icecream.png")
         img_label = tk.Label(top_frame, image=ice_image, bg="#fff4d6")
@@ -240,7 +206,6 @@ def open_popup():
     except:
         tk.Label(top_frame, text="🍦", font=("Arial", 40), bg="#fff4d6").pack()
 
-    # Заголовок окна
     title = tk.Label(
         popup,
         text="Пока не купишь мороженое,\nокно будет висеть 😈",
@@ -250,7 +215,8 @@ def open_popup():
     )
     title.pack(pady=(5, 10))
 
-    # Надпись, которая будет меняться при «Нет, не куплю»
+    # Надпись, которая будет меняться
+    global label
     label = tk.Label(
         popup,
         text=NO_TEXTS[0],
@@ -260,11 +226,9 @@ def open_popup():
     )
     label.pack(pady=5)
 
-    # Блок для двух кнопок
     button_frame = tk.Frame(popup, bg="#fff4d6")
     button_frame.pack(pady=20)
 
-    # Кнопка «Да»
     btn_yes = tk.Button(
         button_frame,
         text="Хорошо, куплю",
@@ -280,7 +244,6 @@ def open_popup():
     )
     btn_yes.grid(row=0, column=0, padx=10)
 
-    # Кнопка «Нет»
     btn_no = tk.Button(
         button_frame,
         text="Нет, не куплю",
@@ -300,20 +263,18 @@ def open_popup():
     popup.grab_set()
     popup.focus_set()
 
-    # Прячем всплывающее окно из панели задач
     root.after(50, hide_from_taskbar, popup)
-
-    # Ждём, пока всплывающее окно не закроется
     root.wait_window(popup)
+</code></pre>
 
-# Создаём главное окно программы
+      <h3>6.2 Главное окно программы</h3>
+      <pre><code># Главное окно
 root = tk.Tk()
 root.title("Главное окно")
 root.geometry("340x180")
 root.configure(bg="#e3f2fd")
-root.overrideredirect(True)  # убираем рамку для главного окна
+root.overrideredirect(True)
 
-# Надпись в главном окне
 main_label = tk.Label(
     root,
     text="Нажми кнопку, чтобы открыть шутку",
@@ -323,7 +284,6 @@ main_label = tk.Label(
 )
 main_label.pack(pady=(30, 15))
 
-# Кнопка, которая открывает всплывающее окно
 open_button = tk.Button(
     root,
     text="Показать шутку",
@@ -339,29 +299,10 @@ open_button = tk.Button(
 )
 open_button.pack()
 
-# Запускаем главный цикл программы
+# Запуск программы
 root.mainloop()
-    </code></pre>
-
-        <h2>4. Как запустить программу</h2>
-
-        <h3>4. Шаги запуска</h3>
-        <div class="block highlight">
-            <ol>
-                <li>Сохраните файл <code>icecream_game.py</code> и картинку <code>icecream.png</code> в одной папке.</li>
-                <li>Откройте командную строку (Terminal, PowerShell или cmd).</li>
-                <li>Перейдите в папку с файлом командой <code>cd</code>.</li>
-                <li>Запустите программу командой: <code>python icecream_game.py</code>.</li>
-            </ol>
-        </div>
-
-        <h2>5. Задания для детей</h2>
-        <div class="block">
-            <ul>
-                <li>Добавьте ещё 2–3 свои смешные фразы в список <code>NO_TEXTS</code>.</li>
-                <li>Поменяйте текст победы в функции <code>say_yes()</code> на свой.</li>
-                <li>Измените цвета кнопок (параметры <code>bg</code> и <code>fg</code>).</li>
-            </ul>
-        </div>
+</code></pre>
     </div>
-</body></html>
+  </div>
+</body>
+</html>
