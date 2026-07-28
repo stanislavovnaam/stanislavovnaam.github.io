@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Инструкция: весёлое окно с мороженым на Python</title>
+  <style>
+    body { font-family: Arial, sans-serif; background:#f5f7fb; color:#222; line-height:1.6; margin:0; padding:0; }
+    .container { max-width: 900px; margin: 0 auto; padding: 20px 30px 40px; }
+    h1 { color:#1565c0; }
+    h2 { color:#1976d2; margin-top:30px; }
+    pre { background:#212121; color:#f5f5f5; padding:16px; border-radius:6px; overflow-x:auto; font-size:13px; }
+    code { font-family: Consolas, Monaco, monospace; }
+    .step { margin-bottom:20px; }
+    .highlight { background:#fffde7; padding:8px 12px; border-radius:6px; border:1px solid #fff59d; }
+    ul { margin-top:8px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Инструкция для детей 8–12 лет: весёлое окно с мороженым на Python</h1>
+
+    <h2>1. Что мы будем делать</h2>
+    <div class="step">
+      <p>Мы напишем весёлую программу:</p>
+      <ul>
+        <li>На экране появится окно с картинкой мороженого.</li>
+        <li>В окне будет шутливый текст.</li>
+        <li>Кнопка «Нет, не куплю» будет заставлять окно прыгать по экрану.</li>
+        <li>Кнопка «Хорошо, куплю» покажет сообщение о победе и закроет программу.</li>
+      </ul>
+    </div>
+
+    <h2>2. Подготовка</h2>
+    <div class="step">
+      <ol>
+        <li>Установите <strong>Python 3</strong> (версия 3.10 или новее).</li>
+        <li>Скачайте любую картинку мороженого и назовите её <code>icecream.png</code>.</li>
+        <li>Положите картинку в ту же папку, где будет файл программы.</li>
+        <li>Создайте файл <code>icecream_game.py</code> и вставьте в него код ниже.</li>
+      </ol>
+    </div>
+
+    <h2>3. Полный код программы с комментариями</h2>
+    <div class="step">
+      <p>Код ниже можно просто скопировать в файл <code>icecream_game.py</code>. Комментарии начинаются с символа <code>#</code> — они помогают понять, что делает каждая часть программы.</p>
+    </div>
+
+    <pre><code># Импортируем нужные модули
+# tkinter — чтобы рисовать окна и кнопки
+# random — чтобы окно прыгало по случайным местам
+# ctypes — нужен, чтобы спрятать окно из панели задач Windows
+import tkinter as tk
+import random
+import ctypes
+
+# Это разные шутливые фразы,
+# которые будут меняться, когда ребёнок нажимает «Нет, не куплю»
+NO_TEXTS = [
+    "Ну пожалуйста...",
+    "Подумай ещё раз 😏",
+    "Мороженое уже почти ждёт!",
+    "Это твой последний шанс 🍦",
+    "Ну хотя бы одно маленькое!"
+]
+
+current_text = 0  # номер текущей фразы
+
+def on_close():
+    # Функция вызывается, если пользователь пытается нажать крестик.
+    # Мы ничего не делаем, чтобы окно нельзя было закрыть крестиком.
+    pass
+
+def hide_from_taskbar(win):
+    """
+    Эта функция прячет окно из панели задач Windows.
+    Детям можно сказать: «мы делаем окно невидимым внизу экрана».
+    """
+    try:
+        hwnd = ctypes.windll.user32.GetParent(win.winfo_id())
+        GWL_EXSTYLE = -20
+        WS_EX_TOOLWINDOW = 0x00000080
+        WS_EX_APPWINDOW = 0x00040000
+
+        style = ctypes.windll.user32.GetWindowLongW(hwnd, GWL_EXSTYLE)
+        style = style | WS_EX_TOOLWINDOW
+        style = style & ~WS_EX_APPWINDOW
+        ctypes.windll.user32.SetWindowLongW(hwnd, GWL_EXSTYLE, style)
+
+        # Коротко прячем окно и показываем снова, чтобы стиль применился
+        win.withdraw()
+        win.after(10, win.deiconify)
+    except:
+        # Если что-то пошло не так — просто ничего не делаем
+        pass
+
+def move_popup():
+    """Эта функция двигает всплывающее окно в случайное место на экране.
+    Мы следим, чтобы окно не выходило за край.
+    """
+    popup.update_idletasks()
+
+    screen_w = popup.winfo_screenwidth()   # ширина экрана
+    screen_h = popup.winfo_screenheight()  # высота экрана
+
+    win_w = 520   # ширина окна
+    win_h = 360   # высота окна
+
+    # Максимальные координаты, чтобы окно не вылезло за экран
+    max_x = max(0, screen_w - win_w)
+    max_y = max(0, screen_h - win_h)
+
+    # Случайные координаты внутри экрана
+    x = random.randint(0, max_x)
+    y = random.randint(0, max_y)
+
+    # Перемещаем окно
+    popup.geometry(f"{win_w}x{win_h}+{x}+{y}")
+
+def say_no():
+    """Что происходит, когда ребёнок нажимает кнопку «Нет, не куплю».
+    Меняем текст на следующий и двигаем окно.
+    """
+    global current_text
+    current_text = (current_text + 1) % len(NO_TEXTS)
+    label.config(text=NO_TEXTS[current_text])
+    move_popup()
+
+def say_yes():
+    """Что происходит, когда ребёнок нажимает «Хорошо, куплю».
+    Показываем сообщение о победе и через небольшой таймер
+    закрываем все окна.
+    """
+    label.config(
+        text="Победа! 🍦\nМороженое будет куплено.\nОкна сейчас закроются."
+    )
+    popup.after(800, close_all)  # через 0.8 секунды вызываем закрытие
+
+def close_all():
+    """Закрываем всплывающее окно и главное окно."""
+    popup.destroy()
+    root.destroy()
+
+def open_popup():
+    """Создаём всплывающее окно с мороженым и кнопками."""
+    global popup, label, ice_image, current_text
+    current_text = 0  # начинаем с первой фразы
+
+    # Создаём новое окно поверх главного
+    popup = tk.Toplevel(root)
+    popup.title("Мороженое и кибер-шутка")
+    popup.geometry("520x360")
+    popup.resizable(False, False)
+    popup.configure(bg="#fff4d6")              # светлый фон
+    popup.protocol("WM_DELETE_WINDOW", on_close)
+    popup.overrideredirect(True)              # убираем рамку и заголовок
+
+    # Верхний блок для картинки
+    top_frame = tk.Frame(popup, bg="#fff4d6")
+    top_frame.pack(pady=15)
+
+    # Пытаемся загрузить файл icecream.png.
+    # Если файла нет, показываем эмодзи.
+    try:
+        ice_image = tk.PhotoImage(file="icecream.png")
+        img_label = tk.Label(top_frame, image=ice_image, bg="#fff4d6")
+        img_label.pack()
+    except:
+        tk.Label(top_frame, text="🍦", font=("Arial", 40), bg="#fff4d6").pack()
+
+    # Заголовок окна
+    title = tk.Label(
+        popup,
+        text="Пока не купишь мороженое,\nокно будет висеть 😈",
+        font=("Arial", 18, "bold"),
+        fg="#c62828",
+        bg="#fff4d6"
+    )
+    title.pack(pady=(5, 10))
+
+    # Надпись, которая будет меняться при «Нет, не куплю»
+    label = tk.Label(
+        popup,
+        text=NO_TEXTS[0],
+        font=("Arial", 14),
+        fg="#5d4037",
+        bg="#fff4d6"
+    )
+    label.pack(pady=5)
+
+    # Блок для двух кнопок
+    button_frame = tk.Frame(popup, bg="#fff4d6")
+    button_frame.pack(pady=20)
+
+    # Кнопка «Да»
+    btn_yes = tk.Button(
+        button_frame,
+        text="Хорошо, куплю",
+        width=18,
+        height=2,
+        command=say_yes,
+        bg="#66bb6a",
+        fg="white",
+        activebackground="#43a047",
+        activeforeground="white",
+        font=("Arial", 12, "bold"),
+        relief="flat"
+    )
+    btn_yes.grid(row=0, column=0, padx=10)
+
+    # Кнопка «Нет»
+    btn_no = tk.Button(
+        button_frame,
+        text="Нет, не куплю",
+        width=18,
+        height=2,
+        command=say_no,
+        bg="#ef5350",
+        fg="white",
+        activebackground="#d32f2f",
+        activeforeground="white",
+        font=("Arial", 12, "bold"),
+        relief="flat"
+    )
+    btn_no.grid(row=0, column=1, padx=10)
+
+    popup.transient(root)
+    popup.grab_set()
+    popup.focus_set()
+
+    # Прячем всплывающее окно из панели задач
+    root.after(50, hide_from_taskbar, popup)
+
+    # Ждём, пока всплывающее окно не закроется
+    root.wait_window(popup)
+
+# Создаём главное окно программы
+root = tk.Tk()
+root.title("Главное окно")
+root.geometry("340x180")
+root.configure(bg="#e3f2fd")
+root.overrideredirect(True)  # убираем рамку для главного окна
+
+# Надпись в главном окне
+main_label = tk.Label(
+    root,
+    text="Нажми кнопку, чтобы открыть шутку",
+    font=("Arial", 13, "bold"),
+    bg="#e3f2fd",
+    fg="#1565c0"
+)
+main_label.pack(pady=(30, 15))
+
+# Кнопка, которая открывает всплывающее окно
+open_button = tk.Button(
+    root,
+    text="Показать шутку",
+    command=open_popup,
+    width=22,
+    height=2,
+    bg="#42a5f5",
+    fg="white",
+    activebackground="#1e88e5",
+    activeforeground="white",
+    font=("Arial", 12, "bold"),
+    relief="flat"
+)
+open_button.pack()
+
+# Запускаем главный цикл программы
+root.mainloop()
+    </code></pre>
+
+    <h2>4. Как запустить программу</h2>
+    <div class="step">
+      <div class="highlight">
+        <p><strong>Шаги:</strong></p>
+        <ol>
+          <li>Сохраните файл <code>icecream_game.py</code> и картинку <code>icecream.png</code> в одной папке.</li>
+          <li>Откройте командную строку (Terminal, PowerShell или cmd).</li>
+          <li>Перейдите в папку с файлом командой <code>cd</code>.</li>
+          <li>Запустите программу командой: <code>python icecream_game.py</code>.</li>
+        </ol>
+      </div>
+      <p>После запуска появится маленькое главное окно. Нажмите кнопку «Показать шутку» — откроется весёлое окно с мороженым и двумя кнопками.</p>
+    </div>
+
+    <h2>5. Что можно обсудить с детьми</h2>
+    <div class="step">
+      <ul>
+        <li>Почему окно прыгает (функция <code>move_popup()</code> и случайные числа).</li>
+        <li>Как меняется текст на кнопке «Нет» (список фраз <code>NO_TEXTS</code> и <code>label.config()</code>).</li>
+        <li>Почему программа закрывается не сразу, а через короткую паузу после «Победа!» (метод <code>after()</code>).</li>
+        <li>Как добавлять свои шутки и менять цвета кнопок и фона.</li>
+      </ul>
+    </div>
+  </div>
+</body>
+</html>
