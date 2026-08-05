@@ -1,341 +1,54 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <title>Весёлое окно с мороженым — по шагам для детей</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Окна</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #f5f7fb;
-      color: #222;
-      line-height: 1.6;
-      margin: 0;
-      padding: 0;
+      padding: 30px;
+      background: #fff4d6;
     }
 
-    .container {
-      max-width: 900px;
-      margin: 0 auto;
-      padding: 20px 30px 40px;
-    }
-
-    h1 {
-      color: #1565c0;
-    }
-
-    h2 {
-      color: #1976d2;
-      margin-top: 28px;
-    }
-
-    h3 {
-      color: #1e88e5;
-      margin-top: 20px;
-    }
-
-    pre {
-      background: #212121;
-      color: #f5f5f5;
-      padding: 14px;
-      border-radius: 6px;
-      overflow-x: auto;
-      font-size: 13px;
-      margin-top: 10px;
-    }
-
-    code {
-      font-family: Consolas, Monaco, monospace;
-    }
-
-    .block {
-      margin-bottom: 18px;
-    }
-
-    .tip {
-      background: #fffde7;
-      padding: 8px 12px;
-      border-radius: 6px;
-      border: 1px solid #fff59d;
-      margin-top: 8px;
-    }
-
-    details {
-      border: 1px solid #cfd8dc;
+    button {
+      padding: 12px 18px;
+      font-size: 16px;
+      border: none;
       border-radius: 8px;
-      background: #ffffff;
-      padding: 10px 12px;
-      margin-top: 10px;
-    }
-
-    summary {
+      background: #4caf50;
+      color: white;
       cursor: pointer;
-      font-weight: bold;
-      color: #1565c0;
-      list-style: none;
     }
 
-    summary::-webkit-details-marker {
-      display: none;
+    button:hover {
+      background: #43a047;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Весёлое окно с мороженым на Python</h1>
-    <p>Инструкция для детей 8–12 лет: код спрятан по блокам и открывается по ссылке.</p>
+  <h1>Учебный пример</h1>
+  <p>Нажми кнопку, чтобы открыть несколько окон.</p>
+  <button onclick="openWindows()">Открыть окна</button>
 
-    <h2>1. Подготовка</h2>
-    <div class="block">
-      <ol>
-        <li>Установите Python 3.</li>
-        <li>Создайте папку, например <code>icecream_game</code>.</li>
-        <li>Скачайте картинку мороженого и назовите её <code>icecream.png</code>.</li>
-        <li>Положите картинку в эту же папку.</li>
-        <li>Создайте файл <code>icecream_game.py</code>.</li>
-      </ol>
-    </div>
+  <script>
+    function openWindows() {
+      let count = 0;
+      const maxCount = 5;
 
-    <h2>2. Шаг 1 — подключаем модули</h2>
-    <div class="block">
-      <p>Сначала объясните детям, что модули — это помощники для программы.</p>
-      <details>
-        <summary>Показать код шага 1</summary>
-        <pre><code>import tkinter as tk
-import random
-import ctypes</code></pre>
-      </details>
-    </div>
+      const timer = setInterval(() => {
+        window.open(
+          '',
+          '_blank',
+          'width=300,height=150'
+        ).document.write('<h3>Привет!</h3><p>Это новое окно.</p>');
 
-    <h2>3. Шаг 2 — список фраз и счётчик</h2>
-    <div class="block">
-      <p>Здесь мы сохраняем шутки, которые окно будет говорить. Можно поменять их на свои.</p>
-      <details>
-        <summary>Показать код шага 2</summary>
-        <pre><code>NO_TEXTS = [
-    "Ну пожалуйста...",
-    "Подумай ещё раз 😏",
-    "Мороженое уже почти ждёт!",
-    "Это твой последний шанс 🍦",
-    "Ну хотя бы одно маленькое!"
-]
-
-current_text = 0</code></pre>
-      </details>
-    </div>
-
-    <h2>4. Шаг 3 — закрытие и скрытие окна</h2>
-    <div class="block">
-      <p>Этот шаг делает окно «упрямым»: крестик не работает, а из панели задач его не видно.</p>
-
-      <details>
-        <summary>Показать код функции on_close</summary>
-        <pre><code>def on_close():
-    pass</code></pre>
-      </details>
-
-      <details>
-        <summary>Показать код функции hide_from_taskbar</summary>
-        <pre><code>def hide_from_taskbar(win):
-    try:
-        hwnd = ctypes.windll.user32.GetParent(win.winfo_id())
-        GWL_EXSTYLE = -20
-        WS_EX_TOOLWINDOW = 0x00000080
-        WS_EX_APPWINDOW = 0x00040000
-
-        style = ctypes.windll.user32.GetWindowLongW(hwnd, GWL_EXSTYLE)
-        style = style | WS_EX_TOOLWINDOW
-        style = style & ~WS_EX_APPWINDOW
-        ctypes.windll.user32.SetWindowLongW(hwnd, GWL_EXSTYLE, style)
-
-        win.withdraw()
-        win.after(10, win.deiconify)
-    except:
-        pass</code></pre>
-      </details>
-    </div>
-
-    <h2>5. Шаг 4 — движение окна и кнопка «Нет»</h2>
-    <div class="block">
-      <p>Здесь окно будет прыгать по экрану, но не вылетать за его края.</p>
-
-      <details>
-        <summary>Показать код функции move_popup</summary>
-        <pre><code>def move_popup():
-    popup.update_idletasks()
-
-    screen_w = popup.winfo_screenwidth()
-    screen_h = popup.winfo_screenheight()
-
-    win_w = 520
-    win_h = 360
-
-    max_x = max(0, screen_w - win_w)
-    max_y = max(0, screen_h - win_h)
-
-    x = random.randint(0, max_x)
-    y = random.randint(0, max_y)
-
-    popup.geometry(f"{win_w}x{win_h}+{x}+{y}")</code></pre>
-      </details>
-
-      <details>
-        <summary>Показать код функции say_no</summary>
-        <pre><code>def say_no():
-    global current_text
-    current_text = (current_text + 1) % len(NO_TEXTS)
-    label.config(text=NO_TEXTS[current_text])
-    move_popup()</code></pre>
-      </details>
-    </div>
-
-    <h2>6. Шаг 5 — победа и закрытие</h2>
-    <div class="block">
-      <p>Если нажать «Хорошо, куплю», программа покажет сообщение о победе и через секунду закроется.</p>
-
-      <details>
-        <summary>Показать код функции say_yes</summary>
-        <pre><code>def say_yes():
-    label.config(
-        text="Победа! 🍦\nМороженое будет куплено.\nОкна сейчас закроются."
-    )
-    popup.after(800, close_all)</code></pre>
-      </details>
-
-      <details>
-        <summary>Показать код функции close_all</summary>
-        <pre><code>def close_all():
-    popup.destroy()
-    root.destroy()</code></pre>
-      </details>
-    </div>
-
-    <h2>7. Шаг 6 — создаём окно с кнопками</h2>
-    <div class="block">
-      <p>Это самый большой блок. Он создаёт всплывающее окно, картинку, надписи и кнопки.</p>
-
-      <details>
-        <summary>Показать код функции open_popup</summary>
-        <pre><code>def open_popup():
-    global popup, label, ice_image, current_text
-    current_text = 0
-
-    popup = tk.Toplevel(root)
-    popup.title("Мороженое и кибер-шутка")
-    popup.geometry("520x360")
-    popup.resizable(False, False)
-    popup.configure(bg="#fff4d6")
-    popup.protocol("WM_DELETE_WINDOW", on_close)
-    popup.overrideredirect(True)
-
-    top_frame = tk.Frame(popup, bg="#fff4d6")
-    top_frame.pack(pady=15)
-
-    try:
-        ice_image = tk.PhotoImage(file="icecream.png")
-        img_label = tk.Label(top_frame, image=ice_image, bg="#fff4d6")
-        img_label.pack()
-    except:
-        tk.Label(top_frame, text="🍦", font=("Arial", 40), bg="#fff4d6").pack()
-
-    title = tk.Label(
-        popup,
-        text="Пока не купишь мороженое,\nокно будет висеть 😈",
-        font=("Arial", 18, "bold"),
-        fg="#c62828",
-        bg="#fff4d6"
-    )
-    title.pack(pady=(5, 10))
-
-    label = tk.Label(
-        popup,
-        text=NO_TEXTS[0],
-        font=("Arial", 14),
-        fg="#5d4037",
-        bg="#fff4d6"
-    )
-    label.pack(pady=5)
-
-    button_frame = tk.Frame(popup, bg="#fff4d6")
-    button_frame.pack(pady=20)
-
-    btn_yes = tk.Button(
-        button_frame,
-        text="Хорошо, куплю",
-        width=18,
-        height=2,
-        command=say_yes,
-        bg="#66bb6a",
-        fg="white",
-        activebackground="#43a047",
-        activeforeground="white",
-        font=("Arial", 12, "bold"),
-        relief="flat"
-    )
-    btn_yes.grid(row=0, column=0, padx=10)
-
-    btn_no = tk.Button(
-        button_frame,
-        text="Нет, не куплю",
-        width=18,
-        height=2,
-        command=say_no,
-        bg="#ef5350",
-        fg="white",
-        activebackground="#d32f2f",
-        activeforeground="white",
-        font=("Arial", 12, "bold"),
-        relief="flat"
-    )
-    btn_no.grid(row=0, column=1, padx=10)
-
-    popup.transient(root)
-    popup.grab_set()
-    popup.focus_set()
-
-    root.after(50, hide_from_taskbar, popup)
-    root.wait_window(popup)</code></pre>
-      </details>
-    </div>
-
-    <h2>8. Шаг 7 — главное окно</h2>
-    <div class="block">
-      <p>Последний кусочек — само главное окно, которое открывает шутку.</p>
-
-      <details>
-        <summary>Показать код главного окна</summary>
-        <pre><code>root = tk.Tk()
-root.title("Главное окно")
-root.geometry("340x180")
-root.configure(bg="#e3f2fd")
-root.overrideredirect(True)
-
-main_label = tk.Label(
-    root,
-    text="Нажми кнопку, чтобы открыть шутку",
-    font=("Arial", 13, "bold"),
-    bg="#e3f2fd",
-    fg="#1565c0"
-)
-main_label.pack(pady=(30, 15))
-
-open_button = tk.Button(
-    root,
-    text="Показать шутку",
-    command=open_popup,
-    width=22,
-    height=2,
-    bg="#42a5f5",
-    fg="white",
-    activebackground="#1e88e5",
-    activeforeground="white",
-    font=("Arial", 12, "bold"),
-    relief="flat"
-)
-open_button.pack()
-
-root.mainloop()</code></pre>
-      </details>
-    </div>
-    </div>
+        count++;
+        if (count >= maxCount) {
+          clearInterval(timer);
+        }
+      }, 500);
+    }
+  </script>
 </body>
 </html>
