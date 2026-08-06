@@ -4,8 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Космическое окно на Python</title>
+    <title>Киберщит — викторина по кибербезопасности</title>
 
     <style>
         * {
@@ -15,507 +14,625 @@
         body {
             margin: 0;
             font-family: Arial, sans-serif;
-            color: #f5f7ff;
+            color: #f5efff;
             background:
-                radial-gradient(circle at 20% 20%, #35458f 0, transparent 25%),
-                radial-gradient(circle at 80% 80%, #542b78 0, transparent 25%),
-                #10152f;
-            line-height: 1.6;
+                radial-gradient(circle at top, #3b1764 0%, #180d2b 38%, #0d0818 100%);
+            min-height: 100vh;
         }
 
         .container {
-            width: min(1100px, 92%);
-            margin: auto;
-            padding: 35px 0 60px;
-        }
-
-        header,
-        section {
-            margin-bottom: 24px;
-            padding: 28px;
-            border: 1px solid rgba(139, 233, 253, 0.25);
-            border-radius: 20px;
-            background: rgba(32, 38, 77, 0.94);
-            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+            width: min(100% - 30px, 950px);
+            margin: 0 auto;
+            padding: 35px 0 150px;
         }
 
         header {
             text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .logo {
+            display: inline-block;
+            font-size: 48px;
+            margin-bottom: 8px;
         }
 
         h1 {
-            margin: 0 0 12px;
-            color: #8be9fd;
-            font-size: clamp(30px, 6vw, 58px);
+            margin: 0;
+            color: #d9b7ff;
+            font-size: clamp(28px, 5vw, 44px);
         }
 
-        h2 {
-            margin-top: 0;
-            color: #ffd166;
+        header p {
+            color: #c5b5d8;
+            font-size: 17px;
+            line-height: 1.5;
         }
 
-        h3 {
-            color: #8be9fd;
-        }
-
-        .subtitle {
-            font-size: 20px;
-        }
-
-        .badge {
-            display: inline-block;
-            margin: 4px;
-            padding: 6px 14px;
-            border-radius: 30px;
-            background: #493d8a;
-            color: white;
-        }
-
-        .warning {
-            margin-top: 20px;
-            padding: 15px;
-            border-left: 5px solid #ffd166;
-            border-radius: 8px;
-            background: #403554;
-        }
-
-        .success {
-            padding: 15px;
-            border-left: 5px solid #50fa7b;
-            border-radius: 8px;
-            background: #173e3b;
-        }
-
-        .steps {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-            gap: 14px;
-        }
-
-        .step {
-            padding: 18px;
+        .quiz-info {
+            max-width: 700px;
+            margin: 20px auto 0;
+            padding: 15px 20px;
+            border: 1px solid #6f3aad;
             border-radius: 14px;
-            background: #161f42;
+            background: rgba(72, 29, 116, 0.35);
+            color: #e8d9ff;
         }
 
-        .number {
-            color: #50fa7b;
-            font-size: 28px;
+        .question-card {
+            margin: 20px 0;
+            padding: 24px;
+            border: 1px solid #4d2676;
+            border-radius: 18px;
+            background: rgba(29, 17, 49, 0.92);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+        }
+
+        .question-number {
+            display: inline-block;
+            margin-bottom: 10px;
+            padding: 5px 11px;
+            border-radius: 20px;
+            background: #713bb0;
+            color: white;
+            font-size: 13px;
             font-weight: bold;
         }
 
-        code {
-            padding: 3px 6px;
-            border-radius: 5px;
-            color: #bdefff;
-            background: #0b1023;
+        .question {
+            margin: 0 0 18px;
+            color: #ffffff;
+            font-size: 19px;
+            line-height: 1.45;
         }
 
-        pre {
-            overflow-x: auto;
-            padding: 20px;
-            border-left: 5px solid #8be9fd;
-            border-radius: 12px;
-            background: #090d1d;
-            color: #e9f4ff;
-            font: 13px/1.55 Consolas, monospace;
+        .answers {
+            display: grid;
+            gap: 10px;
         }
 
-        pre code {
-            padding: 0;
-            background: transparent;
+        .answer {
+            width: 100%;
+            padding: 13px 16px;
+            border: 1px solid #66418b;
+            border-radius: 10px;
+            background: #241439;
+            color: #f7f0ff;
+            cursor: pointer;
+            font-size: 16px;
+            text-align: left;
+            transition: 0.2s ease;
         }
 
-        li {
-            margin: 8px 0;
+        .answer:hover:not(:disabled) {
+            border-color: #b477f5;
+            background: #38205a;
+            transform: translateY(-2px);
         }
 
-        footer {
+        .answer:disabled {
+            cursor: default;
+        }
+
+        .answer.correct {
+            border-color: #44d483;
+            background: #164e37;
+            color: #baffd7;
+        }
+
+        .answer.wrong {
+            border-color: #ff637c;
+            background: #5b1e35;
+            color: #ffd0d8;
+        }
+
+        .feedback {
+            min-height: 24px;
+            margin-top: 14px;
+            color: #d3c0e8;
+            font-size: 15px;
+            line-height: 1.4;
+        }
+
+        .feedback.correct-text {
+            color: #6df0a5;
+        }
+
+        .feedback.wrong-text {
+            color: #ff91a3;
+        }
+
+        .score-panel {
+            position: fixed;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            z-index: 10;
+            padding: 18px 15px;
+            border-top: 1px solid #7040a1;
+            background: rgba(18, 9, 31, 0.96);
+            box-shadow: 0 -8px 25px rgba(0, 0, 0, 0.35);
             text-align: center;
-            color: #cbd5ff;
+            backdrop-filter: blur(8px);
         }
 
-        kbd {
-            padding: 3px 7px;
-            border: 1px solid #aaa;
-            border-radius: 5px;
-            background: #222;
+        .score {
+            color: #e3c8ff;
+            font-size: 21px;
+            font-weight: bold;
+        }
+
+        .score span {
+            color: #bb7aff;
+        }
+
+        .reset-button {
+            margin-top: 10px;
+            padding: 9px 18px;
+            border: none;
+            border-radius: 9px;
+            background: #874bd0;
+            color: white;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .reset-button:hover {
+            background: #a56ae9;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                width: min(100% - 20px, 950px);
+                padding-top: 24px;
+            }
+
+            .question-card {
+                padding: 18px;
+            }
+
+            .question {
+                font-size: 17px;
+            }
+
+            .answer {
+                font-size: 15px;
+            }
         }
 
     </style>
 </head>
 
 <body>
-    <div class="container">
-
+    <main class="container">
         <header>
-            <div>
-                <span class="badge">Python</span>
-                <span class="badge">Tkinter</span>
-                <span class="badge">8–12 лет</span>
-            </div>
+            <div class="logo">🛡️</div>
+            <h1>Киберщит</h1>
+            <p>Викторина по кибербезопасности для юных пользователей</p>
 
-            <h1>🚀 Космическое окно</h1>
-
-            <p class="subtitle">
-                Создаём красивую программу на Python
-                с анимацией, звёздами и прогресс-баром.
-            </p>
-
-            <div class="success">
-                <strong>Важно:</strong>
-                это только демонстрация.
-                Программа не удаляет и не изменяет файлы компьютера.
+            <div class="quiz-info">
+                Выбери один вариант ответа. После нажатия ты сразу увидишь,
+                правильный ответ и короткое объяснение.
             </div>
         </header>
 
-        <section>
-            <h2>Что мы создадим?</h2>
-
-            <p>
-                Наша программа откроет космическое окно с мерцающими звёздами.
-                Внутри будет прогресс-бар, забавные сообщения и кнопка закрытия.
-            </p>
-
-            <div class="steps">
-                <div class="step">
-                    <div class="number">1</div>
-                    Создадим окно Python.
-                </div>
-
-                <div class="step">
-                    <div class="number">2</div>
-                    Добавим космический фон.
-                </div>
-
-                <div class="step">
-                    <div class="number">3</div>
-                    Нарисуем звёзды.
-                </div>
-
-                <div class="step">
-                    <div class="number">4</div>
-                    Запустим анимацию.
-                </div>
-            </div>
-        </section>
-
-        <section>
-            <h2>Как запустить проект?</h2>
-
-            <ol>
-                <li>Установи Python 3.</li>
-                <li>Создай файл с именем <code>main.py</code>.</li>
-                <li>Скопируй в него код из этого урока.</li>
-                <li>Сохрани файл.</li>
-                <li>Запусти его командой:</li>
-            </ol>
-
-            <pre><code>python main.py</code></pre>
-
-            <div class="warning">
-                Чтобы закрыть полноэкранное окно, нажми
-                <kbd>Esc</kbd>.
-                Клавиша <kbd>F11</kbd> отключает полноэкранный режим.
-            </div>
-        </section>
-
-        <section>
-            <h2>Код Python</h2>
-
-            <p>
-                Создай рядом с этим HTML-файлом файл
-                <code>main.py</code> и вставь туда следующий код:
-            </p>
-
-            <pre><code>import tkinter as tk
-from tkinter import ttk
-import random
-
-
-root = tk.Tk()
-root.title("Космическая проверка")
-
-# Окно поверх других окон
-root.attributes("-topmost", True)
-
-# Полноэкранный режим
-root.attributes("-fullscreen", True)
-
-root.configure(bg="#10152f")
-
-
-# Esc закрывает программу
-root.bind("&lt;Escape&gt;", lambda event: root.destroy())
-
-# F11 отключает полноэкранный режим
-root.bind(
-    "&lt;F11&gt;",
-    lambda event: root.attributes("-fullscreen", False)
-)
-
-
-width = root.winfo_screenwidth()
-height = root.winfo_screenheight()
-
-
-# Создаём холст для рисования
-canvas = tk.Canvas(
-    root,
-    width=width,
-    height=height,
-    bg="#10152f",
-    highlightthickness=0
-)
-
-canvas.pack(fill="both", expand=True)
-
-
-# Создаём звёзды
-stars = []
-
-for _ in range(100):
-    x = random.randint(0, width)
-    y = random.randint(0, height)
-    size = random.choice([1, 2, 3])
-
-    color = random.choice([
-        "#ffffff",
-        "#8be9fd",
-        "#bd93f9",
-        "#50fa7b"
-    ])
-
-    star = canvas.create_oval(
-        x,
-        y,
-        x + size,
-        y + size,
-        fill=color,
-        outline=""
-    )
-
-    stars.append(star)
-
-
-def animate_stars():
-    """Звёзды случайно меняют цвет."""
-
-    for star in stars:
-        if random.random() &lt; 0.08:
-            color = random.choice([
-                "#ffffff",
-                "#8be9fd",
-                "#bd93f9",
-                "#50fa7b"
-            ])
-
-            canvas.itemconfig(star, fill=color)
-
-    root.after(180, animate_stars)
-
-
-# Центральная панель
-card = tk.Frame(
-    root,
-    bg="#20264d",
-    padx=45,
-    pady=35
-)
-
-card.place(
-    relx=0.5,
-    rely=0.5,
-    anchor="center"
-)
-
-
-title = tk.Label(
-    card,
-    text="🚀 Запуск проверки",
-    font=("Arial", 32, "bold"),
-    fg="#8be9fd",
-    bg="#20264d"
-)
-
-title.pack(pady=(0, 15))
-
-
-subtitle = tk.Label(
-    card,
-    text="Ищем потерявшихся космических котиков...",
-    font=("Arial", 18),
-    fg="white",
-    bg="#20264d"
-)
-
-subtitle.pack(pady=8)
-
-
-# Настраиваем прогресс-бар
-style = ttk.Style()
-style.theme_use("clam")
-
-style.configure(
-    "Kids.Horizontal.TProgressbar",
-    troughcolor="#10152f",
-    background="#50fa7b",
-    bordercolor="#10152f",
-    lightcolor="#50fa7b",
-    darkcolor="#50fa7b",
-    thickness=25
-)
-
-
-progress = ttk.Progressbar(
-    card,
-    style="Kids.Horizontal.TProgressbar",
-    orient="horizontal",
-    length=500,
-    mode="determinate",
-    maximum=100
-)
-
-progress.pack(pady=20)
-status = tk.Label(
-    card,
-    text="Подготовка ракеты...",
-    font=("Arial", 16),
-    fg="#f8f8f2",
-    bg="#20264d"
-)
-
-status.pack(pady=5)
-
-
-notice = tk.Label(
-    card,
-    text="Это демонстрация — файлы не удаляются.",
-    font=("Arial", 13),
-    fg="#ffcc66",
-    bg="#20264d"
-)
-
-notice.pack(pady=(20, 10))
-
-
-close_button = tk.Button(
-    card,
-    text="Закрыть",
-    command=root.destroy,
-    font=("Arial", 14, "bold"),
-    fg="white",
-    bg="#ff5555",
-    activebackground="#ff7777",
-    activeforeground="white",
-    relief="flat",
-    padx=25,
-    pady=10,
-    cursor="hand2"
-)
-
-close_button.pack(pady=(10, 0))
-
-
-messages = [
-    "Подготовка ракеты...",
-    "Проверяем космический рюкзак...",
-    "Считаем звёзды...",
-    "Ищем потерявшихся котиков...",
-    "Проверяем лунное топливо...",
-    "Почти готово..."
-]
-
-
-def update_progress(value=0):
-    if value &lt;= 100:
-        progress["value"] = value
-
-        message_index = min(
-            value // 17,
-            len(messages) - 1
-        )
-
-        status.config(
-            text=messages[message_index]
-        )
-
-        if value &lt; 35:
-            title.config(
-                text="🚀 Запуск проверки"
-            )
-        elif value &lt; 70:
-            title.config(
-                text="🌌 Исследуем галактику"
-            )
-        else:
-            title.config(
-                text="✨ Почти завершено"
-            )
-
-        root.after(
-            80,
-            update_progress,
-            value + 1
-        )
-
-    else:
-        title.config(
-            text="🎉 Проверка завершена!"
-        )
-
-        subtitle.config(
-            text="Все космические котики на месте!"
-        )
-
-        status.config(
-            text="Можно продолжить приключение 🚀"
-        )
-
-
-animate_stars()
-update_progress()
-
-root.mainloop()</code></pre>
-        </section>
-
-        <section>
-            <h2>Что можно изменить?</h2>
-
-            <ul>
-                <li>Замени цвет фона в строке <code>bg="#10152f"</code>.</li>
-                <li>Измени текст про космических котиков.</li>
-                <li>Сделай 200 звёзд вместо 100.</li>
-                <li>Добавь новое сообщение в список <code>messages</code>.</li>
-                <li>Измени скорость анимации в <code>root.after(180, ...)</code>.</li>
-            </ul>
-        </section>
-
-        <section>
-            <h2>Публикация на GitHub</h2>
-
-            <ol>
-                <li>Создай репозиторий с названием <code>cosmic-window</code>.</li>
-                <li>Сохрани этот код как <code>index.html</code>.</li>
-                <li>Загрузи файл в репозиторий через <b>Add file → Upload files</b>.</li>
-                <li>Нажми <b>Commit changes</b>.</li>
-                <li>Открой <b>Settings → Pages</b>.</li>
-                <li>Выбери ветку <code>main</code> и папку <code>/root</code>.</li>
-                <li>Нажми <b>Save</b>.</li>
-            </ol>
-
-            <p>
-                После публикации GitHub Pages покажет эту инструкцию
-                как обычный сайт. Загрузка файлов через браузер поддерживается
-                самим GitHub. [59][60]
-            </p>
-        </section>
-
-        <footer>
-            🌟 Ты создал(а) свой первый интерактивный проект на Python!
-        </footer>
-
+        <section id="quiz"></section>
+    </main>
+
+    <div class="score-panel">
+        <div class="score">
+            Правильные ответы:
+            <span id="score">0</span> из <span id="total">25</span>
+        </div>
+
+        <button class="reset-button" onclick="restartQuiz()">
+            Пройти заново
+        </button>
     </div>
+
+    <script>
+        const questions = [{
+                question: "Что такое фишинг?",
+                answers: [
+                    "Компьютерная игра",
+                    "Обман с целью получить личные данные",
+                    "Программа для рисования",
+                    "Способ ускорить интернет"
+                ],
+                correct: 1,
+                explanation: "Фишинг — это попытка выманить пароль, код или другие данные с помощью поддельных писем и сайтов."
+            },
+            {
+                question: "Какой пароль считается самым надёжным?",
+                answers: [
+                    "qwerty123",
+                    "Дата рождения",
+                    "Длинная уникальная фраза с разными символами",
+                    "Имя домашнего питомца"
+                ],
+                correct: 2,
+                explanation: "Хороший пароль длинный, уникальный и не связан с личной информацией."
+            },
+            {
+                question: "Можно ли сообщать пароль другу?",
+                answers: [
+                    "Да, если это лучший друг",
+                    "Да, если он обещал никому не рассказывать",
+                    "Нет, пароль должен оставаться секретным",
+                    "Да, но только в игре"
+                ],
+                correct: 2,
+                explanation: "Пароли нельзя передавать другим людям. Даже друзьям и знакомым."
+            },
+            {
+                question: "Что нужно сделать, если пришло подозрительное письмо?",
+                answers: [
+                    "Сразу открыть все ссылки",
+                    "Переслать его друзьям",
+                    "Не открывать ссылки и показать взрослому",
+                    "Ответить отправителю"
+                ],
+                correct: 2,
+                explanation: "Подозрительные письма лучше не открывать и обсудить с родителем или учителем."
+            },
+            {
+                question: "Что такое двухфакторная аутентификация?",
+                answers: [
+                    "Два разных браузера",
+                    "Дополнительная проверка при входе",
+                    "Два одинаковых пароля",
+                    "Способ удалить аккаунт"
+                ],
+                correct: 1,
+                explanation: "При двухфакторной аутентификации кроме пароля нужен второй фактор: код, приложение или специальный ключ."
+            },
+            {
+                question: "Почему не стоит публиковать домашний адрес в интернете?",
+                answers: [
+                    "Это занимает много места",
+                    "Адрес может увидеть незнакомый человек",
+                    "Интернет станет медленнее",
+                    "Из-за этого отключится компьютер"
+                ],
+                correct: 1,
+                explanation: "Домашний адрес относится к личным данным и не должен быть доступен всем."
+            },
+            {
+                question: "Что такое личные данные?",
+                answers: [
+                    "Только любимый цвет",
+                    "Информация, по которой можно узнать человека",
+                    "Название компьютерной игры",
+                    "Список фильмов"
+                ],
+                correct: 1,
+                explanation: "К личным данным относятся имя, адрес, телефон, пароли, фотографии и другие сведения о человеке."
+            },
+            {
+                question: "Что нужно делать с обновлениями программ?",
+                answers: [
+                    "Всегда игнорировать",
+                    "Устанавливать обновления из надёжных источников",
+                    "Скачивать их с любого сайта",
+                    "Удалять все программы"
+                ],
+                correct: 1,
+                explanation: "Обновления исправляют ошибки и уязвимости в программах."
+            },
+            {
+                question: "Как правильно скачивать приложение?",
+                answers: [
+                    "С любого рекламного баннера",
+                    "Из официального магазина или сайта",
+                    "По ссылке от незнакомца",
+                    "Из случайного сообщения"
+                ],
+                correct: 1,
+                explanation: "Официальные магазины и сайты обычно безопаснее случайных ссылок."
+            },
+            {
+                question: "Что делать, если незнакомец просит прислать фотографию?",
+                answers: [
+                    "Сразу отправить",
+                    "Попросить его пароль",
+                    "Не отправлять и рассказать взрослому",
+                    "Опубликовать фотографию в сети"
+                ],
+                correct: 2,
+                explanation: "Не отправляй личные фотографии незнакомым людям и обязательно расскажи взрослому."
+            },
+            {
+                question: "Что такое кибербуллинг?",
+                answers: [
+                    "Обучение программированию",
+                    "Травля человека в интернете",
+                    "Покупка игры",
+                    "Защита аккаунта"
+                ],
+                correct: 1,
+                explanation: "Кибербуллинг — это оскорбления, угрозы или травля с использованием интернета."
+            },
+            {
+                question: "Что лучше сделать при кибербуллинге?",
+                answers: [
+                    "Отвечать оскорблениями",
+                    "Удалить все доказательства",
+                    "Сохранить доказательства и обратиться за помощью",
+                    "Создать обидчику такой же аккаунт"
+                ],
+                correct: 2,
+                explanation: "Сохрани сообщения, заблокируй обидчика и расскажи родителям, учителю или другому взрослому."
+            },
+            {
+                question: "Безопасно ли использовать один пароль на всех сайтах?",
+                answers: [
+                    "Да, так проще",
+                    "Да, если пароль длинный",
+                    "Нет, для важных сервисов нужны разные пароли",
+                    "Да, если никому его не говорить"
+                ],
+                correct: 2,
+                explanation: "Если один пароль украдут, злоумышленник сможет войти сразу во все аккаунты."
+            },
+            {
+                question: "Что такое вредоносная программа?",
+                answers: [
+                    "Программа, созданная для нанесения вреда",
+                    "Любая новая игра",
+                    "Редактор фотографий",
+                    "Антивирус"
+                ],
+                correct: 0,
+                explanation: "Вредоносные программы могут красть данные, повреждать файлы или шпионить за пользователем."
+            },
+            {
+                question: "Что может помочь обнаружить вредоносные программы?",
+                answers: [
+                    "Антивирус",
+                    "Калькулятор",
+                    "Музыкальный плеер",
+                    "Графический редактор"
+                ],
+                correct: 0,
+                explanation: "Антивирус проверяет файлы и помогает обнаруживать известные угрозы."
+            },
+            {
+                question: "Можно ли подключаться к важным аккаунтам через открытый Wi-Fi?",
+                answers: [
+                    "Да, всегда",
+                    "Лучше избегать этого или использовать защищённое соединение",
+                    "Да, если сеть называется Free Wi-Fi",
+                    "Можно, если рядом много людей"
+                ],
+                correct: 1,
+                explanation: "В открытых сетях данные могут быть перехвачены. Для важных действий лучше использовать мобильный интернет или защищённую сеть."
+            },
+            {
+                question: "Что делать, если сайт просит ввести пароль повторно без причины?",
+                answers: [
+                    "Ввести пароль несколько раз",
+                    "Проверить адрес сайта и закрыть страницу при подозрениях",
+                    "Отправить пароль владельцу сайта",
+                    "Сделать скриншот пароля"
+                ],
+                correct: 1,
+                explanation: "Это может быть поддельная страница. Проверь адрес сайта и не вводи данные, если что-то выглядит странно."
+            },
+            {
+                question: "Что означает значок замка возле адреса сайта?",
+                answers: [
+                    "Сайт точно честный",
+                    "Соединение с сайтом защищено шифрованием",
+                    "На сайте нет рекламы",
+                    "Сайт принадлежит государству"
+                ],
+                correct: 1,
+                explanation: "Замок показывает защищённое соединение, но сам по себе не гарантирует, что сайт безопасен и честен."
+            },
+            {
+                question: "Почему нельзя публиковать фотографию чужого человека без разрешения?",
+                answers: [
+                    "Фотография может быть слишком большой",
+                    "Это может нарушить личные границы и приватность",
+                    "Так интернет станет медленнее",
+                    "Фото обязательно удалится"
+                ],
+                correct: 1,
+                explanation: "Перед публикацией фотографии другого человека нужно спросить его разрешение."
+            },
+            {
+                question: "Что такое цифровой след?",
+                answers: [
+                    "След от пальца на экране",
+                    "Информация, которая остаётся после действий в интернете",
+                    "Ошибка компьютера",
+                    "История компьютерной мыши"
+                ],
+                correct: 1,
+                explanation: "Публикации, комментарии, лайки и регистрации могут оставлять цифровой след."
+            },
+            {
+                question: "Какой файл может быть особенно опасным во вложении?",
+                answers: [
+                    "Файл от знакомого человека",
+                    "Неожиданный файл с программой или макросами",
+                    "Обычная фотография из галереи",
+                    "Текст из школьного учебника"
+                ],
+                correct: 1,
+                explanation: "Неожиданные исполняемые файлы и документы с макросами могут содержать вредоносный код."
+            },
+            {
+                question: "Что делать, если ты случайно сообщил пароль?",
+                answers: [
+                    "Ничего",
+                    "Сменить пароль и рассказать взрослому",
+                    "Удалить браузер",
+                    "Выключить монитор"
+                ],
+                correct: 1,
+                explanation: "Быстро смени пароль, выйди из других устройств и обратись за помощью к взрослому."
+            },
+            {
+                question: "Как проверить, что сообщение действительно от знакомого?",
+                answers: [
+                    "Поверить аватарке",
+                    "Уточнить информацию другим способом",
+                    "Отправить ему свои данные",
+                    "Открыть все ссылки"
+                ],
+                correct: 1,
+                explanation: "Аккаунт знакомого могли взломать. Лучше позвонить ему или написать через другой канал."
+            },
+            {
+                question: "Что нужно сделать перед продажей или передачей старого телефона?",
+                answers: [
+                    "Оставить все аккаунты включёнными",
+                    "Удалить личные данные и выполнить сброс настроек",
+                    "Передать телефон вместе с паролями",
+                    "Просто выключить экран"
+                ],
+                correct: 1,
+                explanation: "Перед передачей устройства нужно выйти из аккаунтов, удалить данные и сделать сброс настроек."
+            },
+            {
+                question: "К кому можно обратиться, если в интернете стало страшно или неприятно?",
+                answers: [
+                    "Никому не говорить",
+                    "К родителю, учителю или другому надёжному взрослому",
+                    "Только к незнакомцу в чате",
+                    "Создать новый конфликт"
+                ],
+                correct: 1,
+                explanation: "Просить помощи — правильно. Надёжный взрослый поможет заблокировать угрозу и сохранить доказательства."
+            }
+        ];
+
+        let score = 0;
+        let answered = 0;
+
+        const quizElement = document.getElementById("quiz");
+        const scoreElement = document.getElementById("score");
+        const totalElement = document.getElementById("total");
+
+        totalElement.textContent = questions.length;
+
+        function renderQuiz() {
+            quizElement.innerHTML = "";
+
+            questions.forEach((item, questionIndex) => {
+                const card = document.createElement("article");
+                card.className = "question-card";
+
+                const number = document.createElement("div");
+                number.className = "question-number";
+                number.textContent = `Вопрос ${questionIndex + 1}`;
+
+                const title = document.createElement("h2");
+                title.className = "question";
+                title.textContent = item.question;
+
+                const answers = document.createElement("div");
+                answers.className = "answers";
+
+                const feedback = document.createElement("div");
+                feedback.className = "feedback";
+                feedback.setAttribute("aria-live", "polite");
+
+                item.answers.forEach((answer, answerIndex) => {
+                    const button = document.createElement("button");
+                    button.className = "answer";
+                    button.textContent = answer;
+
+                    button.addEventListener("click", () => {
+                        checkAnswer(
+                            button,
+                            answers,
+                            feedback,
+                            item,
+                            answerIndex
+                        );
+                    });
+
+                    answers.appendChild(button);
+                });
+
+                card.appendChild(number);
+                card.appendChild(title);
+                card.appendChild(answers);
+                card.appendChild(feedback);
+                quizElement.appendChild(card);
+            });
+        }
+
+        function checkAnswer(button, answersBlock, feedback, item, selectedIndex) {
+            if (button.disabled) {
+                return;
+            }
+
+            const allButtons = answersBlock.querySelectorAll(".answer");
+
+            allButtons.forEach(answerButton => {
+                answerButton.disabled = true;
+            });
+
+            const isCorrect = selectedIndex === item.correct;
+
+            if (isCorrect) {
+                button.classList.add("correct");
+                feedback.className = "feedback correct-text";
+                feedback.textContent = `✅ Правильно! ${item.explanation}`;
+                score++;
+            } else {
+                button.classList.add("wrong");
+                allButtons[item.correct].classList.add("correct");
+                feedback.className = "feedback wrong-text";
+                feedback.textContent =
+                    `❌ Пока неверно. Правильный ответ: ` +
+                    `"${item.answers[item.correct]}". ${item.explanation}`;
+            }
+
+            answered++;
+            scoreElement.textContent = score;
+
+            if (answered === questions.length) {
+                showFinalMessage();
+            }
+        }
+
+        function showFinalMessage() {
+            setTimeout(() => {
+                let message = "";
+
+                if (score >= 22) {
+                    message = "🏆 Отличный результат! Ты хорошо разбираешься в кибербезопасности.";
+                } else if (score >= 17) {
+                    message = "👏 Очень хорошо! Ещё немного практики — и ты станешь настоящим киберзащитником.";
+                } else if (score >= 12) {
+                    message = "🙂 Неплохой результат. Повтори правила безопасности и попробуй ещё раз.";
+                } else {
+                    message = "💡 Не расстраивайся! Ошибки помогают учиться. Пройди викторину повторно.";
+                }
+
+                alert(`${message}\n\nТвой результат: ${score} из ${questions.length}`);
+            }, 300);
+        }
+
+        function restartQuiz() {
+            score = 0;
+            answered = 0;
+            scoreElement.textContent = score;
+            renderQuiz();
+
+            window.scrollTo({
+                top: 0,
+                behavior: "smooth"
+            });
+        }
+
+        renderQuiz();
+
+    </script>
 </body>
 
 </html>
