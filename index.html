@@ -1,509 +1,1220 @@
 <!DOCTYPE html>
 <html lang="ru">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Python Тренажёр</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>13 учебных антивирусов на Python</title>
     <style>
+        :root {
+            --bg: #f5f7fa;
+            --card: #ffffff;
+            --text: #1f2937;
+            --muted: #6b7280;
+            --border: #e5e7eb;
+            --code: #0f172a;
+            --code-text: #e2e8f0;
+        }
+
         * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+            box-sizing: border-box
         }
-        
+
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
         }
-        
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-            overflow: hidden;
-        }
-        
+
         header {
-            background: #306986;
-            color: white;
-            padding: 30px;
+            padding: 32px 16px;
             text-align: center;
+            border-bottom: 1px solid var(--border);
+            background: #ffffff;
+            position: sticky;
+            top: 0;
+            backdrop-filter: blur(8px);
         }
-        
-        header h1 {
-            font-size: 2.5em;
-            margin-bottom: 10px;
+
+        h1 {
+            margin: 0 0 8px;
+            font-size: clamp(24px, 4vw, 40px);
+            color: #111827
         }
-        
-        header p {
-            font-size: 1.1em;
-            opacity: 0.9;
+
+        p {
+            margin: 0 auto;
+            max-width: 900px;
+            color: var(--muted)
         }
-        
-        .progress-bar {
-            background: #e0e0e0;
-            height: 30px;
-            border-radius: 15px;
-            margin: 20px;
+
+        main {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 24px 16px 48px
+        }
+
+        .intro {
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 18px 20px;
+            margin-bottom: 22px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 18px;
             overflow: hidden;
-            position: relative;
-        }
-        
-        .progress-fill {
-            background: linear-gradient(90deg, #4CAF50, #8BC34A);
-            height: 100%;
-            width: 0%;
-            transition: width 0.5s ease;
             display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            padding-right: 10px;
-            color: white;
-            font-weight: bold;
+            flex-direction: column;
         }
-        
-        .content {
-            padding: 30px;
+
+        .card h2 {
+            margin: 0;
+            padding: 14px 16px;
+            font-size: 18px;
+            border-bottom: 1px solid var(--border);
         }
-        
-        .question-card {
-            background: #f8f9fa;
-            border-left: 5px solid #306986;
-            padding: 25px;
-            margin-bottom: 25px;
-            border-radius: 8px;
+
+        .meta {
+            padding: 0 16px 12px;
+            color: var(--muted);
+            font-size: 14px
         }
-        
-        .question-card h2 {
-            color: #306986;
-            margin-bottom: 15px;
-            font-size: 1.5em;
-        }
-        
-        .question-text {
-            font-size: 1.2em;
-            margin-bottom: 20px;
-            line-height: 1.6;
-        }
-        
+
         .code-block {
-            background: #2d2d2d;
-            color: #f8f8f2;
-            padding: 20px;
-            border-radius: 8px;
-            font-family: 'Courier New', monospace;
-            margin: 15px 0;
-            overflow-x: auto;
+            overflow: hidden;
+            transition: all .2s ease;
+        }
+
+        .code-block.hidden {
+            max-height: 0;
+            opacity: 0;
+        }
+
+        pre {
+            margin: 0;
+            padding: 16px;
+            overflow: auto;
+            background: var(--code);
+            color: var(--code-text);
+            min-height: 320px;
             white-space: pre;
+            font-size: 13px;
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
         }
-        
-        .options {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 15px;
-            margin-top: 20px;
-        }
-        
-        .option {
-            background: white;
-            border: 2px solid #ddd;
-            padding: 15px 20px;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 1.1em;
-        }
-        
-        .option:hover {
-            border-color: #306986;
-            background: #f0f4f8;
-            transform: translateX(5px);
-        }
-        
-        .option.correct {
-            background: #d4edda;
-            border-color: #28a745;
-            color: #155724;
-        }
-        
-        .option.wrong {
-            background: #f8d7da;
-            border-color: #dc3545;
-            color: #721c24;
-        }
-        
-        .feedback {
-            margin-top: 20px;
-            padding: 20px;
-            border-radius: 8px;
-            display: none;
-        }
-        
-        .feedback.success {
-            background: #d4edda;
-            border: 2px solid #28a745;
-            color: #155724;
-        }
-        
-        .feedback.error {
-            background: #f8d7da;
-            border: 2px solid #dc3545;
-            color: #721c24;
-        }
-        
-        .controls {
+
+        .actions {
+            padding: 12px 16px;
             display: flex;
-            justify-content: space-between;
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 2px solid #eee;
+            gap: 8px;
+            flex-wrap: wrap;
         }
-        
+
         button {
-            padding: 12px 30px;
-            font-size: 1.1em;
-            border: none;
-            border-radius: 8px;
+            padding: 10px 14px;
+            border: 0;
+            border-radius: 12px;
+            color: #00111f;
+            font-weight: 700;
             cursor: pointer;
-            transition: all 0.3s ease;
         }
-        
+
+        button:hover {
+            opacity: .92
+        }
+
         .btn-primary {
-            background: #306986;
-            color: white;
+            background: #a7f3d0;
         }
-        
-        .btn-primary:hover {
-            background: #265a73;
-            transform: translateY(-2px);
-        }
-        
+
         .btn-secondary {
-            background: #6c757d;
-            color: white;
+            background: #fde68a;
         }
-        
-        .btn-secondary:hover {
-            background: #5a6268;
+
+        .note {
+            margin-top: 18px;
+            color: var(--muted);
+            font-size: 14px;
+            border-top: 1px solid var(--border);
+            padding-top: 14px;
         }
-        
-        .btn-primary:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-            transform: none;
-        }
-        
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 20px;
-            margin-top: 30px;
-        }
-        
-        .stat-card {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 20px;
-            border-radius: 10px;
-            text-align: center;
-        }
-        
-        .stat-card h3 {
-            font-size: 2em;
-            margin-bottom: 5px;
-        }
-        
-        .stat-card p {
-            opacity: 0.9;
-            font-size: 0.9em;
-        }
-        
-        .hidden {
-            display: none;
-        }
-        
-        .result-screen {
-            text-align: center;
-            padding: 40px 20px;
-        }
-        
-        .result-screen h2 {
-            color: #306986;
-            font-size: 2.5em;
-            margin-bottom: 20px;
-        }
-        
+
         .badge {
             display: inline-block;
-            padding: 10px 20px;
-            background: #ffc107;
-            color: #333;
-            border-radius: 20px;
-            font-weight: bold;
-            margin: 10px 0;
+            padding: 4px 10px;
+            border-radius: 999px;
+            background: #dcfce7;
+            color: #166534;
+            font-size: 12px;
+            margin-top: 8px;
         }
+
+        /* Цветные варианты для 13 карточек */
+        .card.c1 h2 {
+            background: #e0f2fe;
+            color: #0c4a6e
+        }
+
+        .card.c1 .btn-primary {
+            background: #bae6fd
+        }
+
+        .card.c1 .btn-secondary {
+            background: #fef3c7
+        }
+
+        .card.c2 h2 {
+            background: #dcfce7;
+            color: #14532d
+        }
+
+        .card.c2 .btn-primary {
+            background: #bbf7d0
+        }
+
+        .card.c2 .btn-secondary {
+            background: #fef3c7
+        }
+
+        .card.c3 h2 {
+            background: #fce7f3;
+            color: #831843
+        }
+
+        .card.c3 .btn-primary {
+            background: #fbcfe8
+        }
+
+        .card.c3 .btn-secondary {
+            background: #fef3c7
+        }
+
+        .card.c4 h2 {
+            background: #fef3c7;
+            color: #78350f
+        }
+
+        .card.c4 .btn-primary {
+            background: #fde68a
+        }
+
+        .card.c4 .btn-secondary {
+            background: #bae6fd
+        }
+
+        .card.c5 h2 {
+            background: #e0e7ff;
+            color: #1e1b4b
+        }
+
+        .card.c5 .btn-primary {
+            background: #c7d2fe
+        }
+
+        .card.c5 .btn-secondary {
+            background: #fef3c7
+        }
+
+        .card.c6 h2 {
+            background: #ccfbf1;
+            color: #134e4a
+        }
+
+        .card.c6 .btn-primary {
+            background: #99f6e4
+        }
+
+        .card.c6 .btn-secondary {
+            background: #fef3c7
+        }
+
+        .card.c7 h2 {
+            background: #f3e8ff;
+            color: #581c87
+        }
+
+        .card.c7 .btn-primary {
+            background: #e9d5ff
+        }
+
+        .card.c7 .btn-secondary {
+            background: #fef3c7
+        }
+
+        .card.c8 h2 {
+            background: #fee2e2;
+            color: #7f1d1d
+        }
+
+        .card.c8 .btn-primary {
+            background: #fecaca
+        }
+
+        .card.c8 .btn-secondary {
+            background: #fef3c7
+        }
+
+        .card.c9 h2 {
+            background: #ffedd5;
+            color: #7c2d12
+        }
+
+        .card.c9 .btn-primary {
+            background: #fed7aa
+        }
+
+        .card.c9 .btn-secondary {
+            background: #fef3c7
+        }
+
+        .card.c10 h2 {
+            background: #e0f2fe;
+            color: #0c4a6e
+        }
+
+        .card.c10 .btn-primary {
+            background: #bae6fd
+        }
+
+        .card.c10 .btn-secondary {
+            background: #fde68a
+        }
+
+        .card.c11 h2 {
+            background: #dcfce7;
+            color: #14532d
+        }
+
+        .card.c11 .btn-primary {
+            background: #bbf7d0
+        }
+
+        .card.c11 .btn-secondary {
+            background: #fbcfe8
+        }
+
+        .card.c12 h2 {
+            background: #fce7f3;
+            color: #831843
+        }
+
+        .card.c12 .btn-primary {
+            background: #fbcfe8
+        }
+
+        .card.c12 .btn-secondary {
+            background: #bae6fd
+        }
+
+        .card.c13 h2 {
+            background: #fef3c7;
+            color: #78350f
+        }
+
+        .card.c13 .btn-primary {
+            background: #fde68a
+        }
+
+        .card.c13 .btn-secondary {
+            background: #bbf7d0
+        }
+
     </style>
 </head>
+
 <body>
-    <div class="container">
-        <header>
-            <h1>🐍 Python Тренажёр</h1>
-            <p>Интерактивные задания для начинающих</p>
-        </header>
-        
-        <div class="progress-bar">
-            <div class="progress-fill" id="progress">0%</div>
-        </div>
-        
-        <div class="content">
-            <div id="quiz-container">
-                <!-- Вопросы будут здесь -->
-            </div>
-            
-            <div id="result-screen" class="result-screen hidden">
-                <h2>🎉 Поздравляем!</h2>
-                <p>Вы завершили все задания!</p>
-                <div class="stats" id="final-stats">
-                    <!-- Статистика -->
+    <header>
+        <h1>13 учебных антивирусов на Python</h1>
+        <p>Каждый вариант — полноценный мини‑проект с меню, логированием и полезными функциями.</p>
+    </header>
+
+    <main>
+        <section class="intro">
+            <strong>Как использовать:</strong>
+            <div class="badge">GitHub Pages friendly</div>
+            <p>
+                Открой нужный вариант, нажми <strong>«Показать код»</strong>, затем <strong>«Скопировать код»</strong>.
+                Вставь код в файл <code>antivirus_vX.py</code> и запусти в Python.
+            </p>
+        </section>
+
+        <div class="grid">
+
+            <article class="card c1">
+                <h2>Вариант 1</h2>
+                <div class="meta">Базовый + логирование и статистика</div>
+                <div class="code-block hidden" id="code1">
+                    <pre># antivirus_v1.py
+import os
+import datetime
+
+VIRUS_SIGNATURES = ['malware_test_1', 'badcode_xyz', 'eicar_test_string']
+LOG_FILE = "antivirus_v1_log.txt"
+
+def log_message(msg):
+    with open(LOG_FILE, "a", encoding="utf-8") as f:
+        f.write(f"[{datetime.datetime.now()}] {msg}\n")
+
+def scan_file(path):
+    try:
+        with open(path, 'r', errors='ignore') as f:
+            content = f.read()
+        for sig in VIRUS_SIGNATURES:
+            if sig in content:
+                return True
+    except Exception as e:
+        log_message(f"Ошибка чтения файла {path}: {e}")
+    return False
+
+def scan_folder(folder):
+    found = []
+    total = 0
+    for root, _, files in os.walk(folder):
+        for name in files:
+            total += 1
+            p = os.path.join(root, name)
+            if scan_file(p):
+                found.append(p)
+                log_message(f"Подозрительный файл: {p}")
+    log_message(f"Проверено файлов: {total}, найдено: {len(found)}")
+    return found, total
+
+def show_menu():
+    print("\n=== Простой антивирус (v1) ===")
+    print("1) Сканировать папку")
+    print("2) Выход")
+
+def main():
+    while True:
+        show_menu()
+        choice = input("Выбор: ").strip()
+        if choice == "1":
+            folder = input("Папка для проверки: ").strip() or "."
+            infected, total = scan_folder(folder)
+            print(f"\nПроверено файлов: {total}")
+            if infected:
+                print("⚠ Найдены подозрительные файлы:")
+                for f in infected:
+                    print(" -", f)
+            else:
+                print("✅ Чисто!")
+        elif choice == "2":
+            break
+        else:
+            print("Неверный выбор, попробуйте снова.")
+
+if __name__ == "__main__":
+    main()</pre>
                 </div>
-                <button class="btn-primary" onclick="restartQuiz()" style="margin-top: 30px;">
-                    Начать заново
-                </button>
-            </div>
-            
-            <div class="controls" id="controls">
-                <button class="btn-secondary" onclick="prevQuestion()" id="prev-btn">← Назад</button>
-                <button class="btn-primary" onclick="nextQuestion()" id="next-btn" disabled>Далее →</button>
-            </div>
+                <div class="actions">
+                    <button class="btn-secondary" onclick="toggleCode('code1', this)">Показать код</button>
+                    <button class="btn-primary" onclick="copyCode('code1', this)">Скопировать код</button>
+                </div>
+            </article>
+
+            <article class="card c2">
+                <h2>Вариант 2</h2>
+                <div class="meta">Цветной вывод + подсчёт и отчёт</div>
+                <div class="code-block hidden" id="code2">
+                    <pre># antivirus_v2.py
+import os
+import datetime
+
+SIGNATURES = ['virus_alpha', 'trojan_sample', 'test_mal_99']
+REPORT_FILE = "antivirus_v2_report.txt"
+
+COLOR_RED = "\033[91m"
+COLOR_GREEN = "\033[92m"
+COLOR_YELLOW = "\033[93m"
+COLOR_RESET = "\033[0m"
+
+def has_virus(filepath):
+    try:
+        data = open(filepath, 'r', errors='ignore').read()
+        return any(s in data for s in SIGNATURES)
+    except:
+        return False
+
+def check_directory(dirpath):
+    bad = []
+    total = 0
+    for root, _, files in os.walk(dirpath):
+        for fname in files:
+            total += 1
+            full = os.path.join(root, fname)
+            if has_virus(full):
+                bad.append(full)
+    return bad, total
+
+def write_report(bad, total):
+    with open(REPORT_FILE, "w", encoding="utf-8") as f:
+        f.write("Отчёт антивируса v2\n")
+        f.write(f"Время: {datetime.datetime.now()}\n")
+        f.write(f"Проверено файлов: {total}\n")
+        f.write(f"Найдено подозрительных: {len(bad)}\n")
+        if bad:
+            f.write("Файлы:\n")
+            for x in bad:
+                f.write(x + "\n")
+
+def show_menu():
+    print(COLOR_YELLOW + "\n=== Цветной антивирус (v2) ===" + COLOR_RESET)
+    print("1) Сканировать папку")
+    print("2) Выход")
+
+def main():
+    while True:
+        show_menu()
+        choice = input("Выбор: ").strip()
+        if choice == "1":
+            d = input("Введите путь: ").strip() or "."
+            res, total = check_directory(d)
+            write_report(res, total)
+            print(f"\nПроверено файлов: {total}")
+            if res:
+                print(COLOR_RED + "!!! Обнаружены файлы:" + COLOR_RESET)
+                for x in res:
+                    print(" >", x)
+                print(COLOR_GREEN + f"Отчёт сохранён в {REPORT_FILE}" + COLOR_RESET)
+            else:
+                print(COLOR_GREEN + "Всё чисто." + COLOR_RESET)
+        elif choice == "2":
+            break
+        else:
+            print("Неверный выбор, попробуйте снова.")
+
+if __name__ == "__main__":
+    main()</pre>
+                </div>
+                <div class="actions">
+                    <button class="btn-secondary" onclick="toggleCode('code2', this)">Показать код</button>
+                    <button class="btn-primary" onclick="copyCode('code2', this)">Скопировать код</button>
+                </div>
+            </article>
+
+            <article class="card c3">
+                <h2>Вариант 3</h2>
+                <div class="meta">MD5 + фильтрация расширений</div>
+                <div class="code-block hidden" id="code3">
+                    <pre># antivirus_v3.py
+import os, hashlib
+
+KNOWN_BAD_HASHES = {
+    'd41d8cd98f00b204e9800998ecf8427e',
+    '5d41402abc4b2a76b9719d911017c592',
+}
+TARGET_EXTS = {'.txt', '.py', '.bat', '.cmd', '.exe'}
+
+def file_md5(path):
+    h = hashlib.md5()
+    try:
+        with open(path, 'rb') as f:
+            for chunk in iter(lambda: f.read(4096), b''):
+                h.update(chunk)
+        return h.hexdigest()
+    except:
+        return None
+
+def scan_dir(root):
+    infected = []
+    total = 0
+    for r, _, fs in os.walk(root):
+        for name in fs:
+            _, ext = os.path.splitext(name)
+            if ext.lower() not in TARGET_EXTS:
+                continue
+            total += 1
+            p = os.path.join(r, name)
+            h = file_md5(p)
+            if h and h in KNOWN_BAD_HASHES:
+                infected.append(p)
+    return infected, total
+
+def show_menu():
+    print("\n=== MD5‑антивирус (v3) ===")
+    print("1) Сканировать папку")
+    print("2) Выход")
+
+def main():
+    while True:
+        show_menu()
+        choice = input("Выбор: ").strip()
+        if choice == "1":
+            folder = input("Сканировать папку: ").strip() or "."
+            bad, total = scan_dir(folder)
+            print(f"\nПроверено файлов (по расширениям): {total}")
+            print("🔍 Результат:", "чисто" if not bad else f"найдено {len(bad)}")
+            for f in bad:
+                print(" -", f)
+        elif choice == "2":
+            break
+        else:
+            print("Неверный выбор, попробуйте снова.")
+
+if __name__ == "__main__":
+    main()</pre>
+                </div>
+                <div class="actions">
+                    <button class="btn-secondary" onclick="toggleCode('code3', this)">Показать код</button>
+                    <button class="btn-primary" onclick="copyCode('code3', this)">Скопировать код</button>
+                </div>
+            </article>
+
+            <article class="card c4">
+                <h2>Вариант 4</h2>
+                <div class="meta">С именем + подсказки и подсчёт</div>
+                <div class="code-block hidden" id="code4">
+                    <pre># antivirus_v4.py
+import os
+
+STUDENT_NAME = "Анна"
+SIGNATURES = ['fake_virus_4', 'demo_bad_code', 'test_sign_4']
+
+def looks_infected(path):
+    try:
+        txt = open(path, 'r', errors='ignore').read()
+        return any(s in txt for s in SIGNATURES)
+    except:
+        return False
+
+def run_scan(folder):
+    found = []
+    total = 0
+    for root, _, files in os.walk(folder):
+        for f in files:
+            total += 1
+            full = os.path.join(root, f)
+            if looks_infected(full):
+                found.append(full)
+    return found, total
+
+def show_menu():
+    print(f"\n👋 Антивирус для: {STUDENT_NAME}")
+    print("1) Сканировать папку")
+    print("2) Выход")
+
+def main():
+    while True:
+        show_menu()
+        choice = input("Выбор: ").strip()
+        if choice == "1":
+            folder = input("Папка: ").strip() or "."
+            res, total = run_scan(folder)
+            print(f"\nПроверено файлов: {total}")
+            if res:
+                print("🦠 Подозрительные:")
+                for x in res:
+                    print("  •", x)
+            else:
+                print("🛡 Всё в порядке!")
+        elif choice == "2":
+            break
+        else:
+            print("Неверный выбор, попробуйте снова.")
+
+if __name__ == "__main__":
+    main()</pre>
+                </div>
+                <div class="actions">
+                    <button class="btn-secondary" onclick="toggleCode('code4', this)">Показать код</button>
+                    <button class="btn-primary" onclick="copyCode('code4', this)">Скопировать код</button>
+                </div>
+            </article>
+
+            <article class="card c5">
+                <h2>Вариант 5</h2>
+                <div class="meta">Меню + логирование и подсказки</div>
+                <div class="code-block hidden" id="code5">
+                    <pre># antivirus_v5.py
+import os
+
+SIGS = ['sample_v5', 'mal_test_5', 'danger_str_5']
+LOG_FILE = "antivirus_v5_log.txt"
+
+def scan(path):
+    try:
+        data = open(path, 'r', errors='ignore').read()
+        return any(s in data for s in SIGS)
+    except:
+        return False
+
+def log_msg(msg):
+    with open(LOG_FILE, "a", encoding="utf-8") as f:
+        f.write(msg + "\n")
+
+def main():
+    while True:
+        print("\n=== Антивирус v5 ===")
+        print("1) Сканировать папку")
+        print("2) Выход")
+        choice = input("Выбор: ").strip()
+        if choice == "1":
+            folder = input("Папка: ").strip() or "."
+            bad = []
+            total = 0
+            for r, _, fs in os.walk(folder):
+                for name in fs:
+                    total += 1
+                    p = os.path.join(r, name)
+                    if scan(p):
+                        bad.append(p)
+                        log_msg(f"Подозрительный: {p}")
+            print("Найдено:", len(bad))
+            for b in bad:
+                print(" >", b)
+            log_msg(f"Проверено: {total}, найдено: {len(bad)}")
+        elif choice == "2":
+            break
+        else:
+            print("Неверный выбор, попробуйте снова.")
+
+if __name__ == "__main__":
+    main()</pre>
+                </div>
+                <div class="actions">
+                    <button class="btn-secondary" onclick="toggleCode('code5', this)">Показать код</button>
+                    <button class="btn-primary" onclick="copyCode('code5', this)">Скопировать код</button>
+                </div>
+            </article>
+
+            <article class="card c6">
+                <h2>Вариант 6</h2>
+                <div class="meta">Короткий + статистика</div>
+                <div class="code-block hidden" id="code6">
+                    <pre># antivirus_v6.py
+import os
+
+SIGS = ['v6_bad', 'test_v6', 'demo_6']
+
+def ok(p):
+    try:
+        t = open(p, 'r', errors='ignore').read()
+        return not any(s in t for s in SIGS)
+    except:
+        return True
+
+def scan(d):
+    bad = []
+    total = 0
+    for r, _, fs in os.walk(d):
+        for f in fs:
+            total += 1
+            p = os.path.join(r, f)
+            if not ok(p):
+                bad.append(p)
+    return bad, total
+
+def show_menu():
+    print("\n=== Лёгкий антивирус v6 ===")
+    print("1) Сканировать папку")
+    print("2) Выход")
+
+def main():
+    while True:
+        show_menu()
+        choice = input("Выбор: ").strip()
+        if choice == "1":
+            d = input("Папка: ").strip() or "."
+            b, total = scan(d)
+            print(f"Проверено файлов: {total}")
+            print("Чисто" if not b else f"Подозрительных: {len(b)}")
+            for x in b:
+                print(x)
+        elif choice == "2":
+            break
+        else:
+            print("Неверный выбор, попробуйте снова.")
+
+if __name__ == "__main__":
+    main()</pre>
+                </div>
+                <div class="actions">
+                    <button class="btn-secondary" onclick="toggleCode('code6', this)">Показать код</button>
+                    <button class="btn-primary" onclick="copyCode('code6', this)">Скопировать код</button>
+                </div>
+            </article>
+
+            <article class="card c7">
+                <h2>Вариант 7</h2>
+                <div class="meta">Отчёт + подсказки и подсчёт</div>
+                <div class="code-block hidden" id="code7">
+                    <pre># antivirus_v7.py
+import os, datetime
+
+SIGNATURES = ['report_v7', 'log_bad_7', 'test_7']
+
+def infected(path):
+    try:
+        content = open(path, 'r', errors='ignore').read()
+        return any(s in content for s in SIGNATURES)
+    except:
+        return False
+
+def scan_and_report(folder, report_path):
+    found = []
+    total = 0
+    for root, _, files in os.walk(folder):
+        for name in files:
+            total += 1
+            full = os.path.join(root, name)
+            if infected(full):
+                found.append(full)
+    with open(report_path, 'w', encoding='utf-8') as rep:
+        rep.write("Отчёт антивируса v7\n")
+        rep.write("Время: " + datetime.datetime.now().isoformat() + "\n")
+        rep.write(f"Проверено файлов: {total}\n")
+        rep.write("Найдено: " + str(len(found)) + "\n")
+        for f in found:
+            rep.write(f + "\n")
+    return found, total
+
+def show_menu():
+    print("\n=== Антивирус с отчётом v7 ===")
+    print("1) Сканировать папку")
+    print("2) Выход")
+
+def main():
+    while True:
+        show_menu()
+        choice = input("Выбор: ").strip()
+        if choice == "1":
+            folder = input("Папка: ").strip() or "."
+            report = input("Файл отчёта: ").strip() or "report_v7.txt"
+            res, total = scan_and_report(folder, report)
+            print(f"Проверено файлов: {total}")
+            print("Готово. Отчёт:", report)
+        elif choice == "2":
+            break
+        else:
+            print("Неверный выбор, попробуйте снова.")
+
+if __name__ == "__main__":
+    main()</pre>
+                </div>
+                <div class="actions">
+                    <button class="btn-secondary" onclick="toggleCode('code7', this)">Показать код</button>
+                    <button class="btn-primary" onclick="copyCode('code7', this)">Скопировать код</button>
+                </div>
+            </article>
+
+            <article class="card c8">
+                <h2>Вариант 8</h2>
+                <div class="meta">Расширения + статистика</div>
+                <div class="code-block hidden" id="code8">
+                    <pre># antivirus_v8.py
+import os
+
+SIGNATURES = ['ext_v8', 'bad_ext_8', 'test_8']
+TARGET_EXTS = {'.txt', '.py', '.bat', '.cmd'}
+
+def check(path):
+    _, ext = os.path.splitext(path)
+    if ext.lower() not in TARGET_EXTS:
+        return False
+    try:
+        txt = open(path, 'r', errors='ignore').read()
+        return any(s in txt for s in SIGNATURES)
+    except:
+        return False
+
+def scan_dir(d):
+    bad = []
+    total = 0
+    for r, _, fs in os.walk(d):
+        for name in fs:
+            total += 1
+            p = os.path.join(r, name)
+            if check(p):
+                bad.append(p)
+    return bad, total
+
+def show_menu():
+    print("\n=== Антивирус по расширениям v8 ===")
+    print("1) Сканировать папку")
+    print("2) Выход")
+
+def main():
+    while True:
+        show_menu()
+        choice = input("Выбор: ").strip()
+        if choice == "1":
+            d = input("Папка: ").strip() or "."
+            res, total = scan_dir(d)
+            print(f"Всего файлов: {total}")
+            print("Файлов с риском:", len(res))
+            for x in res:
+                print(" -", x)
+        elif choice == "2":
+            break
+        else:
+            print("Неверный выбор, попробуйте снова.")
+
+if __name__ == "__main__":
+    main()</pre>
+                </div>
+                <div class="actions">
+                    <button class="btn-secondary" onclick="toggleCode('code8', this)">Показать код</button>
+                    <button class="btn-primary" onclick="copyCode('code8', this)">Скопировать код</button>
+                </div>
+            </article>
+
+            <article class="card c9">
+                <h2>Вариант 9</h2>
+                <div class="meta">Уровень опасности + подсказки</div>
+                <div class="code-block hidden" id="code9">
+                    <pre># antivirus_v9.py
+import os
+
+SIGNATURES = ['low_v9', 'mid_v9', 'high_v9']
+
+def risk_level(path):
+    try:
+        txt = open(path, 'r', errors='ignore').read()
+        count = sum(1 for s in SIGNATURES if s in txt)
+        return count
+    except:
+        return 0
+
+def scan(folder):
+    res = []
+    total = 0
+    for r, _, fs in os.walk(folder):
+        for name in fs:
+            total += 1
+            p = os.path.join(r, name)
+            lvl = risk_level(p)
+            if lvl > 0:
+                res.append((p, lvl))
+    return res, total
+
+def show_menu():
+    print("\n=== Антивирус с уровнем опасности v9 ===")
+    print("1) Сканировать папку")
+    print("2) Выход")
+
+def main():
+    while True:
+        show_menu()
+        choice = input("Выбор: ").strip()
+        if choice == "1":
+            folder = input("Папка: ").strip() or "."
+            data, total = scan(folder)
+            print(f"Проверено файлов: {total}")
+            if not data:
+                print("✅ Всё чисто")
+            else:
+                print("🔎 Результаты:")
+                for path, lvl in data:
+                    print(f"• {path} — уровень: {lvl}")
+        elif choice == "2":
+            break
+        else:
+            print("Неверный выбор, попробуйте снова.")
+
+if __name__ == "__main__":
+    main()</pre>
+                </div>
+                <div class="actions">
+                    <button class="btn-secondary" onclick="toggleCode('code9', this)">Показать код</button>
+                    <button class="btn-primary" onclick="copyCode('code9', this)">Скопировать код</button>
+                </div>
+            </article>
+
+            <article class="card c10">
+                <h2>Вариант 10</h2>
+                <div class="meta">Псевдо‑карантин + меню</div>
+                <div class="code-block hidden" id="code10">
+                    <pre># antivirus_v10.py
+import os, shutil
+
+SIGNATURES = ['quarantine_v10', 'bad_10', 'test_10']
+QUARANTINE_DIR = "quarantine_v10"
+
+def is_bad(path):
+    try:
+        t = open(path, 'r', errors='ignore').read()
+        return any(s in t for s in SIGNATURES)
+    except:
+        return False
+
+def quarantine_move(src):
+    os.makedirs(QUARANTINE_DIR, exist_ok=True)
+    name = os.path.basename(src)
+    dst = os.path.join(QUARANTINE_DIR, name)
+    shutil.move(src, dst)
+    return dst
+
+def scan_and_quarantine(folder):
+    moved = []
+    total = 0
+    for root, _, files in os.walk(folder):
+        for name in files:
+            total += 1
+            p = os.path.join(root, name)
+            if is_bad(p):
+                new_path = quarantine_move(p)
+                moved.append((p, new_path))
+    return moved, total
+
+def show_menu():
+    print("\n=== Антивирус с карантином v10 ===")
+    print("1) Сканировать и переместить в карантин")
+    print("2) Выход")
+
+def main():
+    while True:
+        show_menu()
+        choice = input("Выбор: ").strip()
+        if choice == "1":
+            folder = input("Папка: ").strip() or "."
+            res, total = scan_and_quarantine(folder)
+            print(f"Всего файлов: {total}")
+            print("Перемещено в карантин:", len(res))
+            for old, new in res:
+                print(old, "->", new)
+        elif choice == "2":
+            break
+        else:
+            print("Неверный выбор, попробуйте снова.")
+
+if __name__ == "__main__":
+    main()</pre>
+                </div>
+                <div class="actions">
+                    <button class="btn-secondary" onclick="toggleCode('code10', this)">Показать код</button>
+                    <button class="btn-primary" onclick="copyCode('code10', this)">Скопировать код</button>
+                </div>
+            </article>
+
+            <article class="card c11">
+                <h2>Вариант 11</h2>
+                <div class="meta">Русские имена + подсказки</div>
+                <div class="code-block hidden" id="code11">
+                    <pre># antivirus_v11.py
+import os
+
+SIGS = ['edu_v11', 'lesson_11', 'demo_11']
+
+def проверить_файл(path):
+    try:
+        текст = open(path, 'r', errors='ignore').read()
+        return any(s in текст for s in SIGS)
+    except:
+        return False
+
+def проверить_папку(папка):
+    плохие = []
+    total = 0
+    for корень, _, файлы in os.walk(папка):
+        for имя in файлы:
+            total += 1
+            полный = os.path.join(корень, имя)
+            if проверить_файл(полный):
+                плохие.append(полный)
+    return плохие, total
+
+def show_menu():
+    print("\n=== Простой учебный антивирус v11 ===")
+    print("1) Сканировать папку")
+    print("2) Выход")
+
+def main():
+    while True:
+        show_menu()
+        choice = input("Выбор: ").strip()
+        if choice == "1":
+            папка = input("Введите путь к папке: ").strip() or "."
+            найдено, total = проверить_папку(папка)
+            print(f"Проверено файлов: {total}")
+            if найдено:
+                print("Найдены подозрительные файлы:")
+                for f in найдено:
+                    print(" -", f)
+            else:
+                print("Файлы чистые.")
+        elif choice == "2":
+            break
+        else:
+            print("Неверный выбор, попробуйте снова.")
+
+if __name__ == "__main__":
+    main()</pre>
+                </div>
+                <div class="actions">
+                    <button class="btn-secondary" onclick="toggleCode('code11', this)">Показать код</button>
+                    <button class="btn-primary" onclick="copyCode('code11', this)">Скопировать код</button>
+                </div>
+            </article>
+
+            <article class="card c12">
+                <h2>Вариант 12</h2>
+                <div class="meta">Счётчик файлов + логирование</div>
+                <div class="code-block hidden" id="code12">
+                    <pre># antivirus_v12.py
+import os
+
+SIGNATURES = ['count_v12', 'test_12', 'sample_12']
+LOG_FILE = "antivirus_v12_log.txt"
+
+def scan_folder(folder):
+    checked = 0
+    bad = []
+    for root, _, files in os.walk(folder):
+        for name in files:
+            p = os.path.join(root, name)
+            checked += 1
+            try:
+                txt = open(p, 'r', errors='ignore').read()
+                if any(s in txt for s in SIGNATURES):
+                    bad.append(p)
+            except:
+                pass
+    return checked, bad
+
+def log_msg(msg):
+    with open(LOG_FILE, "a", encoding="utf-8") as f:
+        f.write(msg + "\n")
+
+def show_menu():
+    print("\n=== Антивирус со счётчиком v12 ===")
+    print("1) Сканировать папку")
+    print("2) Выход")
+
+def main():
+    while True:
+        show_menu()
+        choice = input("Выбор: ").strip()
+        if choice == "1":
+            folder = input("Папка: ").strip() or "."
+            total, infected = scan_folder(folder)
+            print(f"Проверено файлов: {total}")
+            print(f"Подозрительных: {len(infected)}")
+            for f in infected:
+                print(" >", f)
+            log_msg(f"Проверено: {total}, найдено: {len(infected)}")
+        elif choice == "2":
+            break
+        else:
+            print("Неверный выбор, попробуйте снова.")
+
+if __name__ == "__main__":
+    main()</pre>
+                </div>
+                <div class="actions">
+                    <button class="btn-secondary" onclick="toggleCode('code12', this)">Показать код</button>
+                    <button class="btn-primary" onclick="copyCode('code12', this)">Скопировать код</button>
+                </div>
+            </article>
+
+            <article class="card c13">
+                <h2>Вариант 13</h2>
+                <div class="meta">Финальный + отчёт и подсказки</div>
+                <div class="code-block hidden" id="code13">
+                    <pre># antivirus_v13.py
+import os
+
+GROUP_NAME = "Группа 13"
+SIGS = ['group13_v', 'final_v13', 'test_13']
+REPORT_FILE = "antivirus_v13_report.txt"
+
+def bad(path):
+    try:
+        data = open(path, 'r', errors='ignore').read()
+        return any(s in data for s in SIGS)
+    except:
+        return False
+
+def interface():
+    print("Антивирус для:", GROUP_NAME)
+    folder = input("Папка для сканирования: ").strip() or "."
+    found = []
+    total = 0
+    for r, _, fs in os.walk(folder):
+        for name in fs:
+            total += 1
+            p = os.path.join(r, name)
+            if bad(p):
+                found.append(p)
+    # простой отчёт
+    with open(REPORT_FILE, "w", encoding="utf-8") as f:
+        f.write(f"Отчёт для {GROUP_NAME}\n")
+        f.write(f"Папка: {folder}\n")
+        f.write(f"Проверено файлов: {total}\n")
+        f.write(f"Найдено подозрительных: {len(found)}\n")
+        for x in found:
+            f.write(x + "\n")
+    print()
+    if found:
+        print("⚠ Подозрительные файлы:")
+        for x in found:
+            print(" -", x)
+        print(f"Отчёт сохранён в {REPORT_FILE}")
+    else:
+        print("✅ Всё чисто.")
+
+def show_menu():
+    print("\n=== Финальный антивирус v13 ===")
+    print("1) Запустить сканирование")
+    print("2) Выход")
+
+def main():
+    while True:
+        show_menu()
+        choice = input("Выбор: ").strip()
+        if choice == "1":
+            interface()
+        elif choice == "2":
+            break
+        else:
+            print("Неверный выбор, попробуйте снова.")
+
+if __name__ == "__main__":
+    main()</pre>
+                </div>
+                <div class="actions">
+                    <button class="btn-secondary" onclick="toggleCode('code13', this)">Показать код</button>
+                    <button class="btn-primary" onclick="copyCode('code13', this)">Скопировать код</button>
+                </div>
+            </article>
         </div>
-    </div>
+
+      
+    </main>
 
     <script>
-        const questions = [
-            {
-                id: 1,
-                title: "Переменные и типы данных",
-                question: "Что выведет этот код?",
-                code: `x = 5\ny = "3"\nprint(x + int(y))`,
-                options: ["8", "53", "Ошибка", "35"],
-                correct: 0,
-                explanation: "int(y) преобразует строку '3' в число 3, поэтому 5 + 3 = 8"
-            },
-            {
-                id: 2,
-                title: "Списки",
-                question: "Как получить последний элемент списка?",
-                code: `fruits = ["яблоко", "банан", "апельсин"]`,
-                options: ["fruits[0]", "fruits[-1]", "fruits[last]", "fruits[3]"],
-                correct: 1,
-                explanation: "Отрицательный индекс -1 в Python означает последний элемент списка"
-            },
-            {
-                id: 3,
-                title: "Условные операторы",
-                question: "Что выведет этот код?",
-                code: `age = 15\nif age >= 18:\n    print("Взрослый")\nelse:\n    print("Ребёнок")`,
-                options: ["Взрослый", "Ребёнок", "Ошибка", "Ничего"],
-                correct: 1,
-                explanation: "15 меньше 18, поэтому выполнится ветка else и выведется 'Ребёнок'"
-            },
-            {
-                id: 4,
-                title: "Циклы",
-                question: "Сколько раз выполнится цикл?",
-                code: `for i in range(3, 7):\n    print(i)`,
-                options: ["3 раза", "4 раза", "5 раз", "7 раз"],
-                correct: 1,
-                explanation: "range(3, 7) генерирует числа 3, 4, 5, 6 — всего 4 числа"
-            },
-            {
-                id: 5,
-                title: "Функции",
-                question: "Что вернёт эта функция?",
-                code: `def greet(name):\n    return "Привет, " + name\n\nprint(greet("Анна"))`,
-                options: ["Привет", "Анна", "Привет, Анна", "Ошибка"],
-                correct: 2,
-                explanation: "Функция возвращает строку 'Привет, ' + имя, то есть 'Привет, Анна'"
-            },
-            {
-                id: 6,
-                title: "Словари",
-                question: "Как получить значение по ключу 'age'?",
-                code: `person = {"name": "Иван", "age": 25, "city": "Москва"}`,
-                options: ["person[0]", "person.get('age')", "person.age", "person['age']"],
-                correct: 3,
-                explanation: "person['age'] — стандартный способ получения значения по ключу в словаре"
-            },
-            {
-                id: 7,
-                title: "Строки",
-                question: "Что выведет этот код?",
-                code: `text = "Python"\nprint(text[1:4])`,
-                options: ["Pyt", "yth", "ytho", "thon"],
-                correct: 1,
-                explanation: "Срез [1:4] берёт символы с индексами 1, 2, 3 — это 'yth'"
-            },
-            {
-                id: 8,
-                title: "Методы строк",
-                question: "Что сделает метод .upper()?",
-                code: `name = "алекс"\nprint(name.upper())`,
-                options: ["aleks", "АЛЕКС", "Алекс", "ошибка"],
-                correct: 1,
-                explanation: ".upper() преобразует все буквы строки в верхний регистр"
-            },
-            {
-                id: 9,
-                title: "Цикл while",
-                question: "Что выведет этот код?",
-                code: `i = 0\nwhile i < 3:\n    print(i, end=' ')\n    i += 1`,
-                options: ["0 1 2", "1 2 3", "0 1 2 3", "1 2"],
-                correct: 0,
-                explanation: "Цикл выведет 0, 1, 2 (пока i < 3), затем i станет 3 и цикл остановится"
-            },
-            {
-                id: 10,
-                title: "Списки и методы",
-                question: "Что добавит элемент в конец списка?",
-                code: `nums = [1, 2, 3]`,
-                options: ["nums.add(4)", "nums.append(4)", "nums.insert(4)", "nums.push(4)"],
-                correct: 1,
-                explanation: ".append() добавляет элемент в конец списка в Python"
-            }
-        ];
-
-        let currentQuestion = 0;
-        let score = 0;
-        let userAnswers = new Array(questions.length).fill(null);
-        let answeredQuestions = new Set();
-
-        function renderQuestion(index) {
-            const q = questions[index];
-            const container = document.getElementById('quiz-container');
-            
-            container.innerHTML = `
-                <div class="question-card">
-                    <h2>Задание ${index + 1}: ${q.title}</h2>
-                    <p class="question-text">${q.question}</p>
-                    ${q.code ? `<div class="code-block">${q.code}</div>` : ''}
-                    <div class="options">
-                        ${q.options.map((opt, i) => `
-                            <div class="option" onclick="selectOption(${i})" id="option-${i}">
-                                ${opt}
-                            </div>
-                        `).join('')}
-                    </div>
-                    <div class="feedback ${userAnswers[index] === q.correct ? 'success' : 'error'}" 
-                         id="feedback" style="display: ${userAnswers[index] !== null ? 'block' : 'none'}">
-                        <strong>${userAnswers[index] === q.correct ? '✓ Правильно!' : '✗ Неправильно'}</strong>
-                        <p>${q.explanation}</p>
-                    </div>
-                </div>
-            `;
-            
-            // Подсветка выбранного ответа
-            if (userAnswers[index] !== null) {
-                const selectedOption = document.getElementById(`option-${userAnswers[index]}`);
-                if (userAnswers[index] === q.correct) {
-                    selectedOption.classList.add('correct');
-                } else {
-                    selectedOption.classList.add('wrong');
-                    document.getElementById(`option-${q.correct}`).classList.add('correct');
-                }
-            }
-            
-            updateControls();
-            updateProgress();
-        }
-
-        function selectOption(optionIndex) {
-            if (userAnswers[currentQuestion] !== null) return; // Уже ответили
-            
-            const q = questions[currentQuestion];
-            userAnswers[currentQuestion] = optionIndex;
-            answeredQuestions.add(currentQuestion);
-            
-            if (optionIndex === q.correct) {
-                score++;
-            }
-            
-            renderQuestion(currentQuestion);
-        }
-
-        function updateControls() {
-            document.getElementById('prev-btn').disabled = currentQuestion === 0;
-            document.getElementById('next-btn').disabled = userAnswers[currentQuestion] === null;
-        }
-
-        function updateProgress() {
-            const percent = Math.round((answeredQuestions.size / questions.length) * 100);
-            document.getElementById('progress').style.width = percent + '%';
-            document.getElementById('progress').textContent = percent + '%';
-        }
-
-        function nextQuestion() {
-            if (currentQuestion < questions.length - 1) {
-                currentQuestion++;
-                renderQuestion(currentQuestion);
+        function toggleCode(id, btn) {
+            const block = document.getElementById(id);
+            const isHidden = block.classList.contains('hidden');
+            if (isHidden) {
+                block.classList.remove('hidden');
+                btn.innerText = 'Скрыть код';
             } else {
-                showResults();
+                block.classList.add('hidden');
+                btn.innerText = 'Показать код';
             }
         }
-
-        function prevQuestion() {
-            if (currentQuestion > 0) {
-                currentQuestion--;
-                renderQuestion(currentQuestion);
-            }
+        async function copyCode(id, btn) {
+            const block = document.getElementById(id);
+            const text = block.querySelector('pre').innerText;
+            await navigator.clipboard.writeText(text);
+            const old = btn.innerText;
+            btn.innerText = 'Скопировано!';
+            setTimeout(() => btn.innerText = old, 1200);
         }
 
-        function showResults() {
-            document.getElementById('quiz-container').classList.add('hidden');
-            document.getElementById('controls').classList.add('hidden');
-            document.getElementById('result-screen').classList.remove('hidden');
-            
-            const percentage = Math.round((score / questions.length) * 100);
-            let badge = '';
-            if (percentage >= 90) badge = '🏆 Эксперт Python';
-            else if (percentage >= 70) badge = '🥈 Продвинутый';
-            else if (percentage >= 50) badge = '🥉 Начинающий';
-            else badge = '📚 Продолжайте учиться!';
-            
-            document.getElementById('final-stats').innerHTML = `
-                <div class="stat-card">
-                    <h3>${score}/${questions.length}</h3>
-                    <p>Правильных ответов</p>
-                </div>
-                <div class="stat-card">
-                    <h3>${percentage}%</h3>
-                    <p>Успешность</p>
-                </div>
-                <div class="stat-card">
-                    <h3>${badge}</h3>
-                    <p>Ваш уровень</p>
-                </div>
-            `;
-        }
-
-        function restartQuiz() {
-            currentQuestion = 0;
-            score = 0;
-            userAnswers = new Array(questions.length).fill(null);
-            answeredQuestions = new Set();
-            
-            document.getElementById('quiz-container').classList.remove('hidden');
-            document.getElementById('controls').classList.remove('hidden');
-            document.getElementById('result-screen').classList.add('hidden');
-            
-            renderQuestion(0);
-        }
-
-        // Инициализация
-        renderQuestion(0);
     </script>
 </body>
+
 </html>
