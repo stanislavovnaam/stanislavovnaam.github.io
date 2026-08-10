@@ -4,7 +4,8 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>13 учебных антивирусов на Python</title>
+    <title>15 учебных антивирусов на Python</title>
+    <link rel="icon" href="icon.ico" type="image/x-icon">
     <style>
         :root {
             --bg: #f5f7fa;
@@ -161,7 +162,16 @@
             margin-top: 8px;
         }
 
-        /* Цветные варианты для 13 карточек */
+        .tip {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 10px 14px;
+            margin: 10px 16px;
+            font-size: 13px;
+            color: #92400e;
+        }
+
+        /* Цветные варианты для 15 карточек */
         .card.c1 h2 {
             background: #e0f2fe;
             color: #0c4a6e
@@ -331,13 +341,39 @@
             background: #bbf7d0
         }
 
+        .card.c14 h2 {
+            background: #e0f2fe;
+            color: #0c4a6e
+        }
+
+        .card.c14 .btn-primary {
+            background: #bae6fd
+        }
+
+        .card.c14 .btn-secondary {
+            background: #fbcfe8
+        }
+
+        .card.c15 h2 {
+            background: #dcfce7;
+            color: #14532d
+        }
+
+        .card.c15 .btn-primary {
+            background: #bbf7d0
+        }
+
+        .card.c15 .btn-secondary {
+            background: #fed7aa
+        }
+
     </style>
 </head>
 
 <body>
     <header>
-        <h1>13 учебных антивирусов на Python</h1>
-        <p>Каждый вариант — полноценный мини‑проект с меню, логированием и полезными функциями.</p>
+        <h1>🛡 15 учебных антивирусов на Python</h1>
+        <p>Каждый вариант — полноценный мини‑проект с GUI, иконкой и полезными функциями.</p>
     </header>
 
     <main>
@@ -346,19 +382,24 @@
             <div class="badge">GitHub Pages friendly</div>
             <p>
                 Открой нужный вариант, нажми <strong>«Показать код»</strong>, затем <strong>«Скопировать код»</strong>.
-                Вставь код в файл <code>antivirus_vX.py</code> и запусти в Python.
+                Сохрани код в файл <code>antivirus_vX.py</code> и положи рядом <code>icon.ico</code>.
             </p>
+            <div class="tip">
+                💡 <strong>Совет:</strong> Скачай иконку <code>icon.ico</code> и положи в ту же папку, где будут скрипты.
+            </div>
         </section>
 
         <div class="grid">
 
             <article class="card c1">
                 <h2>Вариант 1</h2>
-                <div class="meta">Базовый + логирование и статистика</div>
+                <div class="meta">Базовый + логирование и статистика + GUI</div>
                 <div class="code-block hidden" id="code1">
                     <pre># antivirus_v1.py
 import os
 import datetime
+import tkinter as tk
+from tkinter import messagebox, filedialog
 
 VIRUS_SIGNATURES = ['malware_test_1', 'badcode_xyz', 'eicar_test_string']
 LOG_FILE = "antivirus_v1_log.txt"
@@ -391,32 +432,41 @@ def scan_folder(folder):
     log_message(f"Проверено файлов: {total}, найдено: {len(found)}")
     return found, total
 
-def show_menu():
-    print("\n=== Простой антивирус (v1) ===")
-    print("1) Сканировать папку")
-    print("2) Выход")
+def start_scan():
+    folder = filedialog.askdirectory(title="Выберите папку")
+    if not folder:
+        return
+    status_label.config(text="🔍 Сканирование...", fg="blue")
+    root.update()
+    infected, total = scan_folder(folder)
+    status_label.config(text=f"✅ Проверено: {total}", fg="green")
+    if infected:
+        messagebox.showwarning("⚠ Внимание", f"Найдено подозрительных файлов: {len(infected)}")
+        result_text.delete(1.0, tk.END)
+        for f in infected:
+            result_text.insert(tk.END, f + "\n")
+    else:
+        messagebox.showinfo("✅ Готово", "Всё чисто!")
 
-def main():
-    while True:
-        show_menu()
-        choice = input("Выбор: ").strip()
-        if choice == "1":
-            folder = input("Папка для проверки: ").strip() or "."
-            infected, total = scan_folder(folder)
-            print(f"\nПроверено файлов: {total}")
-            if infected:
-                print("⚠ Найдены подозрительные файлы:")
-                for f in infected:
-                    print(" -", f)
-            else:
-                print("✅ Чисто!")
-        elif choice == "2":
-            break
-        else:
-            print("Неверный выбор, попробуйте снова.")
+# Создаём окно
+root = tk.Tk()
+root.title("🛡 Антивирус v1")
+root.iconbitmap("icon.ico")
+root.geometry("600x400")
 
-if __name__ == "__main__":
-    main()</pre>
+title_label = tk.Label(root, text="🛡 Простой антивирус", font=("Arial", 16, "bold"))
+title_label.pack(pady=10)
+
+scan_btn = tk.Button(root, text="📁 Сканировать папку", command=start_scan, font=("Arial", 12))
+scan_btn.pack(pady=10)
+
+status_label = tk.Label(root, text="Ожидание...", font=("Arial", 10))
+status_label.pack(pady=5)
+
+result_text = tk.Text(root, height=10, width=70)
+result_text.pack(pady=10)
+
+root.mainloop()</pre>
                 </div>
                 <div class="actions">
                     <button class="btn-secondary" onclick="toggleCode('code1', this)">Показать код</button>
@@ -426,19 +476,16 @@ if __name__ == "__main__":
 
             <article class="card c2">
                 <h2>Вариант 2</h2>
-                <div class="meta">Цветной вывод + подсчёт и отчёт</div>
+                <div class="meta">Цветной вывод + подсчёт и отчёт + GUI</div>
                 <div class="code-block hidden" id="code2">
                     <pre># antivirus_v2.py
 import os
 import datetime
+import tkinter as tk
+from tkinter import messagebox, filedialog
 
 SIGNATURES = ['virus_alpha', 'trojan_sample', 'test_mal_99']
 REPORT_FILE = "antivirus_v2_report.txt"
-
-COLOR_RED = "\033[91m"
-COLOR_GREEN = "\033[92m"
-COLOR_YELLOW = "\033[93m"
-COLOR_RESET = "\033[0m"
 
 def has_virus(filepath):
     try:
@@ -469,34 +516,41 @@ def write_report(bad, total):
             for x in bad:
                 f.write(x + "\n")
 
-def show_menu():
-    print(COLOR_YELLOW + "\n=== Цветной антивирус (v2) ===" + COLOR_RESET)
-    print("1) Сканировать папку")
-    print("2) Выход")
+def start_scan():
+    folder = filedialog.askdirectory(title="Выберите папку")
+    if not folder:
+        return
+    status_label.config(text="🔍 Сканирование...", fg="blue")
+    root.update()
+    res, total = check_directory(folder)
+    write_report(res, total)
+    status_label.config(text=f"✅ Проверено: {total}", fg="green")
+    if res:
+        messagebox.showwarning("⚠ Внимание", f"Найдено файлов: {len(res)}")
+        result_text.delete(1.0, tk.END)
+        for x in res:
+            result_text.insert(tk.END, x + "\n")
+    else:
+        messagebox.showinfo("✅ Готово", "Всё чисто!")
 
-def main():
-    while True:
-        show_menu()
-        choice = input("Выбор: ").strip()
-        if choice == "1":
-            d = input("Введите путь: ").strip() or "."
-            res, total = check_directory(d)
-            write_report(res, total)
-            print(f"\nПроверено файлов: {total}")
-            if res:
-                print(COLOR_RED + "!!! Обнаружены файлы:" + COLOR_RESET)
-                for x in res:
-                    print(" >", x)
-                print(COLOR_GREEN + f"Отчёт сохранён в {REPORT_FILE}" + COLOR_RESET)
-            else:
-                print(COLOR_GREEN + "Всё чисто." + COLOR_RESET)
-        elif choice == "2":
-            break
-        else:
-            print("Неверный выбор, попробуйте снова.")
+root = tk.Tk()
+root.title("🎨 Антивирус v2")
+root.iconbitmap("icon.ico")
+root.geometry("600x400")
 
-if __name__ == "__main__":
-    main()</pre>
+title_label = tk.Label(root, text="🎨 Цветной антивирус", font=("Arial", 16, "bold"))
+title_label.pack(pady=10)
+
+scan_btn = tk.Button(root, text="📁 Сканировать папку", command=start_scan, font=("Arial", 12))
+scan_btn.pack(pady=10)
+
+status_label = tk.Label(root, text="Ожидание...", font=("Arial", 10))
+status_label.pack(pady=5)
+
+result_text = tk.Text(root, height=10, width=70)
+result_text.pack(pady=10)
+
+root.mainloop()</pre>
                 </div>
                 <div class="actions">
                     <button class="btn-secondary" onclick="toggleCode('code2', this)">Показать код</button>
@@ -506,10 +560,12 @@ if __name__ == "__main__":
 
             <article class="card c3">
                 <h2>Вариант 3</h2>
-                <div class="meta">MD5 + фильтрация расширений</div>
+                <div class="meta">MD5 + фильтрация расширений + GUI</div>
                 <div class="code-block hidden" id="code3">
                     <pre># antivirus_v3.py
 import os, hashlib
+import tkinter as tk
+from tkinter import messagebox, filedialog
 
 KNOWN_BAD_HASHES = {
     'd41d8cd98f00b204e9800998ecf8427e',
@@ -527,10 +583,10 @@ def file_md5(path):
     except:
         return None
 
-def scan_dir(root):
+def scan_dir(root_path):
     infected = []
     total = 0
-    for r, _, fs in os.walk(root):
+    for r, _, fs in os.walk(root_path):
         for name in fs:
             _, ext = os.path.splitext(name)
             if ext.lower() not in TARGET_EXTS:
@@ -542,29 +598,40 @@ def scan_dir(root):
                 infected.append(p)
     return infected, total
 
-def show_menu():
-    print("\n=== MD5‑антивирус (v3) ===")
-    print("1) Сканировать папку")
-    print("2) Выход")
+def start_scan():
+    folder = filedialog.askdirectory(title="Выберите папку")
+    if not folder:
+        return
+    status_label.config(text="🔍 Сканирование...", fg="blue")
+    root_win.update()
+    bad, total = scan_dir(folder)
+    status_label.config(text=f"✅ Проверено: {total}", fg="green")
+    if bad:
+        messagebox.showwarning("⚠ Внимание", f"Найдено: {len(bad)}")
+        result_text.delete(1.0, tk.END)
+        for f in bad:
+            result_text.insert(tk.END, f + "\n")
+    else:
+        messagebox.showinfo("✅ Готово", "Всё чисто!")
 
-def main():
-    while True:
-        show_menu()
-        choice = input("Выбор: ").strip()
-        if choice == "1":
-            folder = input("Сканировать папку: ").strip() or "."
-            bad, total = scan_dir(folder)
-            print(f"\nПроверено файлов (по расширениям): {total}")
-            print("🔍 Результат:", "чисто" if not bad else f"найдено {len(bad)}")
-            for f in bad:
-                print(" -", f)
-        elif choice == "2":
-            break
-        else:
-            print("Неверный выбор, попробуйте снова.")
+root_win = tk.Tk()
+root_win.title("🔐 Антивирус v3")
+root_win.iconbitmap("icon.ico")
+root_win.geometry("600x400")
 
-if __name__ == "__main__":
-    main()</pre>
+title_label = tk.Label(root_win, text="🔐 MD5 Антивирус", font=("Arial", 16, "bold"))
+title_label.pack(pady=10)
+
+scan_btn = tk.Button(root_win, text="📁 Сканировать папку", command=start_scan, font=("Arial", 12))
+scan_btn.pack(pady=10)
+
+status_label = tk.Label(root_win, text="Ожидание...", font=("Arial", 10))
+status_label.pack(pady=5)
+
+result_text = tk.Text(root_win, height=10, width=70)
+result_text.pack(pady=10)
+
+root_win.mainloop()</pre>
                 </div>
                 <div class="actions">
                     <button class="btn-secondary" onclick="toggleCode('code3', this)">Показать код</button>
@@ -574,10 +641,12 @@ if __name__ == "__main__":
 
             <article class="card c4">
                 <h2>Вариант 4</h2>
-                <div class="meta">С именем + подсказки и подсчёт</div>
+                <div class="meta">С именем + подсказки и подсчёт + GUI</div>
                 <div class="code-block hidden" id="code4">
                     <pre># antivirus_v4.py
 import os
+import tkinter as tk
+from tkinter import messagebox, filedialog
 
 STUDENT_NAME = "Анна"
 SIGNATURES = ['fake_virus_4', 'demo_bad_code', 'test_sign_4']
@@ -600,32 +669,40 @@ def run_scan(folder):
                 found.append(full)
     return found, total
 
-def show_menu():
-    print(f"\n👋 Антивирус для: {STUDENT_NAME}")
-    print("1) Сканировать папку")
-    print("2) Выход")
+def start_scan():
+    folder = filedialog.askdirectory(title="Выберите папку")
+    if not folder:
+        return
+    status_label.config(text="🔍 Сканирование...", fg="blue")
+    root_win.update()
+    res, total = run_scan(folder)
+    status_label.config(text=f"✅ Проверено: {total}", fg="green")
+    if res:
+        messagebox.showwarning("🦠 Найдено", f"Подозрительных: {len(res)}")
+        result_text.delete(1.0, tk.END)
+        for x in res:
+            result_text.insert(tk.END, x + "\n")
+    else:
+        messagebox.showinfo("🛡 Готово", "Всё в порядке!")
 
-def main():
-    while True:
-        show_menu()
-        choice = input("Выбор: ").strip()
-        if choice == "1":
-            folder = input("Папка: ").strip() or "."
-            res, total = run_scan(folder)
-            print(f"\nПроверено файлов: {total}")
-            if res:
-                print("🦠 Подозрительные:")
-                for x in res:
-                    print("  •", x)
-            else:
-                print("🛡 Всё в порядке!")
-        elif choice == "2":
-            break
-        else:
-            print("Неверный выбор, попробуйте снова.")
+root_win = tk.Tk()
+root_win.title(f"👤 Антивирус: {STUDENT_NAME}")
+root_win.iconbitmap("icon.ico")
+root_win.geometry("600x400")
 
-if __name__ == "__main__":
-    main()</pre>
+title_label = tk.Label(root_win, text=f"👋 Антивирус для: {STUDENT_NAME}", font=("Arial", 16, "bold"))
+title_label.pack(pady=10)
+
+scan_btn = tk.Button(root_win, text="📁 Сканировать папку", command=start_scan, font=("Arial", 12))
+scan_btn.pack(pady=10)
+
+status_label = tk.Label(root_win, text="Ожидание...", font=("Arial", 10))
+status_label.pack(pady=5)
+
+result_text = tk.Text(root_win, height=10, width=70)
+result_text.pack(pady=10)
+
+root_win.mainloop()</pre>
                 </div>
                 <div class="actions">
                     <button class="btn-secondary" onclick="toggleCode('code4', this)">Показать код</button>
@@ -635,10 +712,12 @@ if __name__ == "__main__":
 
             <article class="card c5">
                 <h2>Вариант 5</h2>
-                <div class="meta">Меню + логирование и подсказки</div>
+                <div class="meta">Меню + логирование и подсказки + GUI</div>
                 <div class="code-block hidden" id="code5">
                     <pre># antivirus_v5.py
 import os
+import tkinter as tk
+from tkinter import messagebox, filedialog
 
 SIGS = ['sample_v5', 'mal_test_5', 'danger_str_5']
 LOG_FILE = "antivirus_v5_log.txt"
@@ -654,34 +733,49 @@ def log_msg(msg):
     with open(LOG_FILE, "a", encoding="utf-8") as f:
         f.write(msg + "\n")
 
-def main():
-    while True:
-        print("\n=== Антивирус v5 ===")
-        print("1) Сканировать папку")
-        print("2) Выход")
-        choice = input("Выбор: ").strip()
-        if choice == "1":
-            folder = input("Папка: ").strip() or "."
-            bad = []
-            total = 0
-            for r, _, fs in os.walk(folder):
-                for name in fs:
-                    total += 1
-                    p = os.path.join(r, name)
-                    if scan(p):
-                        bad.append(p)
-                        log_msg(f"Подозрительный: {p}")
-            print("Найдено:", len(bad))
-            for b in bad:
-                print(" >", b)
-            log_msg(f"Проверено: {total}, найдено: {len(bad)}")
-        elif choice == "2":
-            break
-        else:
-            print("Неверный выбор, попробуйте снова.")
+def start_scan():
+    folder = filedialog.askdirectory(title="Выберите папку")
+    if not folder:
+        return
+    status_label.config(text="🔍 Сканирование...", fg="blue")
+    root_win.update()
+    bad = []
+    total = 0
+    for r, _, fs in os.walk(folder):
+        for name in fs:
+            total += 1
+            p = os.path.join(r, name)
+            if scan(p):
+                bad.append(p)
+                log_msg(f"Подозрительный: {p}")
+    status_label.config(text=f"✅ Проверено: {total}", fg="green")
+    log_msg(f"Проверено: {total}, найдено: {len(bad)}")
+    if bad:
+        messagebox.showinfo("Найдено", f"Подозрительных: {len(bad)}")
+        result_text.delete(1.0, tk.END)
+        for b in bad:
+            result_text.insert(tk.END, b + "\n")
+    else:
+        messagebox.showinfo("Готово", "Всё чисто!")
 
-if __name__ == "__main__":
-    main()</pre>
+root_win = tk.Tk()
+root_win.title("📋 Антивирус v5")
+root_win.iconbitmap("icon.ico")
+root_win.geometry("600x400")
+
+title_label = tk.Label(root_win, text="📋 Антивирус с меню", font=("Arial", 16, "bold"))
+title_label.pack(pady=10)
+
+scan_btn = tk.Button(root_win, text="📁 Сканировать папку", command=start_scan, font=("Arial", 12))
+scan_btn.pack(pady=10)
+
+status_label = tk.Label(root_win, text="Ожидание...", font=("Arial", 10))
+status_label.pack(pady=5)
+
+result_text = tk.Text(root_win, height=10, width=70)
+result_text.pack(pady=10)
+
+root_win.mainloop()</pre>
                 </div>
                 <div class="actions">
                     <button class="btn-secondary" onclick="toggleCode('code5', this)">Показать код</button>
@@ -691,10 +785,12 @@ if __name__ == "__main__":
 
             <article class="card c6">
                 <h2>Вариант 6</h2>
-                <div class="meta">Короткий + статистика</div>
+                <div class="meta">Короткий + статистика + GUI</div>
                 <div class="code-block hidden" id="code6">
                     <pre># antivirus_v6.py
 import os
+import tkinter as tk
+from tkinter import messagebox, filedialog
 
 SIGS = ['v6_bad', 'test_v6', 'demo_6']
 
@@ -716,29 +812,40 @@ def scan(d):
                 bad.append(p)
     return bad, total
 
-def show_menu():
-    print("\n=== Лёгкий антивирус v6 ===")
-    print("1) Сканировать папку")
-    print("2) Выход")
+def start_scan():
+    folder = filedialog.askdirectory(title="Выберите папку")
+    if not folder:
+        return
+    status_label.config(text="🔍 Сканирование...", fg="blue")
+    root_win.update()
+    b, total = scan(folder)
+    status_label.config(text=f"✅ Проверено: {total}", fg="green")
+    if b:
+        messagebox.showinfo("Результат", f"Подозрительных: {len(b)}")
+        result_text.delete(1.0, tk.END)
+        for x in b:
+            result_text.insert(tk.END, x + "\n")
+    else:
+        messagebox.showinfo("Готово", "Чисто!")
 
-def main():
-    while True:
-        show_menu()
-        choice = input("Выбор: ").strip()
-        if choice == "1":
-            d = input("Папка: ").strip() or "."
-            b, total = scan(d)
-            print(f"Проверено файлов: {total}")
-            print("Чисто" if not b else f"Подозрительных: {len(b)}")
-            for x in b:
-                print(x)
-        elif choice == "2":
-            break
-        else:
-            print("Неверный выбор, попробуйте снова.")
+root_win = tk.Tk()
+root_win.title("⚡ Антивирус v6")
+root_win.iconbitmap("icon.ico")
+root_win.geometry("600x400")
 
-if __name__ == "__main__":
-    main()</pre>
+title_label = tk.Label(root_win, text="⚡ Лёгкий антивирус", font=("Arial", 16, "bold"))
+title_label.pack(pady=10)
+
+scan_btn = tk.Button(root_win, text="📁 Сканировать папку", command=start_scan, font=("Arial", 12))
+scan_btn.pack(pady=10)
+
+status_label = tk.Label(root_win, text="Ожидание...", font=("Arial", 10))
+status_label.pack(pady=5)
+
+result_text = tk.Text(root_win, height=10, width=70)
+result_text.pack(pady=10)
+
+root_win.mainloop()</pre>
                 </div>
                 <div class="actions">
                     <button class="btn-secondary" onclick="toggleCode('code6', this)">Показать код</button>
@@ -748,10 +855,12 @@ if __name__ == "__main__":
 
             <article class="card c7">
                 <h2>Вариант 7</h2>
-                <div class="meta">Отчёт + подсказки и подсчёт</div>
+                <div class="meta">Отчёт + подсказки и подсчёт + GUI</div>
                 <div class="code-block hidden" id="code7">
                     <pre># antivirus_v7.py
 import os, datetime
+import tkinter as tk
+from tkinter import messagebox, filedialog
 
 SIGNATURES = ['report_v7', 'log_bad_7', 'test_7']
 
@@ -780,28 +889,39 @@ def scan_and_report(folder, report_path):
             rep.write(f + "\n")
     return found, total
 
-def show_menu():
-    print("\n=== Антивирус с отчётом v7 ===")
-    print("1) Сканировать папку")
-    print("2) Выход")
+def start_scan():
+    folder = filedialog.askdirectory(title="Выберите папку")
+    if not folder:
+        return
+    status_label.config(text="🔍 Сканирование...", fg="blue")
+    root_win.update()
+    report = "report_v7.txt"
+    res, total = scan_and_report(folder, report)
+    status_label.config(text=f"✅ Проверено: {total}", fg="green")
+    messagebox.showinfo("Готово", f"Отчёт: {report}")
+    result_text.delete(1.0, tk.END)
+    result_text.insert(tk.END, f"Проверено: {total}\n")
+    result_text.insert(tk.END, f"Найдено: {len(res)}\n")
+    result_text.insert(tk.END, f"Отчёт: {report}\n")
 
-def main():
-    while True:
-        show_menu()
-        choice = input("Выбор: ").strip()
-        if choice == "1":
-            folder = input("Папка: ").strip() or "."
-            report = input("Файл отчёта: ").strip() or "report_v7.txt"
-            res, total = scan_and_report(folder, report)
-            print(f"Проверено файлов: {total}")
-            print("Готово. Отчёт:", report)
-        elif choice == "2":
-            break
-        else:
-            print("Неверный выбор, попробуйте снова.")
+root_win = tk.Tk()
+root_win.title("📄 Антивирус v7")
+root_win.iconbitmap("icon.ico")
+root_win.geometry("600x400")
 
-if __name__ == "__main__":
-    main()</pre>
+title_label = tk.Label(root_win, text="📄 Антивирус с отчётом", font=("Arial", 16, "bold"))
+title_label.pack(pady=10)
+
+scan_btn = tk.Button(root_win, text="📁 Сканировать папку", command=start_scan, font=("Arial", 12))
+scan_btn.pack(pady=10)
+
+status_label = tk.Label(root_win, text="Ожидание...", font=("Arial", 10))
+status_label.pack(pady=5)
+
+result_text = tk.Text(root_win, height=10, width=70)
+result_text.pack(pady=10)
+
+root_win.mainloop()</pre>
                 </div>
                 <div class="actions">
                     <button class="btn-secondary" onclick="toggleCode('code7', this)">Показать код</button>
@@ -811,10 +931,12 @@ if __name__ == "__main__":
 
             <article class="card c8">
                 <h2>Вариант 8</h2>
-                <div class="meta">Расширения + статистика</div>
+                <div class="meta">Расширения + статистика + GUI</div>
                 <div class="code-block hidden" id="code8">
                     <pre># antivirus_v8.py
 import os
+import tkinter as tk
+from tkinter import messagebox, filedialog
 
 SIGNATURES = ['ext_v8', 'bad_ext_8', 'test_8']
 TARGET_EXTS = {'.txt', '.py', '.bat', '.cmd'}
@@ -840,29 +962,40 @@ def scan_dir(d):
                 bad.append(p)
     return bad, total
 
-def show_menu():
-    print("\n=== Антивирус по расширениям v8 ===")
-    print("1) Сканировать папку")
-    print("2) Выход")
+def start_scan():
+    folder = filedialog.askdirectory(title="Выберите папку")
+    if not folder:
+        return
+    status_label.config(text="🔍 Сканирование...", fg="blue")
+    root_win.update()
+    res, total = scan_dir(folder)
+    status_label.config(text=f"✅ Проверено: {total}", fg="green")
+    if res:
+        messagebox.showinfo("Результат", f"С риском: {len(res)}")
+        result_text.delete(1.0, tk.END)
+        for x in res:
+            result_text.insert(tk.END, x + "\n")
+    else:
+        messagebox.showinfo("Готово", "Чисто!")
 
-def main():
-    while True:
-        show_menu()
-        choice = input("Выбор: ").strip()
-        if choice == "1":
-            d = input("Папка: ").strip() or "."
-            res, total = scan_dir(d)
-            print(f"Всего файлов: {total}")
-            print("Файлов с риском:", len(res))
-            for x in res:
-                print(" -", x)
-        elif choice == "2":
-            break
-        else:
-            print("Неверный выбор, попробуйте снова.")
+root_win = tk.Tk()
+root_win.title("📂 Антивирус v8")
+root_win.iconbitmap("icon.ico")
+root_win.geometry("600x400")
 
-if __name__ == "__main__":
-    main()</pre>
+title_label = tk.Label(root_win, text="📂 По расширениям", font=("Arial", 16, "bold"))
+title_label.pack(pady=10)
+
+scan_btn = tk.Button(root_win, text="📁 Сканировать папку", command=start_scan, font=("Arial", 12))
+scan_btn.pack(pady=10)
+
+status_label = tk.Label(root_win, text="Ожидание...", font=("Arial", 10))
+status_label.pack(pady=5)
+
+result_text = tk.Text(root_win, height=10, width=70)
+result_text.pack(pady=10)
+
+root_win.mainloop()</pre>
                 </div>
                 <div class="actions">
                     <button class="btn-secondary" onclick="toggleCode('code8', this)">Показать код</button>
@@ -872,10 +1005,12 @@ if __name__ == "__main__":
 
             <article class="card c9">
                 <h2>Вариант 9</h2>
-                <div class="meta">Уровень опасности + подсказки</div>
+                <div class="meta">Уровень опасности + подсказки + GUI</div>
                 <div class="code-block hidden" id="code9">
                     <pre># antivirus_v9.py
 import os
+import tkinter as tk
+from tkinter import messagebox, filedialog
 
 SIGNATURES = ['low_v9', 'mid_v9', 'high_v9']
 
@@ -899,32 +1034,40 @@ def scan(folder):
                 res.append((p, lvl))
     return res, total
 
-def show_menu():
-    print("\n=== Антивирус с уровнем опасности v9 ===")
-    print("1) Сканировать папку")
-    print("2) Выход")
+def start_scan():
+    folder = filedialog.askdirectory(title="Выберите папку")
+    if not folder:
+        return
+    status_label.config(text="🔍 Сканирование...", fg="blue")
+    root_win.update()
+    data, total = scan(folder)
+    status_label.config(text=f"✅ Проверено: {total}", fg="green")
+    if data:
+        messagebox.showinfo("Результат", f"Найдено: {len(data)}")
+        result_text.delete(1.0, tk.END)
+        for path, lvl in data:
+            result_text.insert(tk.END, f"{path} — уровень: {lvl}\n")
+    else:
+        messagebox.showinfo("Готово", "Всё чисто!")
 
-def main():
-    while True:
-        show_menu()
-        choice = input("Выбор: ").strip()
-        if choice == "1":
-            folder = input("Папка: ").strip() or "."
-            data, total = scan(folder)
-            print(f"Проверено файлов: {total}")
-            if not data:
-                print("✅ Всё чисто")
-            else:
-                print("🔎 Результаты:")
-                for path, lvl in data:
-                    print(f"• {path} — уровень: {lvl}")
-        elif choice == "2":
-            break
-        else:
-            print("Неверный выбор, попробуйте снова.")
+root_win = tk.Tk()
+root_win.title("⚠ Антивирус v9")
+root_win.iconbitmap("icon.ico")
+root_win.geometry("600x400")
 
-if __name__ == "__main__":
-    main()</pre>
+title_label = tk.Label(root_win, text="⚠ Уровень опасности", font=("Arial", 16, "bold"))
+title_label.pack(pady=10)
+
+scan_btn = tk.Button(root_win, text="📁 Сканировать папку", command=start_scan, font=("Arial", 12))
+scan_btn.pack(pady=10)
+
+status_label = tk.Label(root_win, text="Ожидание...", font=("Arial", 10))
+status_label.pack(pady=5)
+
+result_text = tk.Text(root_win, height=10, width=70)
+result_text.pack(pady=10)
+
+root_win.mainloop()</pre>
                 </div>
                 <div class="actions">
                     <button class="btn-secondary" onclick="toggleCode('code9', this)">Показать код</button>
@@ -934,10 +1077,12 @@ if __name__ == "__main__":
 
             <article class="card c10">
                 <h2>Вариант 10</h2>
-                <div class="meta">Псевдо‑карантин + меню</div>
+                <div class="meta">Псевдо‑карантин + меню + GUI</div>
                 <div class="code-block hidden" id="code10">
                     <pre># antivirus_v10.py
 import os, shutil
+import tkinter as tk
+from tkinter import messagebox, filedialog
 
 SIGNATURES = ['quarantine_v10', 'bad_10', 'test_10']
 QUARANTINE_DIR = "quarantine_v10"
@@ -968,29 +1113,37 @@ def scan_and_quarantine(folder):
                 moved.append((p, new_path))
     return moved, total
 
-def show_menu():
-    print("\n=== Антивирус с карантином v10 ===")
-    print("1) Сканировать и переместить в карантин")
-    print("2) Выход")
+def start_scan():
+    folder = filedialog.askdirectory(title="Выберите папку")
+    if not folder:
+        return
+    status_label.config(text="🔍 Сканирование...", fg="blue")
+    root_win.update()
+    res, total = scan_and_quarantine(folder)
+    status_label.config(text=f"✅ Проверено: {total}", fg="green")
+    messagebox.showinfo("Готово", f"В карантин: {len(res)}")
+    result_text.delete(1.0, tk.END)
+    for old, new in res:
+        result_text.insert(tk.END, f"{old} -> {new}\n")
 
-def main():
-    while True:
-        show_menu()
-        choice = input("Выбор: ").strip()
-        if choice == "1":
-            folder = input("Папка: ").strip() or "."
-            res, total = scan_and_quarantine(folder)
-            print(f"Всего файлов: {total}")
-            print("Перемещено в карантин:", len(res))
-            for old, new in res:
-                print(old, "->", new)
-        elif choice == "2":
-            break
-        else:
-            print("Неверный выбор, попробуйте снова.")
+root_win = tk.Tk()
+root_win.title("🗑 Антивирус v10")
+root_win.iconbitmap("icon.ico")
+root_win.geometry("600x400")
 
-if __name__ == "__main__":
-    main()</pre>
+title_label = tk.Label(root_win, text="🗑 С карантином", font=("Arial", 16, "bold"))
+title_label.pack(pady=10)
+
+scan_btn = tk.Button(root_win, text="📁 Сканировать папку", command=start_scan, font=("Arial", 12))
+scan_btn.pack(pady=10)
+
+status_label = tk.Label(root_win, text="Ожидание...", font=("Arial", 10))
+status_label.pack(pady=5)
+
+result_text = tk.Text(root_win, height=10, width=70)
+result_text.pack(pady=10)
+
+root_win.mainloop()</pre>
                 </div>
                 <div class="actions">
                     <button class="btn-secondary" onclick="toggleCode('code10', this)">Показать код</button>
@@ -1000,10 +1153,12 @@ if __name__ == "__main__":
 
             <article class="card c11">
                 <h2>Вариант 11</h2>
-                <div class="meta">Русские имена + подсказки</div>
+                <div class="meta">Русские имена + подсказки + GUI</div>
                 <div class="code-block hidden" id="code11">
                     <pre># antivirus_v11.py
 import os
+import tkinter as tk
+from tkinter import messagebox, filedialog
 
 SIGS = ['edu_v11', 'lesson_11', 'demo_11']
 
@@ -1025,32 +1180,40 @@ def проверить_папку(папка):
                 плохие.append(полный)
     return плохие, total
 
-def show_menu():
-    print("\n=== Простой учебный антивирус v11 ===")
-    print("1) Сканировать папку")
-    print("2) Выход")
+def start_scan():
+    folder = filedialog.askdirectory(title="Выберите папку")
+    if not folder:
+        return
+    status_label.config(text="🔍 Сканирование...", fg="blue")
+    root_win.update()
+    найдено, total = проверить_папку(folder)
+    status_label.config(text=f"✅ Проверено: {total}", fg="green")
+    if найдено:
+        messagebox.showinfo("Результат", f"Найдено: {len(найдено)}")
+        result_text.delete(1.0, tk.END)
+        for f in найдено:
+            result_text.insert(tk.END, f + "\n")
+    else:
+        messagebox.showinfo("Готово", "Файлы чистые!")
 
-def main():
-    while True:
-        show_menu()
-        choice = input("Выбор: ").strip()
-        if choice == "1":
-            папка = input("Введите путь к папке: ").strip() or "."
-            найдено, total = проверить_папку(папка)
-            print(f"Проверено файлов: {total}")
-            if найдено:
-                print("Найдены подозрительные файлы:")
-                for f in найдено:
-                    print(" -", f)
-            else:
-                print("Файлы чистые.")
-        elif choice == "2":
-            break
-        else:
-            print("Неверный выбор, попробуйте снова.")
+root_win = tk.Tk()
+root_win.title("🇷🇺 Антивирус v11")
+root_win.iconbitmap("icon.ico")
+root_win.geometry("600x400")
 
-if __name__ == "__main__":
-    main()</pre>
+title_label = tk.Label(root_win, text="🇷🇺 Русские имена", font=("Arial", 16, "bold"))
+title_label.pack(pady=10)
+
+scan_btn = tk.Button(root_win, text="📁 Сканировать папку", command=start_scan, font=("Arial", 12))
+scan_btn.pack(pady=10)
+
+status_label = tk.Label(root_win, text="Ожидание...", font=("Arial", 10))
+status_label.pack(pady=5)
+
+result_text = tk.Text(root_win, height=10, width=70)
+result_text.pack(pady=10)
+
+root_win.mainloop()</pre>
                 </div>
                 <div class="actions">
                     <button class="btn-secondary" onclick="toggleCode('code11', this)">Показать код</button>
@@ -1060,10 +1223,12 @@ if __name__ == "__main__":
 
             <article class="card c12">
                 <h2>Вариант 12</h2>
-                <div class="meta">Счётчик файлов + логирование</div>
+                <div class="meta">Счётчик файлов + логирование + GUI</div>
                 <div class="code-block hidden" id="code12">
                     <pre># antivirus_v12.py
 import os
+import tkinter as tk
+from tkinter import messagebox, filedialog
 
 SIGNATURES = ['count_v12', 'test_12', 'sample_12']
 LOG_FILE = "antivirus_v12_log.txt"
@@ -1087,30 +1252,41 @@ def log_msg(msg):
     with open(LOG_FILE, "a", encoding="utf-8") as f:
         f.write(msg + "\n")
 
-def show_menu():
-    print("\n=== Антивирус со счётчиком v12 ===")
-    print("1) Сканировать папку")
-    print("2) Выход")
+def start_scan():
+    folder = filedialog.askdirectory(title="Выберите папку")
+    if not folder:
+        return
+    status_label.config(text="🔍 Сканирование...", fg="blue")
+    root_win.update()
+    total, infected = scan_folder(folder)
+    status_label.config(text=f"✅ Проверено: {total}", fg="green")
+    log_msg(f"Проверено: {total}, найдено: {len(infected)}")
+    if infected:
+        messagebox.showinfo("Результат", f"Подозрительных: {len(infected)}")
+        result_text.delete(1.0, tk.END)
+        for f in infected:
+            result_text.insert(tk.END, f + "\n")
+    else:
+        messagebox.showinfo("Готово", "Чисто!")
 
-def main():
-    while True:
-        show_menu()
-        choice = input("Выбор: ").strip()
-        if choice == "1":
-            folder = input("Папка: ").strip() or "."
-            total, infected = scan_folder(folder)
-            print(f"Проверено файлов: {total}")
-            print(f"Подозрительных: {len(infected)}")
-            for f in infected:
-                print(" >", f)
-            log_msg(f"Проверено: {total}, найдено: {len(infected)}")
-        elif choice == "2":
-            break
-        else:
-            print("Неверный выбор, попробуйте снова.")
+root_win = tk.Tk()
+root_win.title("📊 Антивирус v12")
+root_win.iconbitmap("icon.ico")
+root_win.geometry("600x400")
 
-if __name__ == "__main__":
-    main()</pre>
+title_label = tk.Label(root_win, text="📊 Со счётчиком", font=("Arial", 16, "bold"))
+title_label.pack(pady=10)
+
+scan_btn = tk.Button(root_win, text="📁 Сканировать папку", command=start_scan, font=("Arial", 12))
+scan_btn.pack(pady=10)
+
+status_label = tk.Label(root_win, text="Ожидание...", font=("Arial", 10))
+status_label.pack(pady=5)
+
+result_text = tk.Text(root_win, height=10, width=70)
+result_text.pack(pady=10)
+
+root_win.mainloop()</pre>
                 </div>
                 <div class="actions">
                     <button class="btn-secondary" onclick="toggleCode('code12', this)">Показать код</button>
@@ -1120,10 +1296,12 @@ if __name__ == "__main__":
 
             <article class="card c13">
                 <h2>Вариант 13</h2>
-                <div class="meta">Финальный + отчёт и подсказки</div>
+                <div class="meta">Финальный + отчёт и подсказки + GUI</div>
                 <div class="code-block hidden" id="code13">
                     <pre># antivirus_v13.py
 import os
+import tkinter as tk
+from tkinter import messagebox, filedialog
 
 GROUP_NAME = "Группа 13"
 SIGS = ['group13_v', 'final_v13', 'test_13']
@@ -1136,9 +1314,12 @@ def bad(path):
     except:
         return False
 
-def interface():
-    print("Антивирус для:", GROUP_NAME)
-    folder = input("Папка для сканирования: ").strip() or "."
+def start_scan():
+    folder = filedialog.askdirectory(title="Выберите папку")
+    if not folder:
+        return
+    status_label.config(text="🔍 Сканирование...", fg="blue")
+    root_win.update()
     found = []
     total = 0
     for r, _, fs in os.walk(folder):
@@ -1147,7 +1328,6 @@ def interface():
             p = os.path.join(r, name)
             if bad(p):
                 found.append(p)
-    # простой отчёт
     with open(REPORT_FILE, "w", encoding="utf-8") as f:
         f.write(f"Отчёт для {GROUP_NAME}\n")
         f.write(f"Папка: {folder}\n")
@@ -1155,42 +1335,213 @@ def interface():
         f.write(f"Найдено подозрительных: {len(found)}\n")
         for x in found:
             f.write(x + "\n")
-    print()
-    if found:
-        print("⚠ Подозрительные файлы:")
-        for x in found:
-            print(" -", x)
-        print(f"Отчёт сохранён в {REPORT_FILE}")
-    else:
-        print("✅ Всё чисто.")
+    status_label.config(text=f"✅ Проверено: {total}", fg="green")
+    messagebox.showinfo("Готово", f"Отчёт: {REPORT_FILE}")
+    result_text.delete(1.0, tk.END)
+    result_text.insert(tk.END, f"Папка: {folder}\n")
+    result_text.insert(tk.END, f"Проверено: {total}\n")
+    result_text.insert(tk.END, f"Найдено: {len(found)}\n")
+    result_text.insert(tk.END, f"Отчёт: {REPORT_FILE}\n")
 
-def show_menu():
-    print("\n=== Финальный антивирус v13 ===")
-    print("1) Запустить сканирование")
-    print("2) Выход")
+root_win = tk.Tk()
+root_win.title(f"🏁 {GROUP_NAME}")
+root_win.iconbitmap("icon.ico")
+root_win.geometry("600x400")
 
-def main():
-    while True:
-        show_menu()
-        choice = input("Выбор: ").strip()
-        if choice == "1":
-            interface()
-        elif choice == "2":
-            break
-        else:
-            print("Неверный выбор, попробуйте снова.")
+title_label = tk.Label(root_win, text=f"🏁 Финальный: {GROUP_NAME}", font=("Arial", 16, "bold"))
+title_label.pack(pady=10)
 
-if __name__ == "__main__":
-    main()</pre>
+scan_btn = tk.Button(root_win, text="📁 Сканировать папку", command=start_scan, font=("Arial", 12))
+scan_btn.pack(pady=10)
+
+status_label = tk.Label(root_win, text="Ожидание...", font=("Arial", 10))
+status_label.pack(pady=5)
+
+result_text = tk.Text(root_win, height=10, width=70)
+result_text.pack(pady=10)
+
+root_win.mainloop()</pre>
                 </div>
                 <div class="actions">
                     <button class="btn-secondary" onclick="toggleCode('code13', this)">Показать код</button>
                     <button class="btn-primary" onclick="copyCode('code13', this)">Скопировать код</button>
                 </div>
             </article>
+
+            <article class="card c14">
+                <h2>Вариант 14</h2>
+                <div class="meta">Сравнение размеров + поиск аномалий + GUI</div>
+                <div class="code-block hidden" id="code14">
+                    <pre># antivirus_v14.py
+import os
+import tkinter as tk
+from tkinter import messagebox, filedialog
+
+MAX_SIZE_MB = 10  # максимальный нормальный размер
+MIN_SIZE_BYTES = 0  # минимальный размер
+
+def check_size_anomaly(path):
+    try:
+        size = os.path.getsize(path)
+        size_mb = size / (1024 * 1024)
+        if size_mb > MAX_SIZE_MB or size < MIN_SIZE_BYTES:
+            return True, size
+        return False, size
+    except:
+        return False, 0
+
+def scan_folder(folder):
+    anomalies = []
+    total = 0
+    for root, _, files in os.walk(folder):
+        for name in files:
+            total += 1
+            p = os.path.join(root, name)
+            is_anomaly, size = check_size_anomaly(p)
+            if is_anomaly:
+                anomalies.append((p, size))
+    return anomalies, total
+
+def start_scan():
+    folder = filedialog.askdirectory(title="Выберите папку")
+    if not folder:
+        return
+    status_label.config(text="🔍 Сканирование...", fg="blue")
+    root_win.update()
+    anomalies, total = scan_folder(folder)
+    status_label.config(text=f"✅ Проверено: {total}", fg="green")
+    if anomalies:
+        messagebox.showwarning("⚠ Внимание", f"Найдено аномалий: {len(anomalies)}")
+        result_text.delete(1.0, tk.END)
+        for path, size in anomalies:
+            size_kb = size / 1024
+            result_text.insert(tk.END, f"{path} — {size_kb:.2f} KB\n")
+    else:
+        messagebox.showinfo("✅ Готово", "Аномалий не найдено!")
+
+root_win = tk.Tk()
+root_win.title("📏 Антивирус v14")
+root_win.iconbitmap("icon.ico")
+root_win.geometry("600x400")
+
+title_label = tk.Label(root_win, text="📏 Поиск аномалий размеров", font=("Arial", 16, "bold"))
+title_label.pack(pady=10)
+
+scan_btn = tk.Button(root_win, text="📁 Сканировать папку", command=start_scan, font=("Arial", 12))
+scan_btn.pack(pady=10)
+
+status_label = tk.Label(root_win, text="Ожидание...", font=("Arial", 10))
+status_label.pack(pady=5)
+
+result_text = tk.Text(root_win, height=10, width=70)
+result_text.pack(pady=10)
+
+root_win.mainloop()</pre>
+                </div>
+                <div class="actions">
+                    <button class="btn-secondary" onclick="toggleCode('code14', this)">Показать код</button>
+                    <button class="btn-primary" onclick="copyCode('code14', this)">Скопировать код</button>
+                </div>
+            </article>
+
+            <article class="card c15">
+                <h2>Вариант 15</h2>
+                <div class="meta">Поиск по ключевым словам + отчёт + GUI</div>
+                <div class="code-block hidden" id="code15">
+                    <pre># antivirus_v15.py
+import os
+import datetime
+import tkinter as tk
+from tkinter import messagebox, filedialog
+
+SUSPICIOUS_WORDS = [
+    'password', 'secret', 'admin', 'hack', 'crack',
+    'virus', 'malware', 'trojan', 'keylog', 'backdoor'
+]
+REPORT_FILE = "antivirus_v15_report.txt"
+
+def check_keywords(path):
+    found_words = []
+    try:
+        with open(path, 'r', errors='ignore') as f:
+            content = f.read().lower()
+        for word in SUSPICIOUS_WORDS:
+            if word in content:
+                found_words.append(word)
+        return found_words
+    except:
+        return []
+
+def scan_folder(folder):
+    results = []
+    total = 0
+    for root, _, files in os.walk(folder):
+        for name in files:
+            total += 1
+            p = os.path.join(root, name)
+            words = check_keywords(p)
+            if words:
+                results.append((p, words))
+    return results, total
+
+def write_report(results, total):
+    with open(REPORT_FILE, "w", encoding="utf-8") as f:
+        f.write("Отчёт антивируса v15\n")
+        f.write(f"Время: {datetime.datetime.now()}\n")
+        f.write(f"Проверено файлов: {total}\n")
+        f.write(f"Найдено подозрительных: {len(results)}\n\n")
+        for path, words in results:
+            f.write(f"Файл: {path}\n")
+            f.write(f"Слова: {', '.join(words)}\n\n")
+
+def start_scan():
+    folder = filedialog.askdirectory(title="Выберите папку")
+    if not folder:
+        return
+    status_label.config(text="🔍 Сканирование...", fg="blue")
+    root_win.update()
+    results, total = scan_folder(folder)
+    write_report(results, total)
+    status_label.config(text=f"✅ Проверено: {total}", fg="green")
+    if results:
+        messagebox.showwarning("⚠ Внимание", f"Найдено: {len(results)}")
+        result_text.delete(1.0, tk.END)
+        for path, words in results:
+            result_text.insert(tk.END, f"{path}\n")
+            result_text.insert(tk.END, f"  Слова: {', '.join(words)}\n\n")
+    else:
+        messagebox.showinfo("✅ Готово", "Подозрительных слов не найдено!")
+    result_text.insert(tk.END, f"\nОтчёт: {REPORT_FILE}\n")
+
+root_win = tk.Tk()
+root_win.title("🔎 Антивирус v15")
+root_win.iconbitmap("icon.ico")
+root_win.geometry("600x400")
+
+title_label = tk.Label(root_win, text="🔎 Поиск ключевых слов", font=("Arial", 16, "bold"))
+title_label.pack(pady=10)
+
+scan_btn = tk.Button(root_win, text="📁 Сканировать папку", command=start_scan, font=("Arial", 12))
+scan_btn.pack(pady=10)
+
+status_label = tk.Label(root_win, text="Ожидание...", font=("Arial", 10))
+status_label.pack(pady=5)
+
+result_text = tk.Text(root_win, height=10, width=70)
+result_text.pack(pady=10)
+
+root_win.mainloop()</pre>
+                </div>
+                <div class="actions">
+                    <button class="btn-secondary" onclick="toggleCode('code15', this)">Показать код</button>
+                    <button class="btn-primary" onclick="copyCode('code15', this)">Скопировать код</button>
+                </div>
+            </article>
         </div>
 
-      
+        <div class="note">
+            <strong>Важно:</strong> Для работы иконки положи файл <code>icon.ico</code> в ту же папку, где будут скрипты. [web:15][web:19]
+        </div>
     </main>
 
     <script>
