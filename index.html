@@ -2,1570 +2,645 @@
 <html lang="ru">
 
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>15 учебных антивирусов на Python</title>
-    <link rel="icon" href="icon.ico" type="image/x-icon">
-    <style>
-        :root {
-            --bg: #f5f7fa;
-            --card: #ffffff;
-            --text: #1f2937;
-            --muted: #6b7280;
-            --border: #e5e7eb;
-            --code: #0f172a;
-            --code-text: #e2e8f0;
-        }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Квиз об антивирусах</title>
 
+    <style>
         * {
-            box-sizing: border-box
+            box-sizing: border-box;
         }
 
         body {
             margin: 0;
+            min-height: 100vh;
             font-family: Arial, sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            line-height: 1.5;
+            background: linear-gradient(135deg, #dff6ff, #f3e8ff);
+            color: #263238;
         }
 
-        header {
-            padding: 32px 16px;
-            text-align: center;
-            border-bottom: 1px solid var(--border);
+        .container {
+            width: 100%;
+            max-width: 850px;
+            margin: 0 auto;
+            padding: 25px 15px;
+        }
+
+        .quiz-card {
             background: #ffffff;
-            position: sticky;
-            top: 0;
-            backdrop-filter: blur(8px);
+            border-radius: 24px;
+            padding: 30px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
         }
 
         h1 {
-            margin: 0 0 8px;
-            font-size: clamp(24px, 4vw, 40px);
-            color: #111827
-        }
-
-        p {
-            margin: 0 auto;
-            max-width: 900px;
-            color: var(--muted)
-        }
-
-        main {
-            max-width: 1100px;
-            margin: 0 auto;
-            padding: 24px 16px 48px
+            margin-top: 0;
+            color: #3949ab;
+            text-align: center;
+            font-size: 34px;
         }
 
         .intro {
-            background: #ffffff;
-            border: 1px solid var(--border);
-            border-radius: 18px;
-            padding: 18px 20px;
-            margin-bottom: 22px;
-        }
-
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 16px;
-        }
-
-        .card {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 18px;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .card h2 {
-            margin: 0;
-            padding: 14px 16px;
+            text-align: center;
             font-size: 18px;
-            border-bottom: 1px solid var(--border);
+            line-height: 1.5;
         }
 
-        .meta {
-            padding: 0 16px 12px;
-            color: var(--muted);
-            font-size: 14px
-        }
-
-        .code-block {
+        .progress {
+            height: 16px;
+            margin: 22px 0 12px;
+            background: #e0e0e0;
+            border-radius: 10px;
             overflow: hidden;
-            transition: all .2s ease;
         }
 
-        .code-block.hidden {
-            max-height: 0;
-            opacity: 0;
+        .progress-bar {
+            width: 0%;
+            height: 100%;
+            background: #43a047;
+            transition: width 0.3s ease;
         }
 
-        pre {
-            margin: 0;
-            padding: 16px;
-            overflow: auto;
-            background: var(--code);
-            color: var(--code-text);
-            min-height: 320px;
-            white-space: pre;
-            font-size: 13px;
-            border-top: 1px solid var(--border);
-            border-bottom: 1px solid var(--border);
-        }
-
-        .actions {
-            padding: 12px 16px;
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-
-        button {
-            padding: 10px 14px;
-            border: 0;
+        .score-counter {
+            margin: 15px 0 25px;
+            padding: 12px;
             border-radius: 12px;
-            color: #00111f;
-            font-weight: 700;
+            background: #e8f5e9;
+            color: #2e7d32;
+            text-align: center;
+            font-size: 19px;
+            font-weight: bold;
+        }
+
+        .question-number {
+            margin-bottom: 10px;
+            color: #757575;
+            font-size: 16px;
+        }
+
+        .question {
+            margin-bottom: 24px;
+            font-size: 25px;
+            font-weight: bold;
+            line-height: 1.35;
+        }
+
+        .answers {
+            display: grid;
+            gap: 12px;
+        }
+
+        .answer {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #c5cae9;
+            border-radius: 14px;
+            background: #f8f9ff;
+            color: #263238;
+            font-size: 17px;
+            text-align: left;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .answer:hover {
+            background: #e8eaf6;
+            transform: translateY(-2px);
+        }
+
+        .answer:disabled {
+            cursor: default;
+            transform: none;
+        }
+
+        .answer.correct {
+            border-color: #43a047;
+            background: #c8e6c9;
+        }
+
+        .answer.wrong {
+            border-color: #e53935;
+            background: #ffcdd2;
+        }
+
+        .explanation {
+            display: none;
+            margin-top: 20px;
+            padding: 15px;
+            border-left: 5px solid #ffb300;
+            border-radius: 8px;
+            background: #fff8e1;
+            line-height: 1.5;
+        }
+
+        .next-button,
+        .restart-button {
+            display: none;
+            margin: 25px auto 0;
+            padding: 14px 28px;
+            border: none;
+            border-radius: 12px;
+            background: #3949ab;
+            color: white;
+            font-size: 17px;
             cursor: pointer;
         }
 
-        button:hover {
-            opacity: .92
+        .next-button:hover,
+        .restart-button:hover {
+            background: #283593;
         }
 
-        .btn-primary {
-            background: #a7f3d0;
+        .result {
+            display: none;
+            text-align: center;
         }
 
-        .btn-secondary {
-            background: #fde68a;
+        .result h2 {
+            color: #3949ab;
+            font-size: 30px;
         }
 
-        .note {
-            margin-top: 18px;
-            color: var(--muted);
-            font-size: 14px;
-            border-top: 1px solid var(--border);
-            padding-top: 14px;
+        .emoji {
+            font-size: 64px;
         }
 
-        .badge {
-            display: inline-block;
-            padding: 4px 10px;
-            border-radius: 999px;
-            background: #dcfce7;
-            color: #166534;
-            font-size: 12px;
-            margin-top: 8px;
+        .score {
+            color: #2e7d32;
+            font-size: 25px;
+            font-weight: bold;
         }
 
-        .tip {
-            background: #fef3c7;
-            border-left: 4px solid #f59e0b;
-            padding: 10px 14px;
-            margin: 10px 16px;
-            font-size: 13px;
-            color: #92400e;
+        #resultText {
+            font-size: 18px;
+            line-height: 1.5;
         }
 
-        /* Цветные варианты для 15 карточек */
-        .card.c1 h2 {
-            background: #e0f2fe;
-            color: #0c4a6e
-        }
+        @media (max-width: 600px) {
+            .quiz-card {
+                padding: 20px;
+            }
 
-        .card.c1 .btn-primary {
-            background: #bae6fd
-        }
+            h1 {
+                font-size: 27px;
+            }
 
-        .card.c1 .btn-secondary {
-            background: #fef3c7
-        }
+            .question {
+                font-size: 21px;
+            }
 
-        .card.c2 h2 {
-            background: #dcfce7;
-            color: #14532d
-        }
-
-        .card.c2 .btn-primary {
-            background: #bbf7d0
-        }
-
-        .card.c2 .btn-secondary {
-            background: #fef3c7
-        }
-
-        .card.c3 h2 {
-            background: #fce7f3;
-            color: #831843
-        }
-
-        .card.c3 .btn-primary {
-            background: #fbcfe8
-        }
-
-        .card.c3 .btn-secondary {
-            background: #fef3c7
-        }
-
-        .card.c4 h2 {
-            background: #fef3c7;
-            color: #78350f
-        }
-
-        .card.c4 .btn-primary {
-            background: #fde68a
-        }
-
-        .card.c4 .btn-secondary {
-            background: #bae6fd
-        }
-
-        .card.c5 h2 {
-            background: #e0e7ff;
-            color: #1e1b4b
-        }
-
-        .card.c5 .btn-primary {
-            background: #c7d2fe
-        }
-
-        .card.c5 .btn-secondary {
-            background: #fef3c7
-        }
-
-        .card.c6 h2 {
-            background: #ccfbf1;
-            color: #134e4a
-        }
-
-        .card.c6 .btn-primary {
-            background: #99f6e4
-        }
-
-        .card.c6 .btn-secondary {
-            background: #fef3c7
-        }
-
-        .card.c7 h2 {
-            background: #f3e8ff;
-            color: #581c87
-        }
-
-        .card.c7 .btn-primary {
-            background: #e9d5ff
-        }
-
-        .card.c7 .btn-secondary {
-            background: #fef3c7
-        }
-
-        .card.c8 h2 {
-            background: #fee2e2;
-            color: #7f1d1d
-        }
-
-        .card.c8 .btn-primary {
-            background: #fecaca
-        }
-
-        .card.c8 .btn-secondary {
-            background: #fef3c7
-        }
-
-        .card.c9 h2 {
-            background: #ffedd5;
-            color: #7c2d12
-        }
-
-        .card.c9 .btn-primary {
-            background: #fed7aa
-        }
-
-        .card.c9 .btn-secondary {
-            background: #fef3c7
-        }
-
-        .card.c10 h2 {
-            background: #e0f2fe;
-            color: #0c4a6e
-        }
-
-        .card.c10 .btn-primary {
-            background: #bae6fd
-        }
-
-        .card.c10 .btn-secondary {
-            background: #fde68a
-        }
-
-        .card.c11 h2 {
-            background: #dcfce7;
-            color: #14532d
-        }
-
-        .card.c11 .btn-primary {
-            background: #bbf7d0
-        }
-
-        .card.c11 .btn-secondary {
-            background: #fbcfe8
-        }
-
-        .card.c12 h2 {
-            background: #fce7f3;
-            color: #831843
-        }
-
-        .card.c12 .btn-primary {
-            background: #fbcfe8
-        }
-
-        .card.c12 .btn-secondary {
-            background: #bae6fd
-        }
-
-        .card.c13 h2 {
-            background: #fef3c7;
-            color: #78350f
-        }
-
-        .card.c13 .btn-primary {
-            background: #fde68a
-        }
-
-        .card.c13 .btn-secondary {
-            background: #bbf7d0
-        }
-
-        .card.c14 h2 {
-            background: #e0f2fe;
-            color: #0c4a6e
-        }
-
-        .card.c14 .btn-primary {
-            background: #bae6fd
-        }
-
-        .card.c14 .btn-secondary {
-            background: #fbcfe8
-        }
-
-        .card.c15 h2 {
-            background: #dcfce7;
-            color: #14532d
-        }
-
-        .card.c15 .btn-primary {
-            background: #bbf7d0
-        }
-
-        .card.c15 .btn-secondary {
-            background: #fed7aa
+            .answer {
+                font-size: 16px;
+            }
         }
 
     </style>
 </head>
 
 <body>
-    <header>
-        <h1>🛡 15 учебных антивирусов на Python</h1>
-        <p>Каждый вариант — полноценный мини‑проект с GUI, иконкой и полезными функциями.</p>
-    </header>
 
-    <main>
-        <section class="intro">
-            <strong>Как использовать:</strong>
-            <div class="badge">GitHub Pages friendly</div>
-            <p>
-                Открой нужный вариант, нажми <strong>«Показать код»</strong>, затем <strong>«Скопировать код»</strong>.
-                Сохрани код в файл <code>antivirus_vX.py</code> и положи рядом <code>icon.ico</code>.
-            </p>
-            <div class="tip">
-                💡 <strong>Совет:</strong> Скачай иконку <code>icon.ico</code> и положи в ту же папку, где будут скрипты.
+    <div class="container">
+        <div class="quiz-card">
+
+            <div id="quizScreen">
+                <h1>🛡️ Квиз об антивирусах</h1>
+
+                <p class="intro">
+                    Проверь, насколько хорошо ты знаешь правила защиты
+                    компьютера и смартфона от вредных программ!
+                </p>
+
+                <div class="progress">
+                    <div class="progress-bar" id="progressBar"></div>
+                </div>
+
+                <div class="score-counter">
+                    ✅ Правильных ответов:
+                    <span id="currentScore">0</span>
+                    из 20
+                </div>
+
+                <div class="question-number" id="questionNumber"></div>
+                <div class="question" id="question"></div>
+
+                <div class="answers" id="answers"></div>
+
+                <div class="explanation" id="explanation"></div>
+
+                <button class="next-button" id="nextButton">
+                    Следующий вопрос
+                </button>
             </div>
-        </section>
 
-        <div class="grid">
+            <div class="result" id="resultScreen">
+                <div class="emoji" id="resultEmoji">🎉</div>
 
-            <article class="card c1">
-                <h2>Вариант 1</h2>
-                <div class="meta">Базовый + логирование и статистика + GUI</div>
-                <div class="code-block hidden" id="code1">
-                    <pre># antivirus_v1.py
-import os
-import datetime
-import tkinter as tk
-from tkinter import messagebox, filedialog
+                <h2>Квиз завершён!</h2>
 
-VIRUS_SIGNATURES = ['malware_test_1', 'badcode_xyz', 'eicar_test_string']
-LOG_FILE = "antivirus_v1_log.txt"
+                <p class="score" id="score"></p>
 
-def log_message(msg):
-    with open(LOG_FILE, "a", encoding="utf-8") as f:
-        f.write(f"[{datetime.datetime.now()}] {msg}\n")
+                <p id="resultText"></p>
 
-def scan_file(path):
-    try:
-        with open(path, 'r', errors='ignore') as f:
-            content = f.read()
-        for sig in VIRUS_SIGNATURES:
-            if sig in content:
-                return True
-    except Exception as e:
-        log_message(f"Ошибка чтения файла {path}: {e}")
-    return False
+                <button class="restart-button" id="restartButton">
+                    Пройти ещё раз
+                </button>
+            </div>
 
-def scan_folder(folder):
-    found = []
-    total = 0
-    for root, _, files in os.walk(folder):
-        for name in files:
-            total += 1
-            p = os.path.join(root, name)
-            if scan_file(p):
-                found.append(p)
-                log_message(f"Подозрительный файл: {p}")
-    log_message(f"Проверено файлов: {total}, найдено: {len(found)}")
-    return found, total
-
-def start_scan():
-    folder = filedialog.askdirectory(title="Выберите папку")
-    if not folder:
-        return
-    status_label.config(text="🔍 Сканирование...", fg="blue")
-    root.update()
-    infected, total = scan_folder(folder)
-    status_label.config(text=f"✅ Проверено: {total}", fg="green")
-    if infected:
-        messagebox.showwarning("⚠ Внимание", f"Найдено подозрительных файлов: {len(infected)}")
-        result_text.delete(1.0, tk.END)
-        for f in infected:
-            result_text.insert(tk.END, f + "\n")
-    else:
-        messagebox.showinfo("✅ Готово", "Всё чисто!")
-
-# Создаём окно
-root = tk.Tk()
-root.title("🛡 Антивирус v1")
-root.iconbitmap("icon.ico")
-root.geometry("600x400")
-
-title_label = tk.Label(root, text="🛡 Простой антивирус", font=("Arial", 16, "bold"))
-title_label.pack(pady=10)
-
-scan_btn = tk.Button(root, text="📁 Сканировать папку", command=start_scan, font=("Arial", 12))
-scan_btn.pack(pady=10)
-
-status_label = tk.Label(root, text="Ожидание...", font=("Arial", 10))
-status_label.pack(pady=5)
-
-result_text = tk.Text(root, height=10, width=70)
-result_text.pack(pady=10)
-
-root.mainloop()</pre>
-                </div>
-                <div class="actions">
-                    <button class="btn-secondary" onclick="toggleCode('code1', this)">Показать код</button>
-                    <button class="btn-primary" onclick="copyCode('code1', this)">Скопировать код</button>
-                </div>
-            </article>
-
-            <article class="card c2">
-                <h2>Вариант 2</h2>
-                <div class="meta">Цветной вывод + подсчёт и отчёт + GUI</div>
-                <div class="code-block hidden" id="code2">
-                    <pre># antivirus_v2.py
-import os
-import datetime
-import tkinter as tk
-from tkinter import messagebox, filedialog
-
-SIGNATURES = ['virus_alpha', 'trojan_sample', 'test_mal_99']
-REPORT_FILE = "antivirus_v2_report.txt"
-
-def has_virus(filepath):
-    try:
-        data = open(filepath, 'r', errors='ignore').read()
-        return any(s in data for s in SIGNATURES)
-    except:
-        return False
-
-def check_directory(dirpath):
-    bad = []
-    total = 0
-    for root, _, files in os.walk(dirpath):
-        for fname in files:
-            total += 1
-            full = os.path.join(root, fname)
-            if has_virus(full):
-                bad.append(full)
-    return bad, total
-
-def write_report(bad, total):
-    with open(REPORT_FILE, "w", encoding="utf-8") as f:
-        f.write("Отчёт антивируса v2\n")
-        f.write(f"Время: {datetime.datetime.now()}\n")
-        f.write(f"Проверено файлов: {total}\n")
-        f.write(f"Найдено подозрительных: {len(bad)}\n")
-        if bad:
-            f.write("Файлы:\n")
-            for x in bad:
-                f.write(x + "\n")
-
-def start_scan():
-    folder = filedialog.askdirectory(title="Выберите папку")
-    if not folder:
-        return
-    status_label.config(text="🔍 Сканирование...", fg="blue")
-    root.update()
-    res, total = check_directory(folder)
-    write_report(res, total)
-    status_label.config(text=f"✅ Проверено: {total}", fg="green")
-    if res:
-        messagebox.showwarning("⚠ Внимание", f"Найдено файлов: {len(res)}")
-        result_text.delete(1.0, tk.END)
-        for x in res:
-            result_text.insert(tk.END, x + "\n")
-    else:
-        messagebox.showinfo("✅ Готово", "Всё чисто!")
-
-root = tk.Tk()
-root.title("🎨 Антивирус v2")
-root.iconbitmap("icon.ico")
-root.geometry("600x400")
-
-title_label = tk.Label(root, text="🎨 Цветной антивирус", font=("Arial", 16, "bold"))
-title_label.pack(pady=10)
-
-scan_btn = tk.Button(root, text="📁 Сканировать папку", command=start_scan, font=("Arial", 12))
-scan_btn.pack(pady=10)
-
-status_label = tk.Label(root, text="Ожидание...", font=("Arial", 10))
-status_label.pack(pady=5)
-
-result_text = tk.Text(root, height=10, width=70)
-result_text.pack(pady=10)
-
-root.mainloop()</pre>
-                </div>
-                <div class="actions">
-                    <button class="btn-secondary" onclick="toggleCode('code2', this)">Показать код</button>
-                    <button class="btn-primary" onclick="copyCode('code2', this)">Скопировать код</button>
-                </div>
-            </article>
-
-            <article class="card c3">
-                <h2>Вариант 3</h2>
-                <div class="meta">MD5 + фильтрация расширений + GUI</div>
-                <div class="code-block hidden" id="code3">
-                    <pre># antivirus_v3.py
-import os, hashlib
-import tkinter as tk
-from tkinter import messagebox, filedialog
-
-KNOWN_BAD_HASHES = {
-    'd41d8cd98f00b204e9800998ecf8427e',
-    '5d41402abc4b2a76b9719d911017c592',
-}
-TARGET_EXTS = {'.txt', '.py', '.bat', '.cmd', '.exe'}
-
-def file_md5(path):
-    h = hashlib.md5()
-    try:
-        with open(path, 'rb') as f:
-            for chunk in iter(lambda: f.read(4096), b''):
-                h.update(chunk)
-        return h.hexdigest()
-    except:
-        return None
-
-def scan_dir(root_path):
-    infected = []
-    total = 0
-    for r, _, fs in os.walk(root_path):
-        for name in fs:
-            _, ext = os.path.splitext(name)
-            if ext.lower() not in TARGET_EXTS:
-                continue
-            total += 1
-            p = os.path.join(r, name)
-            h = file_md5(p)
-            if h and h in KNOWN_BAD_HASHES:
-                infected.append(p)
-    return infected, total
-
-def start_scan():
-    folder = filedialog.askdirectory(title="Выберите папку")
-    if not folder:
-        return
-    status_label.config(text="🔍 Сканирование...", fg="blue")
-    root_win.update()
-    bad, total = scan_dir(folder)
-    status_label.config(text=f"✅ Проверено: {total}", fg="green")
-    if bad:
-        messagebox.showwarning("⚠ Внимание", f"Найдено: {len(bad)}")
-        result_text.delete(1.0, tk.END)
-        for f in bad:
-            result_text.insert(tk.END, f + "\n")
-    else:
-        messagebox.showinfo("✅ Готово", "Всё чисто!")
-
-root_win = tk.Tk()
-root_win.title("🔐 Антивирус v3")
-root_win.iconbitmap("icon.ico")
-root_win.geometry("600x400")
-
-title_label = tk.Label(root_win, text="🔐 MD5 Антивирус", font=("Arial", 16, "bold"))
-title_label.pack(pady=10)
-
-scan_btn = tk.Button(root_win, text="📁 Сканировать папку", command=start_scan, font=("Arial", 12))
-scan_btn.pack(pady=10)
-
-status_label = tk.Label(root_win, text="Ожидание...", font=("Arial", 10))
-status_label.pack(pady=5)
-
-result_text = tk.Text(root_win, height=10, width=70)
-result_text.pack(pady=10)
-
-root_win.mainloop()</pre>
-                </div>
-                <div class="actions">
-                    <button class="btn-secondary" onclick="toggleCode('code3', this)">Показать код</button>
-                    <button class="btn-primary" onclick="copyCode('code3', this)">Скопировать код</button>
-                </div>
-            </article>
-
-            <article class="card c4">
-                <h2>Вариант 4</h2>
-                <div class="meta">С именем + подсказки и подсчёт + GUI</div>
-                <div class="code-block hidden" id="code4">
-                    <pre># antivirus_v4.py
-import os
-import tkinter as tk
-from tkinter import messagebox, filedialog
-
-STUDENT_NAME = "Анна"
-SIGNATURES = ['fake_virus_4', 'demo_bad_code', 'test_sign_4']
-
-def looks_infected(path):
-    try:
-        txt = open(path, 'r', errors='ignore').read()
-        return any(s in txt for s in SIGNATURES)
-    except:
-        return False
-
-def run_scan(folder):
-    found = []
-    total = 0
-    for root, _, files in os.walk(folder):
-        for f in files:
-            total += 1
-            full = os.path.join(root, f)
-            if looks_infected(full):
-                found.append(full)
-    return found, total
-
-def start_scan():
-    folder = filedialog.askdirectory(title="Выберите папку")
-    if not folder:
-        return
-    status_label.config(text="🔍 Сканирование...", fg="blue")
-    root_win.update()
-    res, total = run_scan(folder)
-    status_label.config(text=f"✅ Проверено: {total}", fg="green")
-    if res:
-        messagebox.showwarning("🦠 Найдено", f"Подозрительных: {len(res)}")
-        result_text.delete(1.0, tk.END)
-        for x in res:
-            result_text.insert(tk.END, x + "\n")
-    else:
-        messagebox.showinfo("🛡 Готово", "Всё в порядке!")
-
-root_win = tk.Tk()
-root_win.title(f"👤 Антивирус: {STUDENT_NAME}")
-root_win.iconbitmap("icon.ico")
-root_win.geometry("600x400")
-
-title_label = tk.Label(root_win, text=f"👋 Антивирус для: {STUDENT_NAME}", font=("Arial", 16, "bold"))
-title_label.pack(pady=10)
-
-scan_btn = tk.Button(root_win, text="📁 Сканировать папку", command=start_scan, font=("Arial", 12))
-scan_btn.pack(pady=10)
-
-status_label = tk.Label(root_win, text="Ожидание...", font=("Arial", 10))
-status_label.pack(pady=5)
-
-result_text = tk.Text(root_win, height=10, width=70)
-result_text.pack(pady=10)
-
-root_win.mainloop()</pre>
-                </div>
-                <div class="actions">
-                    <button class="btn-secondary" onclick="toggleCode('code4', this)">Показать код</button>
-                    <button class="btn-primary" onclick="copyCode('code4', this)">Скопировать код</button>
-                </div>
-            </article>
-
-            <article class="card c5">
-                <h2>Вариант 5</h2>
-                <div class="meta">Меню + логирование и подсказки + GUI</div>
-                <div class="code-block hidden" id="code5">
-                    <pre># antivirus_v5.py
-import os
-import tkinter as tk
-from tkinter import messagebox, filedialog
-
-SIGS = ['sample_v5', 'mal_test_5', 'danger_str_5']
-LOG_FILE = "antivirus_v5_log.txt"
-
-def scan(path):
-    try:
-        data = open(path, 'r', errors='ignore').read()
-        return any(s in data for s in SIGS)
-    except:
-        return False
-
-def log_msg(msg):
-    with open(LOG_FILE, "a", encoding="utf-8") as f:
-        f.write(msg + "\n")
-
-def start_scan():
-    folder = filedialog.askdirectory(title="Выберите папку")
-    if not folder:
-        return
-    status_label.config(text="🔍 Сканирование...", fg="blue")
-    root_win.update()
-    bad = []
-    total = 0
-    for r, _, fs in os.walk(folder):
-        for name in fs:
-            total += 1
-            p = os.path.join(r, name)
-            if scan(p):
-                bad.append(p)
-                log_msg(f"Подозрительный: {p}")
-    status_label.config(text=f"✅ Проверено: {total}", fg="green")
-    log_msg(f"Проверено: {total}, найдено: {len(bad)}")
-    if bad:
-        messagebox.showinfo("Найдено", f"Подозрительных: {len(bad)}")
-        result_text.delete(1.0, tk.END)
-        for b in bad:
-            result_text.insert(tk.END, b + "\n")
-    else:
-        messagebox.showinfo("Готово", "Всё чисто!")
-
-root_win = tk.Tk()
-root_win.title("📋 Антивирус v5")
-root_win.iconbitmap("icon.ico")
-root_win.geometry("600x400")
-
-title_label = tk.Label(root_win, text="📋 Антивирус с меню", font=("Arial", 16, "bold"))
-title_label.pack(pady=10)
-
-scan_btn = tk.Button(root_win, text="📁 Сканировать папку", command=start_scan, font=("Arial", 12))
-scan_btn.pack(pady=10)
-
-status_label = tk.Label(root_win, text="Ожидание...", font=("Arial", 10))
-status_label.pack(pady=5)
-
-result_text = tk.Text(root_win, height=10, width=70)
-result_text.pack(pady=10)
-
-root_win.mainloop()</pre>
-                </div>
-                <div class="actions">
-                    <button class="btn-secondary" onclick="toggleCode('code5', this)">Показать код</button>
-                    <button class="btn-primary" onclick="copyCode('code5', this)">Скопировать код</button>
-                </div>
-            </article>
-
-            <article class="card c6">
-                <h2>Вариант 6</h2>
-                <div class="meta">Короткий + статистика + GUI</div>
-                <div class="code-block hidden" id="code6">
-                    <pre># antivirus_v6.py
-import os
-import tkinter as tk
-from tkinter import messagebox, filedialog
-
-SIGS = ['v6_bad', 'test_v6', 'demo_6']
-
-def ok(p):
-    try:
-        t = open(p, 'r', errors='ignore').read()
-        return not any(s in t for s in SIGS)
-    except:
-        return True
-
-def scan(d):
-    bad = []
-    total = 0
-    for r, _, fs in os.walk(d):
-        for f in fs:
-            total += 1
-            p = os.path.join(r, f)
-            if not ok(p):
-                bad.append(p)
-    return bad, total
-
-def start_scan():
-    folder = filedialog.askdirectory(title="Выберите папку")
-    if not folder:
-        return
-    status_label.config(text="🔍 Сканирование...", fg="blue")
-    root_win.update()
-    b, total = scan(folder)
-    status_label.config(text=f"✅ Проверено: {total}", fg="green")
-    if b:
-        messagebox.showinfo("Результат", f"Подозрительных: {len(b)}")
-        result_text.delete(1.0, tk.END)
-        for x in b:
-            result_text.insert(tk.END, x + "\n")
-    else:
-        messagebox.showinfo("Готово", "Чисто!")
-
-root_win = tk.Tk()
-root_win.title("⚡ Антивирус v6")
-root_win.iconbitmap("icon.ico")
-root_win.geometry("600x400")
-
-title_label = tk.Label(root_win, text="⚡ Лёгкий антивирус", font=("Arial", 16, "bold"))
-title_label.pack(pady=10)
-
-scan_btn = tk.Button(root_win, text="📁 Сканировать папку", command=start_scan, font=("Arial", 12))
-scan_btn.pack(pady=10)
-
-status_label = tk.Label(root_win, text="Ожидание...", font=("Arial", 10))
-status_label.pack(pady=5)
-
-result_text = tk.Text(root_win, height=10, width=70)
-result_text.pack(pady=10)
-
-root_win.mainloop()</pre>
-                </div>
-                <div class="actions">
-                    <button class="btn-secondary" onclick="toggleCode('code6', this)">Показать код</button>
-                    <button class="btn-primary" onclick="copyCode('code6', this)">Скопировать код</button>
-                </div>
-            </article>
-
-            <article class="card c7">
-                <h2>Вариант 7</h2>
-                <div class="meta">Отчёт + подсказки и подсчёт + GUI</div>
-                <div class="code-block hidden" id="code7">
-                    <pre># antivirus_v7.py
-import os, datetime
-import tkinter as tk
-from tkinter import messagebox, filedialog
-
-SIGNATURES = ['report_v7', 'log_bad_7', 'test_7']
-
-def infected(path):
-    try:
-        content = open(path, 'r', errors='ignore').read()
-        return any(s in content for s in SIGNATURES)
-    except:
-        return False
-
-def scan_and_report(folder, report_path):
-    found = []
-    total = 0
-    for root, _, files in os.walk(folder):
-        for name in files:
-            total += 1
-            full = os.path.join(root, name)
-            if infected(full):
-                found.append(full)
-    with open(report_path, 'w', encoding='utf-8') as rep:
-        rep.write("Отчёт антивируса v7\n")
-        rep.write("Время: " + datetime.datetime.now().isoformat() + "\n")
-        rep.write(f"Проверено файлов: {total}\n")
-        rep.write("Найдено: " + str(len(found)) + "\n")
-        for f in found:
-            rep.write(f + "\n")
-    return found, total
-
-def start_scan():
-    folder = filedialog.askdirectory(title="Выберите папку")
-    if not folder:
-        return
-    status_label.config(text="🔍 Сканирование...", fg="blue")
-    root_win.update()
-    report = "report_v7.txt"
-    res, total = scan_and_report(folder, report)
-    status_label.config(text=f"✅ Проверено: {total}", fg="green")
-    messagebox.showinfo("Готово", f"Отчёт: {report}")
-    result_text.delete(1.0, tk.END)
-    result_text.insert(tk.END, f"Проверено: {total}\n")
-    result_text.insert(tk.END, f"Найдено: {len(res)}\n")
-    result_text.insert(tk.END, f"Отчёт: {report}\n")
-
-root_win = tk.Tk()
-root_win.title("📄 Антивирус v7")
-root_win.iconbitmap("icon.ico")
-root_win.geometry("600x400")
-
-title_label = tk.Label(root_win, text="📄 Антивирус с отчётом", font=("Arial", 16, "bold"))
-title_label.pack(pady=10)
-
-scan_btn = tk.Button(root_win, text="📁 Сканировать папку", command=start_scan, font=("Arial", 12))
-scan_btn.pack(pady=10)
-
-status_label = tk.Label(root_win, text="Ожидание...", font=("Arial", 10))
-status_label.pack(pady=5)
-
-result_text = tk.Text(root_win, height=10, width=70)
-result_text.pack(pady=10)
-
-root_win.mainloop()</pre>
-                </div>
-                <div class="actions">
-                    <button class="btn-secondary" onclick="toggleCode('code7', this)">Показать код</button>
-                    <button class="btn-primary" onclick="copyCode('code7', this)">Скопировать код</button>
-                </div>
-            </article>
-
-            <article class="card c8">
-                <h2>Вариант 8</h2>
-                <div class="meta">Расширения + статистика + GUI</div>
-                <div class="code-block hidden" id="code8">
-                    <pre># antivirus_v8.py
-import os
-import tkinter as tk
-from tkinter import messagebox, filedialog
-
-SIGNATURES = ['ext_v8', 'bad_ext_8', 'test_8']
-TARGET_EXTS = {'.txt', '.py', '.bat', '.cmd'}
-
-def check(path):
-    _, ext = os.path.splitext(path)
-    if ext.lower() not in TARGET_EXTS:
-        return False
-    try:
-        txt = open(path, 'r', errors='ignore').read()
-        return any(s in txt for s in SIGNATURES)
-    except:
-        return False
-
-def scan_dir(d):
-    bad = []
-    total = 0
-    for r, _, fs in os.walk(d):
-        for name in fs:
-            total += 1
-            p = os.path.join(r, name)
-            if check(p):
-                bad.append(p)
-    return bad, total
-
-def start_scan():
-    folder = filedialog.askdirectory(title="Выберите папку")
-    if not folder:
-        return
-    status_label.config(text="🔍 Сканирование...", fg="blue")
-    root_win.update()
-    res, total = scan_dir(folder)
-    status_label.config(text=f"✅ Проверено: {total}", fg="green")
-    if res:
-        messagebox.showinfo("Результат", f"С риском: {len(res)}")
-        result_text.delete(1.0, tk.END)
-        for x in res:
-            result_text.insert(tk.END, x + "\n")
-    else:
-        messagebox.showinfo("Готово", "Чисто!")
-
-root_win = tk.Tk()
-root_win.title("📂 Антивирус v8")
-root_win.iconbitmap("icon.ico")
-root_win.geometry("600x400")
-
-title_label = tk.Label(root_win, text="📂 По расширениям", font=("Arial", 16, "bold"))
-title_label.pack(pady=10)
-
-scan_btn = tk.Button(root_win, text="📁 Сканировать папку", command=start_scan, font=("Arial", 12))
-scan_btn.pack(pady=10)
-
-status_label = tk.Label(root_win, text="Ожидание...", font=("Arial", 10))
-status_label.pack(pady=5)
-
-result_text = tk.Text(root_win, height=10, width=70)
-result_text.pack(pady=10)
-
-root_win.mainloop()</pre>
-                </div>
-                <div class="actions">
-                    <button class="btn-secondary" onclick="toggleCode('code8', this)">Показать код</button>
-                    <button class="btn-primary" onclick="copyCode('code8', this)">Скопировать код</button>
-                </div>
-            </article>
-
-            <article class="card c9">
-                <h2>Вариант 9</h2>
-                <div class="meta">Уровень опасности + подсказки + GUI</div>
-                <div class="code-block hidden" id="code9">
-                    <pre># antivirus_v9.py
-import os
-import tkinter as tk
-from tkinter import messagebox, filedialog
-
-SIGNATURES = ['low_v9', 'mid_v9', 'high_v9']
-
-def risk_level(path):
-    try:
-        txt = open(path, 'r', errors='ignore').read()
-        count = sum(1 for s in SIGNATURES if s in txt)
-        return count
-    except:
-        return 0
-
-def scan(folder):
-    res = []
-    total = 0
-    for r, _, fs in os.walk(folder):
-        for name in fs:
-            total += 1
-            p = os.path.join(r, name)
-            lvl = risk_level(p)
-            if lvl > 0:
-                res.append((p, lvl))
-    return res, total
-
-def start_scan():
-    folder = filedialog.askdirectory(title="Выберите папку")
-    if not folder:
-        return
-    status_label.config(text="🔍 Сканирование...", fg="blue")
-    root_win.update()
-    data, total = scan(folder)
-    status_label.config(text=f"✅ Проверено: {total}", fg="green")
-    if data:
-        messagebox.showinfo("Результат", f"Найдено: {len(data)}")
-        result_text.delete(1.0, tk.END)
-        for path, lvl in data:
-            result_text.insert(tk.END, f"{path} — уровень: {lvl}\n")
-    else:
-        messagebox.showinfo("Готово", "Всё чисто!")
-
-root_win = tk.Tk()
-root_win.title("⚠ Антивирус v9")
-root_win.iconbitmap("icon.ico")
-root_win.geometry("600x400")
-
-title_label = tk.Label(root_win, text="⚠ Уровень опасности", font=("Arial", 16, "bold"))
-title_label.pack(pady=10)
-
-scan_btn = tk.Button(root_win, text="📁 Сканировать папку", command=start_scan, font=("Arial", 12))
-scan_btn.pack(pady=10)
-
-status_label = tk.Label(root_win, text="Ожидание...", font=("Arial", 10))
-status_label.pack(pady=5)
-
-result_text = tk.Text(root_win, height=10, width=70)
-result_text.pack(pady=10)
-
-root_win.mainloop()</pre>
-                </div>
-                <div class="actions">
-                    <button class="btn-secondary" onclick="toggleCode('code9', this)">Показать код</button>
-                    <button class="btn-primary" onclick="copyCode('code9', this)">Скопировать код</button>
-                </div>
-            </article>
-
-            <article class="card c10">
-                <h2>Вариант 10</h2>
-                <div class="meta">Псевдо‑карантин + меню + GUI</div>
-                <div class="code-block hidden" id="code10">
-                    <pre># antivirus_v10.py
-import os, shutil
-import tkinter as tk
-from tkinter import messagebox, filedialog
-
-SIGNATURES = ['quarantine_v10', 'bad_10', 'test_10']
-QUARANTINE_DIR = "quarantine_v10"
-
-def is_bad(path):
-    try:
-        t = open(path, 'r', errors='ignore').read()
-        return any(s in t for s in SIGNATURES)
-    except:
-        return False
-
-def quarantine_move(src):
-    os.makedirs(QUARANTINE_DIR, exist_ok=True)
-    name = os.path.basename(src)
-    dst = os.path.join(QUARANTINE_DIR, name)
-    shutil.move(src, dst)
-    return dst
-
-def scan_and_quarantine(folder):
-    moved = []
-    total = 0
-    for root, _, files in os.walk(folder):
-        for name in files:
-            total += 1
-            p = os.path.join(root, name)
-            if is_bad(p):
-                new_path = quarantine_move(p)
-                moved.append((p, new_path))
-    return moved, total
-
-def start_scan():
-    folder = filedialog.askdirectory(title="Выберите папку")
-    if not folder:
-        return
-    status_label.config(text="🔍 Сканирование...", fg="blue")
-    root_win.update()
-    res, total = scan_and_quarantine(folder)
-    status_label.config(text=f"✅ Проверено: {total}", fg="green")
-    messagebox.showinfo("Готово", f"В карантин: {len(res)}")
-    result_text.delete(1.0, tk.END)
-    for old, new in res:
-        result_text.insert(tk.END, f"{old} -> {new}\n")
-
-root_win = tk.Tk()
-root_win.title("🗑 Антивирус v10")
-root_win.iconbitmap("icon.ico")
-root_win.geometry("600x400")
-
-title_label = tk.Label(root_win, text="🗑 С карантином", font=("Arial", 16, "bold"))
-title_label.pack(pady=10)
-
-scan_btn = tk.Button(root_win, text="📁 Сканировать папку", command=start_scan, font=("Arial", 12))
-scan_btn.pack(pady=10)
-
-status_label = tk.Label(root_win, text="Ожидание...", font=("Arial", 10))
-status_label.pack(pady=5)
-
-result_text = tk.Text(root_win, height=10, width=70)
-result_text.pack(pady=10)
-
-root_win.mainloop()</pre>
-                </div>
-                <div class="actions">
-                    <button class="btn-secondary" onclick="toggleCode('code10', this)">Показать код</button>
-                    <button class="btn-primary" onclick="copyCode('code10', this)">Скопировать код</button>
-                </div>
-            </article>
-
-            <article class="card c11">
-                <h2>Вариант 11</h2>
-                <div class="meta">Русские имена + подсказки + GUI</div>
-                <div class="code-block hidden" id="code11">
-                    <pre># antivirus_v11.py
-import os
-import tkinter as tk
-from tkinter import messagebox, filedialog
-
-SIGS = ['edu_v11', 'lesson_11', 'demo_11']
-
-def проверить_файл(path):
-    try:
-        текст = open(path, 'r', errors='ignore').read()
-        return any(s in текст for s in SIGS)
-    except:
-        return False
-
-def проверить_папку(папка):
-    плохие = []
-    total = 0
-    for корень, _, файлы in os.walk(папка):
-        for имя in файлы:
-            total += 1
-            полный = os.path.join(корень, имя)
-            if проверить_файл(полный):
-                плохие.append(полный)
-    return плохие, total
-
-def start_scan():
-    folder = filedialog.askdirectory(title="Выберите папку")
-    if not folder:
-        return
-    status_label.config(text="🔍 Сканирование...", fg="blue")
-    root_win.update()
-    найдено, total = проверить_папку(folder)
-    status_label.config(text=f"✅ Проверено: {total}", fg="green")
-    if найдено:
-        messagebox.showinfo("Результат", f"Найдено: {len(найдено)}")
-        result_text.delete(1.0, tk.END)
-        for f in найдено:
-            result_text.insert(tk.END, f + "\n")
-    else:
-        messagebox.showinfo("Готово", "Файлы чистые!")
-
-root_win = tk.Tk()
-root_win.title("🇷🇺 Антивирус v11")
-root_win.iconbitmap("icon.ico")
-root_win.geometry("600x400")
-
-title_label = tk.Label(root_win, text="🇷🇺 Русские имена", font=("Arial", 16, "bold"))
-title_label.pack(pady=10)
-
-scan_btn = tk.Button(root_win, text="📁 Сканировать папку", command=start_scan, font=("Arial", 12))
-scan_btn.pack(pady=10)
-
-status_label = tk.Label(root_win, text="Ожидание...", font=("Arial", 10))
-status_label.pack(pady=5)
-
-result_text = tk.Text(root_win, height=10, width=70)
-result_text.pack(pady=10)
-
-root_win.mainloop()</pre>
-                </div>
-                <div class="actions">
-                    <button class="btn-secondary" onclick="toggleCode('code11', this)">Показать код</button>
-                    <button class="btn-primary" onclick="copyCode('code11', this)">Скопировать код</button>
-                </div>
-            </article>
-
-            <article class="card c12">
-                <h2>Вариант 12</h2>
-                <div class="meta">Счётчик файлов + логирование + GUI</div>
-                <div class="code-block hidden" id="code12">
-                    <pre># antivirus_v12.py
-import os
-import tkinter as tk
-from tkinter import messagebox, filedialog
-
-SIGNATURES = ['count_v12', 'test_12', 'sample_12']
-LOG_FILE = "antivirus_v12_log.txt"
-
-def scan_folder(folder):
-    checked = 0
-    bad = []
-    for root, _, files in os.walk(folder):
-        for name in files:
-            p = os.path.join(root, name)
-            checked += 1
-            try:
-                txt = open(p, 'r', errors='ignore').read()
-                if any(s in txt for s in SIGNATURES):
-                    bad.append(p)
-            except:
-                pass
-    return checked, bad
-
-def log_msg(msg):
-    with open(LOG_FILE, "a", encoding="utf-8") as f:
-        f.write(msg + "\n")
-
-def start_scan():
-    folder = filedialog.askdirectory(title="Выберите папку")
-    if not folder:
-        return
-    status_label.config(text="🔍 Сканирование...", fg="blue")
-    root_win.update()
-    total, infected = scan_folder(folder)
-    status_label.config(text=f"✅ Проверено: {total}", fg="green")
-    log_msg(f"Проверено: {total}, найдено: {len(infected)}")
-    if infected:
-        messagebox.showinfo("Результат", f"Подозрительных: {len(infected)}")
-        result_text.delete(1.0, tk.END)
-        for f in infected:
-            result_text.insert(tk.END, f + "\n")
-    else:
-        messagebox.showinfo("Готово", "Чисто!")
-
-root_win = tk.Tk()
-root_win.title("📊 Антивирус v12")
-root_win.iconbitmap("icon.ico")
-root_win.geometry("600x400")
-
-title_label = tk.Label(root_win, text="📊 Со счётчиком", font=("Arial", 16, "bold"))
-title_label.pack(pady=10)
-
-scan_btn = tk.Button(root_win, text="📁 Сканировать папку", command=start_scan, font=("Arial", 12))
-scan_btn.pack(pady=10)
-
-status_label = tk.Label(root_win, text="Ожидание...", font=("Arial", 10))
-status_label.pack(pady=5)
-
-result_text = tk.Text(root_win, height=10, width=70)
-result_text.pack(pady=10)
-
-root_win.mainloop()</pre>
-                </div>
-                <div class="actions">
-                    <button class="btn-secondary" onclick="toggleCode('code12', this)">Показать код</button>
-                    <button class="btn-primary" onclick="copyCode('code12', this)">Скопировать код</button>
-                </div>
-            </article>
-
-            <article class="card c13">
-                <h2>Вариант 13</h2>
-                <div class="meta">Финальный + отчёт и подсказки + GUI</div>
-                <div class="code-block hidden" id="code13">
-                    <pre># antivirus_v13.py
-import os
-import tkinter as tk
-from tkinter import messagebox, filedialog
-
-GROUP_NAME = "Группа 13"
-SIGS = ['group13_v', 'final_v13', 'test_13']
-REPORT_FILE = "antivirus_v13_report.txt"
-
-def bad(path):
-    try:
-        data = open(path, 'r', errors='ignore').read()
-        return any(s in data for s in SIGS)
-    except:
-        return False
-
-def start_scan():
-    folder = filedialog.askdirectory(title="Выберите папку")
-    if not folder:
-        return
-    status_label.config(text="🔍 Сканирование...", fg="blue")
-    root_win.update()
-    found = []
-    total = 0
-    for r, _, fs in os.walk(folder):
-        for name in fs:
-            total += 1
-            p = os.path.join(r, name)
-            if bad(p):
-                found.append(p)
-    with open(REPORT_FILE, "w", encoding="utf-8") as f:
-        f.write(f"Отчёт для {GROUP_NAME}\n")
-        f.write(f"Папка: {folder}\n")
-        f.write(f"Проверено файлов: {total}\n")
-        f.write(f"Найдено подозрительных: {len(found)}\n")
-        for x in found:
-            f.write(x + "\n")
-    status_label.config(text=f"✅ Проверено: {total}", fg="green")
-    messagebox.showinfo("Готово", f"Отчёт: {REPORT_FILE}")
-    result_text.delete(1.0, tk.END)
-    result_text.insert(tk.END, f"Папка: {folder}\n")
-    result_text.insert(tk.END, f"Проверено: {total}\n")
-    result_text.insert(tk.END, f"Найдено: {len(found)}\n")
-    result_text.insert(tk.END, f"Отчёт: {REPORT_FILE}\n")
-
-root_win = tk.Tk()
-root_win.title(f"🏁 {GROUP_NAME}")
-root_win.iconbitmap("icon.ico")
-root_win.geometry("600x400")
-
-title_label = tk.Label(root_win, text=f"🏁 Финальный: {GROUP_NAME}", font=("Arial", 16, "bold"))
-title_label.pack(pady=10)
-
-scan_btn = tk.Button(root_win, text="📁 Сканировать папку", command=start_scan, font=("Arial", 12))
-scan_btn.pack(pady=10)
-
-status_label = tk.Label(root_win, text="Ожидание...", font=("Arial", 10))
-status_label.pack(pady=5)
-
-result_text = tk.Text(root_win, height=10, width=70)
-result_text.pack(pady=10)
-
-root_win.mainloop()</pre>
-                </div>
-                <div class="actions">
-                    <button class="btn-secondary" onclick="toggleCode('code13', this)">Показать код</button>
-                    <button class="btn-primary" onclick="copyCode('code13', this)">Скопировать код</button>
-                </div>
-            </article>
-
-            <article class="card c14">
-                <h2>Вариант 14</h2>
-                <div class="meta">Сравнение размеров + поиск аномалий + GUI</div>
-                <div class="code-block hidden" id="code14">
-                    <pre># antivirus_v14.py
-import os
-import tkinter as tk
-from tkinter import messagebox, filedialog
-
-MAX_SIZE_MB = 10  # максимальный нормальный размер
-MIN_SIZE_BYTES = 0  # минимальный размер
-
-def check_size_anomaly(path):
-    try:
-        size = os.path.getsize(path)
-        size_mb = size / (1024 * 1024)
-        if size_mb > MAX_SIZE_MB or size < MIN_SIZE_BYTES:
-            return True, size
-        return False, size
-    except:
-        return False, 0
-
-def scan_folder(folder):
-    anomalies = []
-    total = 0
-    for root, _, files in os.walk(folder):
-        for name in files:
-            total += 1
-            p = os.path.join(root, name)
-            is_anomaly, size = check_size_anomaly(p)
-            if is_anomaly:
-                anomalies.append((p, size))
-    return anomalies, total
-
-def start_scan():
-    folder = filedialog.askdirectory(title="Выберите папку")
-    if not folder:
-        return
-    status_label.config(text="🔍 Сканирование...", fg="blue")
-    root_win.update()
-    anomalies, total = scan_folder(folder)
-    status_label.config(text=f"✅ Проверено: {total}", fg="green")
-    if anomalies:
-        messagebox.showwarning("⚠ Внимание", f"Найдено аномалий: {len(anomalies)}")
-        result_text.delete(1.0, tk.END)
-        for path, size in anomalies:
-            size_kb = size / 1024
-            result_text.insert(tk.END, f"{path} — {size_kb:.2f} KB\n")
-    else:
-        messagebox.showinfo("✅ Готово", "Аномалий не найдено!")
-
-root_win = tk.Tk()
-root_win.title("📏 Антивирус v14")
-root_win.iconbitmap("icon.ico")
-root_win.geometry("600x400")
-
-title_label = tk.Label(root_win, text="📏 Поиск аномалий размеров", font=("Arial", 16, "bold"))
-title_label.pack(pady=10)
-
-scan_btn = tk.Button(root_win, text="📁 Сканировать папку", command=start_scan, font=("Arial", 12))
-scan_btn.pack(pady=10)
-
-status_label = tk.Label(root_win, text="Ожидание...", font=("Arial", 10))
-status_label.pack(pady=5)
-
-result_text = tk.Text(root_win, height=10, width=70)
-result_text.pack(pady=10)
-
-root_win.mainloop()</pre>
-                </div>
-                <div class="actions">
-                    <button class="btn-secondary" onclick="toggleCode('code14', this)">Показать код</button>
-                    <button class="btn-primary" onclick="copyCode('code14', this)">Скопировать код</button>
-                </div>
-            </article>
-
-            <article class="card c15">
-                <h2>Вариант 15</h2>
-                <div class="meta">Поиск по ключевым словам + отчёт + GUI</div>
-                <div class="code-block hidden" id="code15">
-                    <pre># antivirus_v15.py
-import os
-import datetime
-import tkinter as tk
-from tkinter import messagebox, filedialog
-
-SUSPICIOUS_WORDS = [
-    'password', 'secret', 'admin', 'hack', 'crack',
-    'virus', 'malware', 'trojan', 'keylog', 'backdoor'
-]
-REPORT_FILE = "antivirus_v15_report.txt"
-
-def check_keywords(path):
-    found_words = []
-    try:
-        with open(path, 'r', errors='ignore') as f:
-            content = f.read().lower()
-        for word in SUSPICIOUS_WORDS:
-            if word in content:
-                found_words.append(word)
-        return found_words
-    except:
-        return []
-
-def scan_folder(folder):
-    results = []
-    total = 0
-    for root, _, files in os.walk(folder):
-        for name in files:
-            total += 1
-            p = os.path.join(root, name)
-            words = check_keywords(p)
-            if words:
-                results.append((p, words))
-    return results, total
-
-def write_report(results, total):
-    with open(REPORT_FILE, "w", encoding="utf-8") as f:
-        f.write("Отчёт антивируса v15\n")
-        f.write(f"Время: {datetime.datetime.now()}\n")
-        f.write(f"Проверено файлов: {total}\n")
-        f.write(f"Найдено подозрительных: {len(results)}\n\n")
-        for path, words in results:
-            f.write(f"Файл: {path}\n")
-            f.write(f"Слова: {', '.join(words)}\n\n")
-
-def start_scan():
-    folder = filedialog.askdirectory(title="Выберите папку")
-    if not folder:
-        return
-    status_label.config(text="🔍 Сканирование...", fg="blue")
-    root_win.update()
-    results, total = scan_folder(folder)
-    write_report(results, total)
-    status_label.config(text=f"✅ Проверено: {total}", fg="green")
-    if results:
-        messagebox.showwarning("⚠ Внимание", f"Найдено: {len(results)}")
-        result_text.delete(1.0, tk.END)
-        for path, words in results:
-            result_text.insert(tk.END, f"{path}\n")
-            result_text.insert(tk.END, f"  Слова: {', '.join(words)}\n\n")
-    else:
-        messagebox.showinfo("✅ Готово", "Подозрительных слов не найдено!")
-    result_text.insert(tk.END, f"\nОтчёт: {REPORT_FILE}\n")
-
-root_win = tk.Tk()
-root_win.title("🔎 Антивирус v15")
-root_win.iconbitmap("icon.ico")
-root_win.geometry("600x400")
-
-title_label = tk.Label(root_win, text="🔎 Поиск ключевых слов", font=("Arial", 16, "bold"))
-title_label.pack(pady=10)
-
-scan_btn = tk.Button(root_win, text="📁 Сканировать папку", command=start_scan, font=("Arial", 12))
-scan_btn.pack(pady=10)
-
-status_label = tk.Label(root_win, text="Ожидание...", font=("Arial", 10))
-status_label.pack(pady=5)
-
-result_text = tk.Text(root_win, height=10, width=70)
-result_text.pack(pady=10)
-
-root_win.mainloop()</pre>
-                </div>
-                <div class="actions">
-                    <button class="btn-secondary" onclick="toggleCode('code15', this)">Показать код</button>
-                    <button class="btn-primary" onclick="copyCode('code15', this)">Скопировать код</button>
-                </div>
-            </article>
         </div>
-
-        <div class="note">
-            <strong>Важно:</strong> Для работы иконки положи файл <code>icon.ico</code> в ту же папку, где будут скрипты. [web:15][web:19]
-        </div>
-    </main>
+    </div>
 
     <script>
-        function toggleCode(id, btn) {
-            const block = document.getElementById(id);
-            const isHidden = block.classList.contains('hidden');
-            if (isHidden) {
-                block.classList.remove('hidden');
-                btn.innerText = 'Скрыть код';
-            } else {
-                block.classList.add('hidden');
-                btn.innerText = 'Показать код';
+        const questions = [{
+                question: "Что такое антивирус?",
+                answers: [
+                    "Игра про супергероев",
+                    "Программа для защиты устройства от вредных программ",
+                    "Программа для рисования",
+                    "Музыкальный проигрыватель"
+                ],
+                correct: 1,
+                explanation: "Антивирус помогает находить, блокировать и удалять вредные программы."
+            },
+
+            {
+                question: "Что может сделать компьютерный вирус?",
+                answers: [
+                    "Помочь зарядить компьютер",
+                    "Ускорить интернет",
+                    "Повредить файлы или украсть данные",
+                    "Напечатать домашнее задание сам"
+                ],
+                correct: 2,
+                explanation: "Вирус может повредить файлы, украсть информацию или мешать работе устройства."
+            },
+
+            {
+                question: "Почему важно обновлять антивирус?",
+                answers: [
+                    "Чтобы он знал о новых вредных программах",
+                    "Чтобы экран стал ярче",
+                    "Чтобы компьютер изменил цвет",
+                    "Чтобы клавиатура стала громче"
+                ],
+                correct: 0,
+                explanation: "Обновления помогают антивирусу распознавать новые угрозы."
+            },
+
+            {
+                question: "Что нужно сделать, если антивирус нашёл угрозу?",
+                answers: [
+                    "Нажать на все кнопки подряд",
+                    "Попросить взрослого и следовать рекомендациям антивируса",
+                    "Выключить звук",
+                    "Отправить угрозу другу"
+                ],
+                correct: 1,
+                explanation: "Лучше не рисковать: сообщи взрослому и выполни безопасные рекомендации программы."
+            },
+
+            {
+                question: "Что такое вредоносная программа?",
+                answers: [
+                    "Программа, созданная для причинения вреда",
+                    "Любая программа для учёбы",
+                    "Калькулятор",
+                    "Электронная книга"
+                ],
+                correct: 0,
+                explanation: "Вредоносные программы могут повреждать устройство или красть личные данные."
+            },
+
+            {
+                question: "Какой файл опаснее открывать без проверки?",
+                answers: [
+                    "Файл от неизвестного отправителя",
+                    "Домашнее задание от учителя",
+                    "Фотографию из своей папки",
+                    "Файл, который создал ты сам"
+                ],
+                correct: 0,
+                explanation: "Неизвестные файлы могут содержать вредоносные программы."
+            },
+
+            {
+                question: "Можно ли скачивать программы с неизвестных сайтов?",
+                answers: [
+                    "Да, всегда",
+                    "Только ночью",
+                    "Лучше не делать этого",
+                    "Только если сайт яркий"
+                ],
+                correct: 2,
+                explanation: "Скачивай программы с официальных сайтов или магазинов приложений."
+            },
+
+            {
+                question: "Что такое фишинг?",
+                answers: [
+                    "Рыбалка в компьютерной игре",
+                    "Обман, чтобы получить личные данные",
+                    "Способ ускорить компьютер",
+                    "Вид антивируса"
+                ],
+                correct: 1,
+                explanation: "Фишинг — это попытка обманом узнать пароль, номер карты или другие данные."
+            },
+
+            {
+                question: "Какой пароль считается более надёжным?",
+                answers: [
+                    "123456",
+                    "qwerty",
+                    "Имя домашнего питомца",
+                    "Длинный пароль с буквами, цифрами и символами"
+                ],
+                correct: 3,
+                explanation: "Длинные и сложные пароли труднее подобрать."
+            },
+
+            {
+                question: "Можно ли сообщать свой пароль незнакомцу в интернете?",
+                answers: [
+                    "Да, если он вежливый",
+                    "Да, если он обещает подарок",
+                    "Нет",
+                    "Только утром"
+                ],
+                correct: 2,
+                explanation: "Пароль нельзя сообщать незнакомцам, даже если они обещают подарок или пугают."
+            },
+
+            {
+                question: "Что нужно сделать перед подключением флешки к компьютеру?",
+                answers: [
+                    "Проверить её антивирусом",
+                    "Положить её на стол",
+                    "Покрутить её в руке",
+                    "Ничего"
+                ],
+                correct: 0,
+                explanation: "Флешка может содержать вредные файлы, поэтому её желательно проверить."
+            },
+
+            {
+                question: "Что означает значок замка возле адреса сайта?",
+                answers: [
+                    "Сайт принадлежит замку",
+                    "Соединение с сайтом защищено",
+                    "На сайте можно найти игры",
+                    "Компьютер заблокирован"
+                ],
+                correct: 1,
+                explanation: "Замок обычно показывает, что соединение с сайтом защищено. Но адрес сайта всё равно нужно проверять."
+            },
+
+            {
+                question: "Нужно ли устанавливать два или три антивируса одновременно?",
+                answers: [
+                    "Да, чем больше, тем лучше",
+                    "Обычно нет, это может мешать работе устройства",
+                    "Только на планшете",
+                    "Только во время игры"
+                ],
+                correct: 1,
+                explanation: "Несколько антивирусов могут конфликтовать. Обычно достаточно одного надёжного решения."
+            },
+
+            {
+                question: "Что делать, если появилось странное окно с просьбой срочно ввести пароль?",
+                answers: [
+                    "Сразу ввести пароль",
+                    "Закрыть окно и обратиться к взрослому",
+                    "Отправить пароль в чат",
+                    "Позвонить по неизвестному номеру"
+                ],
+                correct: 1,
+                explanation: "Срочные требования ввести пароль часто используются мошенниками."
+            },
+
+            {
+                question: "Какие приложения безопаснее устанавливать?",
+                answers: [
+                    "Из официального магазина или сайта разработчика",
+                    "Из любой ссылки в комментариях",
+                    "Из рекламного баннера",
+                    "Из сообщения неизвестного человека"
+                ],
+                correct: 0,
+                explanation: "Официальные источники обычно лучше проверяют приложения."
+            },
+
+            {
+                question: "Что такое резервная копия?",
+                answers: [
+                    "Копия важных файлов на другом носителе",
+                    "Запасная клавиатура",
+                    "Новая компьютерная игра",
+                    "Обои для рабочего стола"
+                ],
+                correct: 0,
+                explanation: "Резервная копия поможет восстановить важные файлы, если они потеряются."
+            },
+
+            {
+                question: "Может ли вредная программа попасть на устройство через ссылку?",
+                answers: [
+                    "Нет, никогда",
+                    "Да, если ссылка ведёт на опасный сайт или файл",
+                    "Только через принтер",
+                    "Только во время зарядки"
+                ],
+                correct: 1,
+                explanation: "Не переходи по подозрительным ссылкам и не скачивай неизвестные файлы."
+            },
+
+            {
+                question: "Что делать, если компьютер начал странно работать после установки программы?",
+                answers: [
+                    "Продолжить устанавливать ещё программы",
+                    "Сообщить взрослому и проверить устройство",
+                    "Удалить все фотографии",
+                    "Игнорировать проблему"
+                ],
+                correct: 1,
+                explanation: "Странная работа устройства может быть признаком проблемы или вредной программы."
+            },
+
+            {
+                question: "Что нужно делать с операционной системой и приложениями?",
+                answers: [
+                    "Никогда не обновлять",
+                    "Обновлять, когда доступны безопасные обновления",
+                    "Удалять после каждого запуска",
+                    "Менять каждый день"
+                ],
+                correct: 1,
+                explanation: "Обновления исправляют ошибки и закрывают уязвимости."
+            },
+
+            {
+                question: "Главное правило компьютерной безопасности — это...",
+                answers: [
+                    "Никому не доверять и ничего не включать",
+                    "Думать перед тем, как открыть ссылку, файл или установить программу",
+                    "Использовать только игры",
+                    "Ставить как можно больше программ"
+                ],
+                correct: 1,
+                explanation: "Внимательность — одна из самых важных защит от вредных программ."
             }
-        }
-        async function copyCode(id, btn) {
-            const block = document.getElementById(id);
-            const text = block.querySelector('pre').innerText;
-            await navigator.clipboard.writeText(text);
-            const old = btn.innerText;
-            btn.innerText = 'Скопировано!';
-            setTimeout(() => btn.innerText = old, 1200);
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+        let answered = false;
+
+        const quizScreen = document.getElementById("quizScreen");
+        const resultScreen = document.getElementById("resultScreen");
+
+        const questionNumber = document.getElementById("questionNumber");
+        const questionElement = document.getElementById("question");
+        const answersElement = document.getElementById("answers");
+        const explanationElement = document.getElementById("explanation");
+
+        const nextButton = document.getElementById("nextButton");
+        const restartButton = document.getElementById("restartButton");
+
+        const progressBar = document.getElementById("progressBar");
+        const currentScore = document.getElementById("currentScore");
+
+        const scoreElement = document.getElementById("score");
+        const resultText = document.getElementById("resultText");
+        const resultEmoji = document.getElementById("resultEmoji");
+
+
+        function showQuestion() {
+            answered = false;
+
+            const current = questions[currentQuestion];
+
+            questionNumber.textContent =
+                `Вопрос ${currentQuestion + 1} из ${questions.length}`;
+
+            questionElement.textContent = current.question;
+
+            answersElement.innerHTML = "";
+            explanationElement.style.display = "none";
+            nextButton.style.display = "none";
+
+            const progress = (currentQuestion / questions.length) * 100;
+            progressBar.style.width = progress + "%";
+
+            current.answers.forEach((answer, index) => {
+                const button = document.createElement("button");
+
+                button.className = "answer";
+                button.textContent = answer;
+
+                button.addEventListener("click", function() {
+                    checkAnswer(index, button);
+                });
+
+                answersElement.appendChild(button);
+            });
         }
 
+
+        function checkAnswer(selectedIndex, selectedButton) {
+            if (answered) {
+                return;
+            }
+
+            answered = true;
+
+            const current = questions[currentQuestion];
+            const allButtons = document.querySelectorAll(".answer");
+
+            allButtons.forEach(function(button) {
+                button.disabled = true;
+            });
+
+            if (selectedIndex === current.correct) {
+                score++;
+                currentScore.textContent = score;
+                selectedButton.classList.add("correct");
+            } else {
+                selectedButton.classList.add("wrong");
+                allButtons[current.correct].classList.add("correct");
+            }
+
+            explanationElement.textContent = current.explanation;
+            explanationElement.style.display = "block";
+
+            nextButton.style.display = "block";
+
+            if (currentQuestion === questions.length - 1) {
+                nextButton.textContent = "Показать результат";
+            } else {
+                nextButton.textContent = "Следующий вопрос";
+            }
+        }
+
+
+        function showResult() {
+            quizScreen.style.display = "none";
+            resultScreen.style.display = "block";
+
+            progressBar.style.width = "100%";
+
+            scoreElement.textContent =
+                `Твой результат: ${score} из ${questions.length}`;
+
+            if (score === 20) {
+                resultEmoji.textContent = "🏆";
+                resultText.textContent =
+                    "Отлично! Ты настоящий эксперт по компьютерной безопасности!";
+            } else if (score >= 15) {
+                resultEmoji.textContent = "🌟";
+                resultText.textContent =
+                    "Очень хороший результат! Ты хорошо знаешь правила безопасности.";
+            } else if (score >= 10) {
+                resultEmoji.textContent = "👍";
+                resultText.textContent =
+                    "Неплохо! Повтори правила и попробуй пройти квиз ещё раз.";
+            } else {
+                resultEmoji.textContent = "📚";
+                resultText.textContent =
+                    "Не расстраивайся! Изучи правила безопасности и попробуй снова.";
+            }
+
+            restartButton.style.display = "inline-block";
+        }
+
+
+        nextButton.addEventListener("click", function() {
+            currentQuestion++;
+
+            if (currentQuestion < questions.length) {
+                showQuestion();
+            } else {
+                showResult();
+            }
+        });
+
+
+        restartButton.addEventListener("click", function() {
+            currentQuestion = 0;
+            score = 0;
+
+            currentScore.textContent = "0";
+
+            resultScreen.style.display = "none";
+            quizScreen.style.display = "block";
+
+            showQuestion();
+        });
+
+
+        showQuestion();
+
     </script>
+
 </body>
 
 </html>
