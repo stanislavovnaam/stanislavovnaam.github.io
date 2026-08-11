@@ -4,7 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Квиз об антивирусах</title>
+
+    <title>Квиз: Фишинг и подозрительные ссылки</title>
 
     <style>
         * {
@@ -13,184 +14,116 @@
 
         body {
             margin: 0;
-            min-height: 100vh;
             font-family: Arial, sans-serif;
             background: linear-gradient(135deg, #dff6ff, #f3e8ff);
             color: #263238;
         }
 
         .container {
-            width: 100%;
-            max-width: 850px;
-            margin: 0 auto;
-            padding: 25px 15px;
+            max-width: 800px;
+            margin: 30px auto;
+            padding: 15px;
         }
 
-        .quiz-card {
-            background: #ffffff;
-            border-radius: 24px;
+        .quiz {
             padding: 30px;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+            border-radius: 22px;
+            background: white;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
         }
 
         h1 {
             margin-top: 0;
             color: #3949ab;
             text-align: center;
-            font-size: 34px;
         }
 
-        .intro {
+        .description {
             text-align: center;
             font-size: 18px;
             line-height: 1.5;
         }
 
-        .progress {
-            height: 16px;
-            margin: 22px 0 12px;
-            background: #e0e0e0;
-            border-radius: 10px;
-            overflow: hidden;
-        }
-
-        .progress-bar {
-            width: 0%;
-            height: 100%;
-            background: #43a047;
-            transition: width 0.3s ease;
-        }
-
-        .score-counter {
-            margin: 15px 0 25px;
-            padding: 12px;
-            border-radius: 12px;
-            background: #e8f5e9;
-            color: #2e7d32;
-            text-align: center;
-            font-size: 19px;
-            font-weight: bold;
-        }
-
-        .question-number {
-            margin-bottom: 10px;
-            color: #757575;
-            font-size: 16px;
-        }
-
         .question {
-            margin-bottom: 24px;
-            font-size: 25px;
-            font-weight: bold;
-            line-height: 1.35;
+            margin-top: 25px;
+            padding: 20px;
+            border: 2px solid #c5cae9;
+            border-radius: 15px;
+            background: #f8f9ff;
         }
 
-        .answers {
-            display: grid;
-            gap: 12px;
+        .question h2 {
+            margin-top: 0;
+            color: #303f9f;
+            font-size: 21px;
         }
 
         .answer {
-            width: 100%;
-            padding: 15px;
-            border: 2px solid #c5cae9;
-            border-radius: 14px;
-            background: #f8f9ff;
-            color: #263238;
-            font-size: 17px;
-            text-align: left;
+            display: block;
+            margin: 10px 0;
+            padding: 12px;
+            border-radius: 10px;
+            background: white;
             cursor: pointer;
             transition: 0.2s;
         }
 
         .answer:hover {
             background: #e8eaf6;
-            transform: translateY(-2px);
         }
 
-        .answer:disabled {
-            cursor: default;
-            transform: none;
+        .answer input {
+            margin-right: 8px;
         }
 
-        .answer.correct {
-            border-color: #43a047;
-            background: #c8e6c9;
-        }
-
-        .answer.wrong {
-            border-color: #e53935;
-            background: #ffcdd2;
-        }
-
-        .explanation {
-            display: none;
-            margin-top: 20px;
-            padding: 15px;
-            border-left: 5px solid #ffb300;
-            border-radius: 8px;
+        details {
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 10px;
             background: #fff8e1;
-            line-height: 1.5;
         }
 
-        .next-button,
-        .restart-button {
-            display: none;
-            margin: 25px auto 0;
-            padding: 14px 28px;
-            border: none;
-            border-radius: 12px;
-            background: #3949ab;
-            color: white;
-            font-size: 17px;
+        summary {
+            color: #e65100;
+            font-weight: bold;
             cursor: pointer;
         }
 
-        .next-button:hover,
-        .restart-button:hover {
-            background: #283593;
-        }
-
-        .result {
-            display: none;
-            text-align: center;
-        }
-
-        .result h2 {
-            color: #3949ab;
-            font-size: 30px;
-        }
-
-        .emoji {
-            font-size: 64px;
-        }
-
-        .score {
+        .correct-answer {
+            margin-top: 10px;
             color: #2e7d32;
-            font-size: 25px;
-            font-weight: bold;
-        }
-
-        #resultText {
-            font-size: 18px;
             line-height: 1.5;
         }
 
+        .finish {
+            margin-top: 25px;
+            padding: 18px;
+            border-radius: 12px;
+            background: #e8f5e9;
+            color: #2e7d32;
+            text-align: center;
+            font-weight: bold;
+            line-height: 1.5;
+        }
+
+        code {
+            padding: 3px 6px;
+            border-radius: 5px;
+            background: #eeeeee;
+            color: #c62828;
+        }
+
         @media (max-width: 600px) {
-            .quiz-card {
-                padding: 20px;
+            .quiz {
+                padding: 18px;
             }
 
             h1 {
                 font-size: 27px;
             }
 
-            .question {
-                font-size: 21px;
-            }
-
-            .answer {
-                font-size: 16px;
+            .question h2 {
+                font-size: 19px;
             }
         }
 
@@ -200,447 +133,290 @@
 <body>
 
     <div class="container">
-        <div class="quiz-card">
+        <main class="quiz">
 
-            <div id="quizScreen">
-                <h1>🛡️ Квиз об антивирусах</h1>
+            <h1>🎣 Квиз: Фишинг и ссылки</h1>
 
-                <p class="intro">
-                    Проверь, насколько хорошо ты знаешь правила защиты
-                    компьютера и смартфона от вредных программ!
-                </p>
+            <p class="description">
+                Выбери правильный вариант ответа.
+                После этого открой блок «Проверить ответ».
+            </p>
 
-                <div class="progress">
-                    <div class="progress-bar" id="progressBar"></div>
-                </div>
+            <!-- Вопрос 1 -->
+            <section class="question">
+                <h2>1. Что такое фишинг?</h2>
 
-                <div class="score-counter">
-                    ✅ Правильных ответов:
-                    <span id="currentScore">0</span>
-                    из 20
-                </div>
+                <label class="answer">
+                    <input type="radio" name="question1">
+                    Рыбалка на озере
+                </label>
 
-                <div class="question-number" id="questionNumber"></div>
-                <div class="question" id="question"></div>
+                <label class="answer">
+                    <input type="radio" name="question1">
+                    Обман для получения личных данных
+                </label>
 
-                <div class="answers" id="answers"></div>
+                <label class="answer">
+                    <input type="radio" name="question1">
+                    Компьютерная игра
+                </label>
 
-                <div class="explanation" id="explanation"></div>
+                <label class="answer">
+                    <input type="radio" name="question1">
+                    Способ ускорить интернет
+                </label>
 
-                <button class="next-button" id="nextButton">
-                    Следующий вопрос
-                </button>
+                <details>
+                    <summary>Проверить ответ</summary>
+                    <p class="correct-answer">
+                        ✅ Правильный ответ: обман для получения личных данных.
+                        Например, мошенник может пытаться узнать пароль.
+                    </p>
+                </details>
+            </section>
+
+            <!-- Вопрос 2 -->
+            <section class="question">
+                <h2>2. Какую ссылку нужно проверить особенно внимательно?</h2>
+
+                <label class="answer">
+                    <input type="radio" name="question2">
+                    Ссылку от неизвестного отправителя
+                </label>
+
+                <label class="answer">
+                    <input type="radio" name="question2">
+                    Ссылку на школьный сайт, которую дал учитель
+                </label>
+
+                <label class="answer">
+                    <input type="radio" name="question2">
+                    Ссылку из своей папки
+                </label>
+
+                <label class="answer">
+                    <input type="radio" name="question2">
+                    Любую ссылку на картинку
+                </label>
+
+                <details>
+                    <summary>Проверить ответ</summary>
+                    <p class="correct-answer">
+                        ✅ Правильный ответ: ссылку от неизвестного отправителя.
+                        Не переходи по ней сразу и покажи её взрослому.
+                    </p>
+                </details>
+            </section>
+
+            <!-- Вопрос 3 -->
+            <section class="question">
+                <h2>3. Какая ссылка выглядит подозрительно?</h2>
+
+                <label class="answer">
+                    <input type="radio" name="question3">
+                    https://school.ru
+                </label>
+
+                <label class="answer">
+                    <input type="radio" name="question3">
+                    https://google.com
+                </label>
+
+                <label class="answer">
+                    <input type="radio" name="question3">
+                    https://sch0ol.ru
+                </label>
+
+                <label class="answer">
+                    <input type="radio" name="question3">
+                    https://wikipedia.org
+                </label>
+
+                <details>
+                    <summary>Проверить ответ</summary>
+                    <p class="correct-answer">
+                        ✅ Правильный ответ: https://sch0ol.ru.
+                        В адресе буква «o» заменена цифрой «0».
+                        Такие подмены могут использовать мошенники.
+                    </p>
+                </details>
+            </section>
+
+            <!-- Вопрос 4 -->
+            <section class="question">
+                <h2>4. Что делать, если сообщение требует срочно ввести пароль?</h2>
+
+                <label class="answer">
+                    <input type="radio" name="question4">
+                    Сразу ввести пароль
+                </label>
+
+                <label class="answer">
+                    <input type="radio" name="question4">
+                    Отправить сообщение другу
+                </label>
+
+                <label class="answer">
+                    <input type="radio" name="question4">
+                    Закрыть сообщение и обратиться к взрослому
+                </label>
+
+                <label class="answer">
+                    <input type="radio" name="question4">
+                    Ввести любой пароль
+                </label>
+
+                <details>
+                    <summary>Проверить ответ</summary>
+                    <p class="correct-answer">
+                        ✅ Правильный ответ: закрыть сообщение и обратиться к взрослому.
+                        Слова «срочно» и «немедленно» часто используются,
+                        чтобы человек начал действовать не подумав.
+                    </p>
+                </details>
+            </section>
+
+            <!-- Вопрос 5 -->
+            <section class="question">
+                <h2>5. Можно ли сообщать свой пароль в чате?</h2>
+
+                <label class="answer">
+                    <input type="radio" name="question5">
+                    Да, если человек представился другом
+                </label>
+
+                <label class="answer">
+                    <input type="radio" name="question5">
+                    Да, если обещают подарок
+                </label>
+
+                <label class="answer">
+                    <input type="radio" name="question5">
+                    Нет, пароль нельзя сообщать другим людям
+                </label>
+
+                <label class="answer">
+                    <input type="radio" name="question5">
+                    Только вечером
+                </label>
+
+                <details>
+                    <summary>Проверить ответ</summary>
+                    <p class="correct-answer">
+                        ✅ Правильный ответ: нет, пароль нельзя сообщать другим людям.
+                        Если кто-то просит пароль, нужно рассказать взрослому.
+                    </p>
+                </details>
+            </section>
+
+            <!-- Вопрос 6 -->
+            <section class="question">
+                <h2>6. Что означает сообщение «Вы выиграли телефон!» от неизвестного сайта?</h2>
+
+                <label class="answer">
+                    <input type="radio" name="question6">
+                    Это точно настоящий подарок
+                </label>
+
+                <label class="answer">
+                    <input type="radio" name="question6">
+                    Это может быть обман
+                </label>
+
+                <label class="answer">
+                    <input type="radio" name="question6">
+                    Нужно отправить номер карты
+                </label>
+
+                <label class="answer">
+                    <input type="radio" name="question6">
+                    Нужно скачать неизвестный файл
+                </label>
+
+                <details>
+                    <summary>Проверить ответ</summary>
+                    <p class="correct-answer">
+                        ✅ Правильный ответ: это может быть обман.
+                        Не вводи личные данные и не открывай подозрительные файлы.
+                    </p>
+                </details>
+            </section>
+
+            <!-- Вопрос 7 -->
+            <section class="question">
+                <h2>7. Что нужно проверить в адресе сайта?</h2>
+
+                <label class="answer">
+                    <input type="radio" name="question7">
+                    Только цвет страницы
+                </label>
+
+                <label class="answer">
+                    <input type="radio" name="question7">
+                    Название сайта, буквы, цифры и домен
+                </label>
+
+                <label class="answer">
+                    <input type="radio" name="question7">
+                    Количество картинок
+                </label>
+
+                <label class="answer">
+                    <input type="radio" name="question7">
+                    Размер шрифта
+                </label>
+
+                <details>
+                    <summary>Проверить ответ</summary>
+                    <p class="correct-answer">
+                        ✅ Правильный ответ: название сайта, буквы, цифры и домен.
+                        В поддельном адресе могут быть лишние символы или заменённые буквы.
+                    </p>
+                </details>
+            </section>
+
+            <!-- Вопрос 8 -->
+            <section class="question">
+                <h2>8. Что делать с подозрительной ссылкой?</h2>
+
+                <label class="answer">
+                    <input type="radio" name="question8">
+                    Открыть её несколько раз
+                </label>
+
+                <label class="answer">
+                    <input type="radio" name="question8">
+                    Отправить всем друзьям
+                </label>
+
+                <label class="answer">
+                    <input type="radio" name="question8">
+                    Не открывать и показать взрослому
+                </label>
+
+                <label class="answer">
+                    <input type="radio" name="question8">
+                    Скачать всё, что предложит сайт
+                </label>
+
+                <details>
+                    <summary>Проверить ответ</summary>
+                    <p class="correct-answer">
+                        ✅ Правильный ответ: не открывать и показать взрослому.
+                    </p>
+                </details>
+            </section>
+
+            <div class="finish">
+                🎉 Квиз завершён!<br>
+                Посчитай количество правильных ответов самостоятельно.
             </div>
 
-            <div class="result" id="resultScreen">
-                <div class="emoji" id="resultEmoji">🎉</div>
-
-                <h2>Квиз завершён!</h2>
-
-                <p class="score" id="score"></p>
-
-                <p id="resultText"></p>
-
-                <button class="restart-button" id="restartButton">
-                    Пройти ещё раз
-                </button>
-            </div>
-
-        </div>
+        </main>
     </div>
 
-    <script>
-        const questions = [{
-                question: "Что такое антивирус?",
-                answers: [
-                    "Игра про супергероев",
-                    "Программа для защиты устройства от вредных программ",
-                    "Программа для рисования",
-                    "Музыкальный проигрыватель"
-                ],
-                correct: 1,
-                explanation: "Антивирус помогает находить, блокировать и удалять вредные программы."
-            },
-
-            {
-                question: "Что может сделать компьютерный вирус?",
-                answers: [
-                    "Помочь зарядить компьютер",
-                    "Ускорить интернет",
-                    "Повредить файлы или украсть данные",
-                    "Напечатать домашнее задание сам"
-                ],
-                correct: 2,
-                explanation: "Вирус может повредить файлы, украсть информацию или мешать работе устройства."
-            },
-
-            {
-                question: "Почему важно обновлять антивирус?",
-                answers: [
-                    "Чтобы он знал о новых вредных программах",
-                    "Чтобы экран стал ярче",
-                    "Чтобы компьютер изменил цвет",
-                    "Чтобы клавиатура стала громче"
-                ],
-                correct: 0,
-                explanation: "Обновления помогают антивирусу распознавать новые угрозы."
-            },
-
-            {
-                question: "Что нужно сделать, если антивирус нашёл угрозу?",
-                answers: [
-                    "Нажать на все кнопки подряд",
-                    "Попросить взрослого и следовать рекомендациям антивируса",
-                    "Выключить звук",
-                    "Отправить угрозу другу"
-                ],
-                correct: 1,
-                explanation: "Лучше не рисковать: сообщи взрослому и выполни безопасные рекомендации программы."
-            },
-
-            {
-                question: "Что такое вредоносная программа?",
-                answers: [
-                    "Программа, созданная для причинения вреда",
-                    "Любая программа для учёбы",
-                    "Калькулятор",
-                    "Электронная книга"
-                ],
-                correct: 0,
-                explanation: "Вредоносные программы могут повреждать устройство или красть личные данные."
-            },
-
-            {
-                question: "Какой файл опаснее открывать без проверки?",
-                answers: [
-                    "Файл от неизвестного отправителя",
-                    "Домашнее задание от учителя",
-                    "Фотографию из своей папки",
-                    "Файл, который создал ты сам"
-                ],
-                correct: 0,
-                explanation: "Неизвестные файлы могут содержать вредоносные программы."
-            },
-
-            {
-                question: "Можно ли скачивать программы с неизвестных сайтов?",
-                answers: [
-                    "Да, всегда",
-                    "Только ночью",
-                    "Лучше не делать этого",
-                    "Только если сайт яркий"
-                ],
-                correct: 2,
-                explanation: "Скачивай программы с официальных сайтов или магазинов приложений."
-            },
-
-            {
-                question: "Что такое фишинг?",
-                answers: [
-                    "Рыбалка в компьютерной игре",
-                    "Обман, чтобы получить личные данные",
-                    "Способ ускорить компьютер",
-                    "Вид антивируса"
-                ],
-                correct: 1,
-                explanation: "Фишинг — это попытка обманом узнать пароль, номер карты или другие данные."
-            },
-
-            {
-                question: "Какой пароль считается более надёжным?",
-                answers: [
-                    "123456",
-                    "qwerty",
-                    "Имя домашнего питомца",
-                    "Длинный пароль с буквами, цифрами и символами"
-                ],
-                correct: 3,
-                explanation: "Длинные и сложные пароли труднее подобрать."
-            },
-
-            {
-                question: "Можно ли сообщать свой пароль незнакомцу в интернете?",
-                answers: [
-                    "Да, если он вежливый",
-                    "Да, если он обещает подарок",
-                    "Нет",
-                    "Только утром"
-                ],
-                correct: 2,
-                explanation: "Пароль нельзя сообщать незнакомцам, даже если они обещают подарок или пугают."
-            },
-
-            {
-                question: "Что нужно сделать перед подключением флешки к компьютеру?",
-                answers: [
-                    "Проверить её антивирусом",
-                    "Положить её на стол",
-                    "Покрутить её в руке",
-                    "Ничего"
-                ],
-                correct: 0,
-                explanation: "Флешка может содержать вредные файлы, поэтому её желательно проверить."
-            },
-
-            {
-                question: "Что означает значок замка возле адреса сайта?",
-                answers: [
-                    "Сайт принадлежит замку",
-                    "Соединение с сайтом защищено",
-                    "На сайте можно найти игры",
-                    "Компьютер заблокирован"
-                ],
-                correct: 1,
-                explanation: "Замок обычно показывает, что соединение с сайтом защищено. Но адрес сайта всё равно нужно проверять."
-            },
-
-            {
-                question: "Нужно ли устанавливать два или три антивируса одновременно?",
-                answers: [
-                    "Да, чем больше, тем лучше",
-                    "Обычно нет, это может мешать работе устройства",
-                    "Только на планшете",
-                    "Только во время игры"
-                ],
-                correct: 1,
-                explanation: "Несколько антивирусов могут конфликтовать. Обычно достаточно одного надёжного решения."
-            },
-
-            {
-                question: "Что делать, если появилось странное окно с просьбой срочно ввести пароль?",
-                answers: [
-                    "Сразу ввести пароль",
-                    "Закрыть окно и обратиться к взрослому",
-                    "Отправить пароль в чат",
-                    "Позвонить по неизвестному номеру"
-                ],
-                correct: 1,
-                explanation: "Срочные требования ввести пароль часто используются мошенниками."
-            },
-
-            {
-                question: "Какие приложения безопаснее устанавливать?",
-                answers: [
-                    "Из официального магазина или сайта разработчика",
-                    "Из любой ссылки в комментариях",
-                    "Из рекламного баннера",
-                    "Из сообщения неизвестного человека"
-                ],
-                correct: 0,
-                explanation: "Официальные источники обычно лучше проверяют приложения."
-            },
-
-            {
-                question: "Что такое резервная копия?",
-                answers: [
-                    "Копия важных файлов на другом носителе",
-                    "Запасная клавиатура",
-                    "Новая компьютерная игра",
-                    "Обои для рабочего стола"
-                ],
-                correct: 0,
-                explanation: "Резервная копия поможет восстановить важные файлы, если они потеряются."
-            },
-
-            {
-                question: "Может ли вредная программа попасть на устройство через ссылку?",
-                answers: [
-                    "Нет, никогда",
-                    "Да, если ссылка ведёт на опасный сайт или файл",
-                    "Только через принтер",
-                    "Только во время зарядки"
-                ],
-                correct: 1,
-                explanation: "Не переходи по подозрительным ссылкам и не скачивай неизвестные файлы."
-            },
-
-            {
-                question: "Что делать, если компьютер начал странно работать после установки программы?",
-                answers: [
-                    "Продолжить устанавливать ещё программы",
-                    "Сообщить взрослому и проверить устройство",
-                    "Удалить все фотографии",
-                    "Игнорировать проблему"
-                ],
-                correct: 1,
-                explanation: "Странная работа устройства может быть признаком проблемы или вредной программы."
-            },
-
-            {
-                question: "Что нужно делать с операционной системой и приложениями?",
-                answers: [
-                    "Никогда не обновлять",
-                    "Обновлять, когда доступны безопасные обновления",
-                    "Удалять после каждого запуска",
-                    "Менять каждый день"
-                ],
-                correct: 1,
-                explanation: "Обновления исправляют ошибки и закрывают уязвимости."
-            },
-
-            {
-                question: "Главное правило компьютерной безопасности — это...",
-                answers: [
-                    "Никому не доверять и ничего не включать",
-                    "Думать перед тем, как открыть ссылку, файл или установить программу",
-                    "Использовать только игры",
-                    "Ставить как можно больше программ"
-                ],
-                correct: 1,
-                explanation: "Внимательность — одна из самых важных защит от вредных программ."
-            }
-        ];
-
-        let currentQuestion = 0;
-        let score = 0;
-        let answered = false;
-
-        const quizScreen = document.getElementById("quizScreen");
-        const resultScreen = document.getElementById("resultScreen");
-
-        const questionNumber = document.getElementById("questionNumber");
-        const questionElement = document.getElementById("question");
-        const answersElement = document.getElementById("answers");
-        const explanationElement = document.getElementById("explanation");
-
-        const nextButton = document.getElementById("nextButton");
-        const restartButton = document.getElementById("restartButton");
-
-        const progressBar = document.getElementById("progressBar");
-        const currentScore = document.getElementById("currentScore");
-
-        const scoreElement = document.getElementById("score");
-        const resultText = document.getElementById("resultText");
-        const resultEmoji = document.getElementById("resultEmoji");
-
-
-        function showQuestion() {
-            answered = false;
-
-            const current = questions[currentQuestion];
-
-            questionNumber.textContent =
-                `Вопрос ${currentQuestion + 1} из ${questions.length}`;
-
-            questionElement.textContent = current.question;
-
-            answersElement.innerHTML = "";
-            explanationElement.style.display = "none";
-            nextButton.style.display = "none";
-
-            const progress = (currentQuestion / questions.length) * 100;
-            progressBar.style.width = progress + "%";
-
-            current.answers.forEach((answer, index) => {
-                const button = document.createElement("button");
-
-                button.className = "answer";
-                button.textContent = answer;
-
-                button.addEventListener("click", function() {
-                    checkAnswer(index, button);
-                });
-
-                answersElement.appendChild(button);
-            });
-        }
-
-
-        function checkAnswer(selectedIndex, selectedButton) {
-            if (answered) {
-                return;
-            }
-
-            answered = true;
-
-            const current = questions[currentQuestion];
-            const allButtons = document.querySelectorAll(".answer");
-
-            allButtons.forEach(function(button) {
-                button.disabled = true;
-            });
-
-            if (selectedIndex === current.correct) {
-                score++;
-                currentScore.textContent = score;
-                selectedButton.classList.add("correct");
-            } else {
-                selectedButton.classList.add("wrong");
-                allButtons[current.correct].classList.add("correct");
-            }
-
-            explanationElement.textContent = current.explanation;
-            explanationElement.style.display = "block";
-
-            nextButton.style.display = "block";
-
-            if (currentQuestion === questions.length - 1) {
-                nextButton.textContent = "Показать результат";
-            } else {
-                nextButton.textContent = "Следующий вопрос";
-            }
-        }
-
-
-        function showResult() {
-            quizScreen.style.display = "none";
-            resultScreen.style.display = "block";
-
-            progressBar.style.width = "100%";
-
-            scoreElement.textContent =
-                `Твой результат: ${score} из ${questions.length}`;
-
-            if (score === 20) {
-                resultEmoji.textContent = "🏆";
-                resultText.textContent =
-                    "Отлично! Ты настоящий эксперт по компьютерной безопасности!";
-            } else if (score >= 15) {
-                resultEmoji.textContent = "🌟";
-                resultText.textContent =
-                    "Очень хороший результат! Ты хорошо знаешь правила безопасности.";
-            } else if (score >= 10) {
-                resultEmoji.textContent = "👍";
-                resultText.textContent =
-                    "Неплохо! Повтори правила и попробуй пройти квиз ещё раз.";
-            } else {
-                resultEmoji.textContent = "📚";
-                resultText.textContent =
-                    "Не расстраивайся! Изучи правила безопасности и попробуй снова.";
-            }
-
-            restartButton.style.display = "inline-block";
-        }
-
-
-        nextButton.addEventListener("click", function() {
-            currentQuestion++;
-
-            if (currentQuestion < questions.length) {
-                showQuestion();
-            } else {
-                showResult();
-            }
-        });
-
-
-        restartButton.addEventListener("click", function() {
-            currentQuestion = 0;
-            score = 0;
-
-            currentScore.textContent = "0";
-
-            resultScreen.style.display = "none";
-            quizScreen.style.display = "block";
-
-            showQuestion();
-        });
-
-
-        showQuestion();
-
-    </script>
-
 </body>
+
+</html>
 
 </html>
