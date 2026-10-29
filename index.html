@@ -347,6 +347,67 @@
             text-align: center;
         }
 
+        #scream {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            display: grid;
+            place-items: center;
+            background: #000;
+            color: #ff2d2d;
+            font-size: clamp(38px, 9vw, 120px);
+            font-weight: 900;
+            text-align: center;
+            text-shadow: 0 0 35px #ff0000;
+            animation: shake 0.12s infinite;
+        }
+
+        #scream small {
+            display: block;
+            margin-top: 12px;
+            color: #ff9c9c;
+            font-size: clamp(14px, 2.5vw, 22px);
+        }
+
+        @keyframes shake {
+            0% {
+                transform: translate(0, 0);
+            }
+
+            25% {
+                transform: translate(-8px, 5px);
+            }
+
+            50% {
+                transform: translate(7px, -6px);
+            }
+
+            75% {
+                transform: translate(-5px, -4px);
+            }
+
+            100% {
+                transform: translate(6px, 4px);
+            }
+        }
+
+        .scream-toggle {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 14px 0;
+            padding: 12px;
+            border: 1px solid #7a5b8c;
+            border-radius: 12px;
+            background: #2b1f3b;
+        }
+
+        .scream-toggle input {
+            width: 20px;
+            height: 20px;
+            accent-color: #ff6b6b;
+        }
+
         @media (max-width: 650px) {
             main {
                 padding: 12px;
@@ -389,6 +450,7 @@
             .sticky,
             button,
             .no-print,
+            #scream,
             footer {
                 display: none !important;
             }
@@ -472,8 +534,15 @@
                 </div>
             </div>
 
+            <div class="scream-toggle">
+                <input type="checkbox" id="screamEnabled" checked>
+                <label for="screamEnabled">
+                    🎃 Включить скример каждые 5 минут
+                </label>
+            </div>
+
             <p class="muted">
-                Работа выполняется на этом устройстве.
+                Работа выполняется на этом устройстве. Ответы никуда не отправляются.
                 Перезагрузка страницы удалит текущую попытку.
                 После проверки скачай отчёт для преподавателя.
                 Таймер показывает прошедшее время и не завершает работу автоматически.
@@ -486,7 +555,9 @@
         <div id="work" hidden>
             <div class="sticky">
                 <div class="status-row">
-                    <span id="progressText" aria-live="polite">Заполнено: 0 / 44</span>
+                    <span id="progressText" aria-live="polite">
+                        Заполнено: 0 / 44
+                    </span>
                     <span id="timerText">⏳ 00:00</span>
                 </div>
 
@@ -583,6 +654,11 @@
 
         <footer>🎃 Пусть пакеты не теряются, а ответы доходят по порядку!</footer>
     </main>
+
+    <div id="scream" hidden role="alert">
+        <span>SIKS SEVEN</span>
+        <small>Пакет потерялся в тёмном лесу…</small>
+    </div>
 
     <script>
         "use strict";
@@ -913,12 +989,14 @@
         ];
 
         const letters = ["А", "Б", "В", "Г"];
+        const screamInterval = 5 * 60 * 1000;
 
         const $ = (id) => document.getElementById(id);
 
         let startedAt = null;
         let finished = false;
         let timerId = null;
+        let screamTimerId = null;
         let reportText = "";
 
         const maxScore = questions.length + levels.length * 2;
@@ -1140,6 +1218,61 @@
                 "";
         }
 
+        function playScream() {
+            const scream = $("scream");
+            scream.hidden = false;
+
+            try {
+                const AudioContextClass =
+                    window.AudioContext || window.webkitAudioContext;
+
+                const audioContext = new AudioContextClass();
+                const oscillator = audioContext.createOscillator();
+                const gain = audioContext.createGain();
+
+                oscillator.type = "sawtooth";
+                oscillator.frequency.setValueAtTime(900, audioContext.currentTime);
+                oscillator.frequency.exponentialRampToValueAtTime(
+                    120,
+                    audioContext.currentTime + 0.55
+                );
+
+                gain.gain.setValueAtTime(0.25, audioContext.currentTime);
+                gain.gain.exponentialRampToValueAtTime(
+                    0.001,
+                    audioContext.currentTime + 0.65
+                );
+
+                oscillator.connect(gain);
+                gain.connect(audioContext.destination);
+
+                oscillator.start();
+                oscillator.stop(audioContext.currentTime + 0.65);
+            } catch (error) {
+                console.warn("Звук недоступен:", error);
+            }
+
+            window.setTimeout(() => {
+                scream.hidden = true;
+            }, 900);
+        }
+
+        function scheduleScream() {
+            window.clearTimeout(screamTimerId);
+
+            if (!$("screamEnabled").checked || finished) {
+                return;
+            }
+
+            screamTimerId = window.setTimeout(() => {
+                if ($("screamEnabled").checked && !finished) {
+                    playScream();
+                }
+
+                scheduleScream();
+            }, screamInterval);
+        }
+
         function startWork() {
             const name = $("studentName").value.trim();
             const group = $("studentGroup").value.trim();
@@ -1159,6 +1292,8 @@
             $("work").hidden = false;
 
             updateProgress();
+            scheduleScream();
+
             timerId = window.setInterval(updateProgress, 1000);
 
             $("work").scrollIntoView({
@@ -1201,7 +1336,9 @@
             }
 
             finished = true;
+
             window.clearInterval(timerId);
+            window.clearTimeout(screamTimerId);
 
             const testAnswers = getTestAnswers();
             const matchingAnswers = getMatchingAnswers();
