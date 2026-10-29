@@ -1,129 +1,434 @@
+html
 <!DOCTYPE html>
 <html lang="ru">
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Квиз: Фишинг и подозрительные ссылки</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Ночь сетевых протоколов</title>
 
     <style>
+        :root {
+            --background: #120d1e;
+            --card: #21182f;
+            --card-light: #30213f;
+            --text: #faf3ff;
+            --muted: #cbbbd9;
+            --orange: #ffa640;
+            --purple: #c69bff;
+            --border: #604373;
+            --green: #73dfa8;
+            --red: #ff9393;
+        }
+
         * {
             box-sizing: border-box;
         }
 
         body {
             margin: 0;
+            background:
+                radial-gradient(circle at 10% 15%, #45204e55, transparent 35%),
+                radial-gradient(circle at 90% 60%, #56301433, transparent 35%),
+                var(--background);
+            color: var(--text);
             font-family: Arial, sans-serif;
-            background: linear-gradient(135deg, #dff6ff, #f3e8ff);
-            color: #263238;
+            line-height: 1.6;
+        }
+
+        button,
+        input,
+        select {
+            font: inherit;
+        }
+
+        button,
+        input,
+        select,
+        a {
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        button:focus-visible,
+        input:focus-visible,
+        select:focus-visible {
+            outline: 3px solid var(--purple);
+            outline-offset: 4px;
+        }
+
+        header {
+            position: relative;
+            overflow: hidden;
+            padding: 44px 20px;
+            background: linear-gradient(135deg, #45224f, #21132f 65%, #3a231a);
+            border-bottom: 2px solid var(--orange);
+        }
+
+        header::after {
+            content: "🦇";
+            position: absolute;
+            right: 5%;
+            top: 25px;
+            font-size: 85px;
+            opacity: 0.25;
+            transform: rotate(-15deg);
+            pointer-events: none;
         }
 
         .container {
-            max-width: 800px;
-            margin: 30px auto;
-            padding: 15px;
+            width: min(1080px, 100%);
+            margin: 0 auto;
         }
 
-        .quiz {
-            padding: 30px;
-            border-radius: 22px;
-            background: white;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        main {
+            padding: 20px;
         }
 
         h1 {
-            margin-top: 0;
-            color: #3949ab;
-            text-align: center;
+            margin: 10px 0;
+            color: var(--orange);
+            font-size: clamp(30px, 5vw, 52px);
+            line-height: 1.2;
         }
 
-        .description {
-            text-align: center;
+        h2,
+        h3,
+        legend {
+            color: #ffd49c;
+        }
+
+        h2 {
+            line-height: 1.35;
+        }
+
+        .eyebrow {
+            color: var(--purple);
+            font-weight: bold;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .badge {
+            padding: 7px 13px;
+            border: 1px solid #9e72b2;
+            border-radius: 30px;
+            background: #ffffff09;
+        }
+
+        .card,
+        fieldset {
+            margin: 20px 0;
+            padding: 24px;
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            background: var(--card);
+            box-shadow: 0 8px 24px #00000020;
+            min-width: 0;
+        }
+
+        fieldset {
+            transition: border-color 0.2s;
+        }
+
+        legend {
+            max-width: 100%;
+            padding: 0 8px;
+            font-weight: bold;
             font-size: 18px;
             line-height: 1.5;
         }
 
-        .question {
-            margin-top: 25px;
-            padding: 20px;
-            border: 2px solid #c5cae9;
-            border-radius: 15px;
-            background: #f8f9ff;
+        .row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
         }
 
-        .question h2 {
-            margin-top: 0;
-            color: #303f9f;
-            font-size: 21px;
-        }
-
-        .answer {
+        .field-label {
             display: block;
-            margin: 10px 0;
+            margin-bottom: 7px;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        select {
+            width: 100%;
             padding: 12px;
+            border: 1px solid #8b6a9c;
             border-radius: 10px;
-            background: white;
+            background: #160f21;
+            color: var(--text);
+        }
+
+        input:disabled,
+        select:disabled {
+            opacity: 0.85;
+        }
+
+        .option {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin: 9px 0;
+            padding: 13px;
+            border: 2px solid transparent;
+            border-radius: 11px;
+            background: var(--card-light);
             cursor: pointer;
-            transition: 0.2s;
         }
 
-        .answer:hover {
-            background: #e8eaf6;
+        .option:hover {
+            background: #402a51;
         }
 
-        .answer input {
-            margin-right: 8px;
+        .option:has(input:checked) {
+            border-color: var(--orange);
+            background: #493047;
         }
 
-        details {
-            margin-top: 15px;
-            padding: 12px;
-            border-radius: 10px;
-            background: #fff8e1;
+        .option input {
+            flex-shrink: 0;
+            margin-top: 6px;
+            accent-color: var(--orange);
         }
 
-        summary {
-            color: #e65100;
+        button {
+            padding: 13px 19px;
+            border: 0;
+            border-radius: 11px;
+            background: var(--orange);
+            color: #24152a;
             font-weight: bold;
             cursor: pointer;
         }
 
-        .correct-answer {
+        button:hover:not(:disabled) {
+            filter: brightness(1.08);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: default;
+        }
+
+        .secondary {
+            background: var(--purple);
+        }
+
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin: 18px 0;
+        }
+
+        .muted {
+            color: var(--muted);
+        }
+
+        .notice {
+            color: #ffd49c;
+        }
+
+        .sticky {
+            position: sticky;
+            top: 0;
+            z-index: 5;
+            padding: 14px;
+            border: 1px solid var(--border);
+            border-radius: 0 0 12px 12px;
+            background: #160f24f5;
+            backdrop-filter: blur(8px);
+        }
+
+        .status-row {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        progress {
+            display: block;
+            width: 100%;
+            height: 12px;
             margin-top: 10px;
-            color: #2e7d32;
-            line-height: 1.5;
+            accent-color: var(--orange);
         }
 
-        .finish {
-            margin-top: 25px;
+        .match-row {
+            margin: 14px 0;
             padding: 18px;
+            border: 1px solid var(--border);
             border-radius: 12px;
-            background: #e8f5e9;
-            color: #2e7d32;
-            text-align: center;
+            background: #ffffff03;
+        }
+
+        .match-title {
+            margin: 0 0 12px;
+            color: #ffd49c;
             font-weight: bold;
-            line-height: 1.5;
+            font-size: 18px;
         }
 
-        code {
-            padding: 3px 6px;
-            border-radius: 5px;
-            background: #eeeeee;
-            color: #c62828;
+        .match-fields {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
         }
 
-        @media (max-width: 600px) {
-            .quiz {
-                padding: 18px;
+        .correct {
+            border: 2px solid var(--green);
+        }
+
+        .incorrect {
+            border: 2px solid var(--red);
+        }
+
+        .feedback {
+            margin-top: 14px;
+            padding: 13px;
+            border-radius: 10px;
+            background: #121722;
+            color: #e2edff;
+        }
+
+        .feedback p {
+            margin: 5px 0;
+        }
+
+        .result-score {
+            color: var(--orange);
+            font-size: clamp(30px, 6vw, 48px);
+            font-weight: bold;
+            line-height: 1.2;
+        }
+
+        .result-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-top: 18px;
+        }
+
+        .result-stat {
+            padding: 16px;
+            border-radius: 12px;
+            background: var(--card-light);
+        }
+
+        .result-stat span {
+            display: block;
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .result-stat b {
+            font-size: 22px;
+        }
+
+        #result {
+            scroll-margin-top: 110px;
+        }
+
+        [hidden] {
+            display: none !important;
+        }
+
+        footer {
+            padding: 15px 0 30px;
+            color: var(--muted);
+            text-align: center;
+        }
+
+        @media (max-width: 650px) {
+            main {
+                padding: 12px;
             }
 
-            h1 {
-                font-size: 27px;
+            .row,
+            .match-fields,
+            .result-grid {
+                grid-template-columns: 1fr;
             }
 
-            .question h2 {
-                font-size: 19px;
+            .card,
+            fieldset {
+                padding: 17px;
+            }
+
+            legend {
+                font-size: 16px;
+            }
+
+            header::after {
+                font-size: 60px;
+            }
+        }
+
+        @media print {
+            body {
+                background: white;
+                color: black;
+                font-size: 11pt;
+            }
+
+            header {
+                padding: 10px 0;
+                border-bottom: 1px solid black;
+                background: white;
+            }
+
+            header::after,
+            .sticky,
+            button,
+            .no-print,
+            footer {
+                display: none !important;
+            }
+
+            h1,
+            h2,
+            h3,
+            legend,
+            .match-title,
+            .result-score,
+            .muted,
+            .eyebrow {
+                color: black;
+            }
+
+            .card,
+            fieldset,
+            .match-row,
+            .result-stat {
+                background: white;
+                color: black;
+                box-shadow: none;
+                break-inside: avoid;
+            }
+
+            .option,
+            .feedback {
+                background: white;
+                color: black;
+            }
+
+            input,
+            select {
+                background: white !important;
+                color: black !important;
+            }
+
+            main {
+                padding: 0;
             }
         }
 
@@ -131,292 +436,996 @@
 </head>
 
 <body>
+    <header>
+        <div class="container">
+            <div class="eyebrow">РПО · 1 курс · расширенная глава 3</div>
+            <h1>🎃 Ночь сетевых протоколов</h1>
+            <p>Пройди испытание и восстанови башню OSI!</p>
 
-    <div class="container">
-        <main class="quiz">
+            <div class="badges">
+                <span class="badge">🦇 30 тестовых вопросов</span>
+                <span class="badge">🕸️ 14 соответствий</span>
+                <span class="badge">🏆 44 балла</span>
+                <span class="badge">⏳ Рекомендуемое время: 40 минут</span>
+            </div>
+        </div>
+    </header>
 
-            <h1>🎣 Квиз: Фишинг и ссылки</h1>
+    <main class="container">
+        <section class="card" id="intro">
+            <h2>🕯️ Вход в лабораторию</h2>
 
-            <p class="description">
-                Выбери правильный вариант ответа.
-                После этого открой блок «Проверить ответ».
+            <p>
+                В первой части выбери один правильный ответ в каждом вопросе.
+                Во второй — сопоставь каждый уровень OSI с характеристикой
+                и примером.
             </p>
 
-            <!-- Вопрос 1 -->
-            <section class="question">
-                <h2>1. Что такое фишинг?</h2>
+            <div class="row">
+                <div>
+                    <label class="field-label" for="studentName">Фамилия и имя</label>
+                    <input type="text" id="studentName" maxlength="100" autocomplete="off" placeholder="Иванова Анна">
+                </div>
 
-                <label class="answer">
-                    <input type="radio" name="question1">
-                    Рыбалка на озере
-                </label>
-
-                <label class="answer">
-                    <input type="radio" name="question1">
-                    Обман для получения личных данных
-                </label>
-
-                <label class="answer">
-                    <input type="radio" name="question1">
-                    Компьютерная игра
-                </label>
-
-                <label class="answer">
-                    <input type="radio" name="question1">
-                    Способ ускорить интернет
-                </label>
-
-                <details>
-                    <summary>Проверить ответ</summary>
-                    <p class="correct-answer">
-                        ✅ Правильный ответ: обман для получения личных данных.
-                        Например, мошенник может пытаться узнать пароль.
-                    </p>
-                </details>
-            </section>
-
-            <!-- Вопрос 2 -->
-            <section class="question">
-                <h2>2. Какую ссылку нужно проверить особенно внимательно?</h2>
-
-                <label class="answer">
-                    <input type="radio" name="question2">
-                    Ссылку от неизвестного отправителя
-                </label>
-
-                <label class="answer">
-                    <input type="radio" name="question2">
-                    Ссылку на школьный сайт, которую дал учитель
-                </label>
-
-                <label class="answer">
-                    <input type="radio" name="question2">
-                    Ссылку из своей папки
-                </label>
-
-                <label class="answer">
-                    <input type="radio" name="question2">
-                    Любую ссылку на картинку
-                </label>
-
-                <details>
-                    <summary>Проверить ответ</summary>
-                    <p class="correct-answer">
-                        ✅ Правильный ответ: ссылку от неизвестного отправителя.
-                        Не переходи по ней сразу и покажи её взрослому.
-                    </p>
-                </details>
-            </section>
-
-            <!-- Вопрос 3 -->
-            <section class="question">
-                <h2>3. Какая ссылка выглядит подозрительно?</h2>
-
-                <label class="answer">
-                    <input type="radio" name="question3">
-                    https://school.ru
-                </label>
-
-                <label class="answer">
-                    <input type="radio" name="question3">
-                    https://google.com
-                </label>
-
-                <label class="answer">
-                    <input type="radio" name="question3">
-                    https://sch0ol.ru
-                </label>
-
-                <label class="answer">
-                    <input type="radio" name="question3">
-                    https://wikipedia.org
-                </label>
-
-                <details>
-                    <summary>Проверить ответ</summary>
-                    <p class="correct-answer">
-                        ✅ Правильный ответ: https://sch0ol.ru.
-                        В адресе буква «o» заменена цифрой «0».
-                        Такие подмены могут использовать мошенники.
-                    </p>
-                </details>
-            </section>
-
-            <!-- Вопрос 4 -->
-            <section class="question">
-                <h2>4. Что делать, если сообщение требует срочно ввести пароль?</h2>
-
-                <label class="answer">
-                    <input type="radio" name="question4">
-                    Сразу ввести пароль
-                </label>
-
-                <label class="answer">
-                    <input type="radio" name="question4">
-                    Отправить сообщение другу
-                </label>
-
-                <label class="answer">
-                    <input type="radio" name="question4">
-                    Закрыть сообщение и обратиться к взрослому
-                </label>
-
-                <label class="answer">
-                    <input type="radio" name="question4">
-                    Ввести любой пароль
-                </label>
-
-                <details>
-                    <summary>Проверить ответ</summary>
-                    <p class="correct-answer">
-                        ✅ Правильный ответ: закрыть сообщение и обратиться к взрослому.
-                        Слова «срочно» и «немедленно» часто используются,
-                        чтобы человек начал действовать не подумав.
-                    </p>
-                </details>
-            </section>
-
-            <!-- Вопрос 5 -->
-            <section class="question">
-                <h2>5. Можно ли сообщать свой пароль в чате?</h2>
-
-                <label class="answer">
-                    <input type="radio" name="question5">
-                    Да, если человек представился другом
-                </label>
-
-                <label class="answer">
-                    <input type="radio" name="question5">
-                    Да, если обещают подарок
-                </label>
-
-                <label class="answer">
-                    <input type="radio" name="question5">
-                    Нет, пароль нельзя сообщать другим людям
-                </label>
-
-                <label class="answer">
-                    <input type="radio" name="question5">
-                    Только вечером
-                </label>
-
-                <details>
-                    <summary>Проверить ответ</summary>
-                    <p class="correct-answer">
-                        ✅ Правильный ответ: нет, пароль нельзя сообщать другим людям.
-                        Если кто-то просит пароль, нужно рассказать взрослому.
-                    </p>
-                </details>
-            </section>
-
-            <!-- Вопрос 6 -->
-            <section class="question">
-                <h2>6. Что означает сообщение «Вы выиграли телефон!» от неизвестного сайта?</h2>
-
-                <label class="answer">
-                    <input type="radio" name="question6">
-                    Это точно настоящий подарок
-                </label>
-
-                <label class="answer">
-                    <input type="radio" name="question6">
-                    Это может быть обман
-                </label>
-
-                <label class="answer">
-                    <input type="radio" name="question6">
-                    Нужно отправить номер карты
-                </label>
-
-                <label class="answer">
-                    <input type="radio" name="question6">
-                    Нужно скачать неизвестный файл
-                </label>
-
-                <details>
-                    <summary>Проверить ответ</summary>
-                    <p class="correct-answer">
-                        ✅ Правильный ответ: это может быть обман.
-                        Не вводи личные данные и не открывай подозрительные файлы.
-                    </p>
-                </details>
-            </section>
-
-            <!-- Вопрос 7 -->
-            <section class="question">
-                <h2>7. Что нужно проверить в адресе сайта?</h2>
-
-                <label class="answer">
-                    <input type="radio" name="question7">
-                    Только цвет страницы
-                </label>
-
-                <label class="answer">
-                    <input type="radio" name="question7">
-                    Название сайта, буквы, цифры и домен
-                </label>
-
-                <label class="answer">
-                    <input type="radio" name="question7">
-                    Количество картинок
-                </label>
-
-                <label class="answer">
-                    <input type="radio" name="question7">
-                    Размер шрифта
-                </label>
-
-                <details>
-                    <summary>Проверить ответ</summary>
-                    <p class="correct-answer">
-                        ✅ Правильный ответ: название сайта, буквы, цифры и домен.
-                        В поддельном адресе могут быть лишние символы или заменённые буквы.
-                    </p>
-                </details>
-            </section>
-
-            <!-- Вопрос 8 -->
-            <section class="question">
-                <h2>8. Что делать с подозрительной ссылкой?</h2>
-
-                <label class="answer">
-                    <input type="radio" name="question8">
-                    Открыть её несколько раз
-                </label>
-
-                <label class="answer">
-                    <input type="radio" name="question8">
-                    Отправить всем друзьям
-                </label>
-
-                <label class="answer">
-                    <input type="radio" name="question8">
-                    Не открывать и показать взрослому
-                </label>
-
-                <label class="answer">
-                    <input type="radio" name="question8">
-                    Скачать всё, что предложит сайт
-                </label>
-
-                <details>
-                    <summary>Проверить ответ</summary>
-                    <p class="correct-answer">
-                        ✅ Правильный ответ: не открывать и показать взрослому.
-                    </p>
-                </details>
-            </section>
-
-            <div class="finish">
-                🎉 Квиз завершён!<br>
-                Посчитай количество правильных ответов самостоятельно.
+                <div>
+                    <label class="field-label" for="studentGroup">Группа</label>
+                    <input type="text" id="studentGroup" maxlength="40" autocomplete="off" placeholder="РПО-11">
+                </div>
             </div>
 
-        </main>
-    </div>
+            <p class="muted">
+                Работа выполняется на этом устройстве. Ответы никуда не отправляются.
+                Перезагрузка страницы удалит текущую попытку.
+                После проверки скачай отчёт для преподавателя.
+                Таймер показывает прошедшее время и не завершает работу автоматически.
+            </p>
 
+            <button type="button" id="startButton">🎃 Начать испытание</button>
+            <p id="introNotice" class="notice" role="alert"></p>
+        </section>
+
+        <div id="work" hidden>
+            <div class="sticky">
+                <div class="status-row">
+                    <span id="progressText" aria-live="polite">Заполнено: 0 / 44</span>
+                    <span id="timerText">⏳ 00:00</span>
+                </div>
+
+                <progress id="progressBar" max="44" value="0" aria-label="Прогресс выполнения"></progress>
+            </div>
+
+            <h2>🦇 Часть 1. Протоколы в темноте</h2>
+            <p class="muted">30 вопросов. За каждый правильный ответ — 1 балл.</p>
+
+            <form id="quizForm"></form>
+
+            <section class="card">
+                <h2>🕸️ Часть 2. Собери башню OSI</h2>
+
+                <p>
+                    Для каждого уровня выбери характеристику и пример.
+                    В каждом столбце каждый вариант используется один раз.
+                    За каждое верное соответствие начисляется 1 балл:
+                    всего 14 баллов.
+                </p>
+
+                <p class="muted">
+                    Примеры иллюстрируют функции уровней в учебной модели.
+                    Реальные технологии не всегда укладываются строго в один уровень.
+                </p>
+
+                <div id="matchingContainer"></div>
+                <p id="matchingNotice" class="notice" aria-live="polite"></p>
+            </section>
+
+            <div class="actions">
+                <button type="button" id="finishButton">
+                    👻 Завершить и проверить
+                </button>
+            </div>
+        </div>
+
+        <section class="card" id="result" hidden aria-live="polite">
+            <h2>🎃 Результат испытания</h2>
+
+            <p id="resultStudent"></p>
+            <div class="result-score" id="resultScore"></div>
+            <p id="resultMessage"></p>
+
+            <div class="result-grid">
+                <div class="result-stat">
+                    <span>Тест</span>
+                    <b id="testScore"></b>
+                </div>
+
+                <div class="result-stat">
+                    <span>Соответствия</span>
+                    <b id="matchingScore"></b>
+                </div>
+
+                <div class="result-stat">
+                    <span>Время</span>
+                    <b id="resultTime"></b>
+                </div>
+            </div>
+
+            <div class="actions">
+                <button type="button" id="downloadButton">📄 Скачать отчёт</button>
+                <button type="button" id="printButton" class="secondary">
+                    🖨️ Печать / PDF
+                </button>
+                <button type="button" id="restartButton" class="secondary">
+                    🔄 Новая попытка
+                </button>
+            </div>
+
+            <p class="muted">
+                Ниже и выше на странице теперь показаны правильные ответы.
+                Отчёт не отправляется преподавателю автоматически.
+            </p>
+        </section>
+
+        <section class="card">
+            <h2>📜 Правила оценивания</h2>
+
+            <p>
+                40–44 балла — «5»<br>
+                33–39 баллов — «4»<br>
+                22–32 балла — «3»<br>
+                0–21 балл — «2»
+            </p>
+
+            <p class="muted no-print">
+                Это локальная учебная контрольная, а не защищённая экзаменационная
+                система: ключи находятся в коде страницы. Для работы на оценку
+                нужен контроль преподавателя.
+            </p>
+        </section>
+
+        <footer>🎃 Пусть пакеты не теряются, а ответы доходят по порядку!</footer>
+    </main>
+
+    <script>
+        "use strict";
+
+        const questions = [{
+                text: "Что такое сетевой протокол?",
+                options: [
+                    "Набор правил обмена данными",
+                    "Тип сетевого кабеля",
+                    "Название компьютера",
+                    "Размер передаваемого файла"
+                ],
+                correct: 0,
+                explanation: "Протокол определяет правила взаимодействия устройств и программ."
+            },
+            {
+                text: "Сколько уровней включает модель OSI?",
+                options: ["4", "5", "7", "8"],
+                correct: 2,
+                explanation: "В модели OSI семь уровней."
+            },
+            {
+                text: "Сколько уровней в классической модели TCP/IP?",
+                options: ["7", "4", "6", "2"],
+                correct: 1,
+                explanation: "В этой работе используется классическая четырёхуровневая модель TCP/IP."
+            },
+            {
+                text: "Какой уровень OSI отвечает за передачу битов в виде сигналов?",
+                options: [
+                    "Сетевой",
+                    "Прикладной",
+                    "Транспортный",
+                    "Физический"
+                ],
+                correct: 3,
+                explanation: "Физический уровень связан с сигналами и средой передачи."
+            },
+            {
+                text: "С каким уровнем связаны кадры и MAC-адреса?",
+                options: [
+                    "Канальный",
+                    "Сеансовый",
+                    "Транспортный",
+                    "Представления"
+                ],
+                correct: 0,
+                explanation: "Кадры и MAC-адреса относятся к канальному уровню."
+            },
+            {
+                text: "На каком уровне работают IP-адресация и маршрутизация?",
+                options: [
+                    "Физическом",
+                    "Сетевом",
+                    "Канальном",
+                    "Сеансовом"
+                ],
+                correct: 1,
+                explanation: "Сетевой уровень отвечает за IP-адресацию и передачу пакетов между сетями."
+            },
+            {
+                text: "К какому уровню OSI относятся TCP и UDP?",
+                options: [
+                    "Канальному",
+                    "Прикладному",
+                    "Транспортному",
+                    "Физическому"
+                ],
+                correct: 2,
+                explanation: "TCP и UDP — транспортные протоколы."
+            },
+            {
+                text: "Что TCP предоставляет приложению?",
+                options: [
+                    "Только изображения",
+                    "Только отдельные датаграммы",
+                    "Всегда зашифрованный текст",
+                    "Надёжный упорядоченный поток байтов"
+                ],
+                correct: 3,
+                explanation: "TCP восстанавливает порядок данных и повторяет потерянные данные. " +
+                    "При неисправимом сбое соединение может завершиться ошибкой."
+            },
+            {
+                text: "Чего UDP сам по себе не гарантирует?",
+                options: [
+                    "Доставки и порядка датаграмм",
+                    "Наличия заголовка",
+                    "Возможности отправки данных",
+                    "Использования номеров портов"
+                ],
+                correct: 0,
+                explanation: "UDP не предоставляет встроенных гарантий доставки и порядка."
+            },
+            {
+                text: "Как выглядит трёхэтапное рукопожатие TCP?",
+                options: [
+                    "FIN → SYN → DNS",
+                    "SYN → SYN-ACK → ACK",
+                    "ACK → FIN → IP",
+                    "HTTP → DNS → ACK"
+                ],
+                correct: 1,
+                explanation: "Обычное установление TCP-соединения: SYN, SYN-ACK, ACK."
+            },
+            {
+                text: "Какой протокол имеет встроенные механизмы повторной передачи потерянных данных?",
+                options: [
+                    "Обычный UDP",
+                    "IP",
+                    "TCP",
+                    "DNS вместо транспортного протокола"
+                ],
+                correct: 2,
+                explanation: "TCP использует подтверждения и повторные передачи."
+            },
+            {
+                text: "Шифрует ли TCP сам по себе передаваемые данные?",
+                options: [
+                    "Да, всегда",
+                    "Только на порту 80",
+                    "Только при передаче файлов",
+                    "Нет"
+                ],
+                correct: 3,
+                explanation: "Надёжность TCP не означает шифрование. Защиту канала может обеспечивать TLS."
+            },
+            {
+                text: "Что такое инкапсуляция?",
+                options: [
+                    "Добавление служебной информации при прохождении уровней",
+                    "Удаление всех файлов",
+                    "Замена DNS-сервера",
+                    "Только сжатие данных"
+                ],
+                correct: 0,
+                explanation: "Уровни добавляют заголовки, а некоторые также завершающую часть."
+            },
+            {
+                text: "Выберите порядок упаковки данных в учебном примере с TCP.",
+                options: [
+                    "Кадр → данные → пакет → сегмент",
+                    "Данные → TCP-сегмент → IP-пакет → кадр",
+                    "Пакет → кадр → данные → сегмент",
+                    "Сегмент → кадр → пакет → данные"
+                ],
+                correct: 1,
+                explanation: "У получателя происходит обратный процесс — декапсуляция."
+            },
+            {
+                text: "Как называется единица данных UDP?",
+                options: ["Лист", "Страница", "Датаграмма", "Сеанс"],
+                correct: 2,
+                explanation: "UDP передаёт датаграммы."
+            },
+            {
+                text: "Как называется единица данных канального уровня?",
+                options: ["TCP-поток", "URL", "Порт", "Кадр"],
+                correct: 3,
+                explanation: "На канальном уровне передаются кадры."
+            },
+            {
+                text: "Для чего нужен номер порта?",
+                options: [
+                    "Для различения сетевых служб и приложений",
+                    "Для измерения длины кабеля",
+                    "Для замены IP-адреса",
+                    "Для хранения пароля"
+                ],
+                correct: 0,
+                explanation: "Номер порта помогает направить данные соответствующей службе."
+            },
+            {
+                text: "Что адресует IP-адрес?",
+                options: [
+                    "Только веб-страницу",
+                    "Сетевой интерфейс в IP-сети",
+                    "Только файл",
+                    "Только пользователя"
+                ],
+                correct: 1,
+                explanation: "IP-адрес используется для адресации сетевого интерфейса в IP-сети."
+            },
+            {
+                text: "Как в учебном примере можно описать сетевую конечную точку?",
+                options: [
+                    "Только фамилией пользователя",
+                    "Только именем сайта",
+                    "Транспортным протоколом, IP-адресом и портом",
+                    "Только MAC-адресом"
+                ],
+                correct: 2,
+                explanation: "Для рассматриваемого IP-взаимодействия указывают протокол, адрес и порт."
+            },
+            {
+                text: "Что DNS помогает сделать в изученном примере?",
+                options: [
+                    "Сжать картинку",
+                    "Отправить письмо",
+                    "Зашифровать диск",
+                    "Найти IP-адрес по доменному имени"
+                ],
+                correct: 3,
+                explanation: "Разрешение имени в IP-адрес — одна из основных задач DNS."
+            },
+            {
+                text: "Какой порт обычно используется для HTTP?",
+                options: ["80", "22", "53", "993"],
+                correct: 0,
+                explanation: "Типичный порт HTTP — 80."
+            },
+            {
+                text: "Какой порт обычно используется для HTTPS?",
+                options: ["110", "443", "21", "25"],
+                correct: 1,
+                explanation: "Типичный порт HTTPS — 443."
+            },
+            {
+                text: "Какой порт обычно используется для SSH?",
+                options: ["443", "143", "22", "80"],
+                correct: 2,
+                explanation: "SSH обычно использует TCP-порт 22."
+            },
+            {
+                text: "Какой порт обычно используется для DNS?",
+                options: ["21", "110", "587", "53"],
+                correct: 3,
+                explanation: "Обычный порт DNS — 53."
+            },
+            {
+                text: "Для чего используется SMTP?",
+                options: [
+                    "Для отправки и пересылки почты",
+                    "Для синхронизации почтовых папок",
+                    "Для разрешения доменных имён",
+                    "Для удалённой оболочки"
+                ],
+                correct: 0,
+                explanation: "SMTP используется для отправки писем и передачи между почтовыми серверами."
+            },
+            {
+                text: "Какую возможность предоставляет IMAP?",
+                options: [
+                    "Определять маршрут IP-пакета",
+                    "Синхронизировать почтовые папки между устройствами",
+                    "Заменять IP-адрес",
+                    "Передавать радиосигналы"
+                ],
+                correct: 1,
+                explanation: "IMAP позволяет работать с почтой на сервере и синхронизировать изменения."
+            },
+            {
+                text: "Для чего предназначен POP3?",
+                options: [
+                    "Для удалённого управления",
+                    "Для шифрования кабеля",
+                    "Для получения почты",
+                    "Для передачи Ethernet-кадров"
+                ],
+                correct: 2,
+                explanation: "POP3 используется для получения писем почтовым клиентом."
+            },
+            {
+                text: "Что обеспечивает защиту канала HTTPS?",
+                options: [
+                    "Один лишь номер порта 443",
+                    "Один лишь IP-адрес",
+                    "Формат JPEG",
+                    "TLS"
+                ],
+                correct: 3,
+                explanation: "TLS защищает передаваемые данные. HTTPS не гарантирует честность владельца сайта."
+            },
+            {
+                text: "Поверх какого протокола работает SFTP?",
+                options: ["SSH", "POP3", "SMTP", "Обычного FTP"],
+                correct: 0,
+                explanation: "SFTP работает поверх SSH и не является просто зашифрованным вариантом FTP."
+            },
+            {
+                text: "Какие транспортные протоколы может использовать обычный DNS?",
+                options: [
+                    "Только UDP",
+                    "UDP и TCP",
+                    "Только TCP",
+                    "Только Bluetooth"
+                ],
+                correct: 1,
+                explanation: "DNS поддерживает и UDP, и TCP."
+            }
+        ];
+
+        const levels = [{
+                name: "Физический",
+                characteristic: "Передача битов в виде сигналов",
+                example: "Световые импульсы в оптоволокне"
+            },
+            {
+                name: "Канальный",
+                characteristic: "Передача кадров и управление доступом к среде",
+                example: "Ethernet-кадр с MAC-адресами"
+            },
+            {
+                name: "Сетевой",
+                characteristic: "IP-адресация и маршрутизация пакетов",
+                example: "IP-пакет проходит через маршрутизатор"
+            },
+            {
+                name: "Транспортный",
+                characteristic: "Передача данных между приложениями",
+                example: "Передача TCP-потока или UDP-датаграммы"
+            },
+            {
+                name: "Сеансовый",
+                characteristic: "Управление сеансами и синхронизация диалога",
+                example: "Организация сеанса с контрольными точками восстановления"
+            },
+            {
+                name: "Представления",
+                characteristic: "Преобразование форматов и кодировок данных",
+                example: "Преобразование текста между кодировками"
+            },
+            {
+                name: "Прикладной",
+                characteristic: "Предоставление сетевых служб приложениям",
+                example: "HTTP-запрос или DNS-запрос"
+            }
+        ];
+
+        const letters = ["А", "Б", "В", "Г"];
+
+        const $ = (id) => document.getElementById(id);
+
+        let startedAt = null;
+        let finished = false;
+        let timerId = null;
+        let reportText = "";
+
+        const maxScore = questions.length + levels.length * 2;
+
+        function shuffle(array) {
+            const result = [...array];
+
+            for (let i = result.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [result[i], result[j]] = [result[j], result[i]];
+            }
+
+            return result;
+        }
+
+        function createTextElement(tag, text, className = "") {
+            const element = document.createElement(tag);
+            element.textContent = text;
+
+            if (className) {
+                element.className = className;
+            }
+
+            return element;
+        }
+
+        function renderQuestions() {
+            questions.forEach((question, questionIndex) => {
+                const fieldset = document.createElement("fieldset");
+                fieldset.id = `question-${questionIndex}`;
+
+                const legend = createTextElement(
+                    "legend",
+                    `${questionIndex + 1}. ${question.text}`
+                );
+
+                fieldset.appendChild(legend);
+
+                question.options.forEach((option, optionIndex) => {
+                    const label = document.createElement("label");
+                    label.className = "option";
+
+                    const input = document.createElement("input");
+                    input.type = "radio";
+                    input.name = `question-${questionIndex}`;
+                    input.value = String(optionIndex);
+
+                    const text = createTextElement(
+                        "span",
+                        `${letters[optionIndex]}) ${option}`
+                    );
+
+                    label.append(input, text);
+                    fieldset.appendChild(label);
+                });
+
+                $("quizForm").appendChild(fieldset);
+            });
+        }
+
+        function createMatchingSelect(id, title, property, order) {
+            const label = document.createElement("label");
+
+            const caption = createTextElement("span", title, "field-label");
+            label.appendChild(caption);
+
+            const select = document.createElement("select");
+            select.id = id;
+
+            const placeholder = document.createElement("option");
+            placeholder.value = "";
+            placeholder.textContent = "Выбери вариант…";
+            select.appendChild(placeholder);
+
+            order.forEach((index) => {
+                const option = document.createElement("option");
+                option.value = String(index);
+                option.textContent = levels[index][property];
+                select.appendChild(option);
+            });
+
+            label.appendChild(select);
+
+            return label;
+        }
+
+        function renderMatching() {
+            const indices = levels.map((_, index) => index);
+            const characteristicOrder = shuffle(indices);
+            const exampleOrder = shuffle(indices);
+
+            levels.forEach((level, index) => {
+                const row = document.createElement("div");
+                row.className = "match-row";
+                row.id = `match-${index}`;
+
+                const heading = createTextElement(
+                    "h3",
+                    `${index + 1}. ${level.name}`,
+                    "match-title"
+                );
+
+                const fields = document.createElement("div");
+                fields.className = "match-fields";
+
+                const characteristicSelect = createMatchingSelect(
+                    `characteristic-${index}`,
+                    `Характеристика уровня «${level.name}»`,
+                    "characteristic",
+                    characteristicOrder
+                );
+
+                const exampleSelect = createMatchingSelect(
+                    `example-${index}`,
+                    `Пример для уровня «${level.name}»`,
+                    "example",
+                    exampleOrder
+                );
+
+                fields.append(characteristicSelect, exampleSelect);
+                row.append(heading, fields);
+                $("matchingContainer").appendChild(row);
+            });
+        }
+
+        function getTestAnswers() {
+            return questions.map((_, index) => {
+                const selected = document.querySelector(
+                    `input[name="question-${index}"]:checked`
+                );
+
+                return selected ? Number(selected.value) : null;
+            });
+        }
+
+        function getMatchingAnswers() {
+            return levels.map((_, index) => {
+                const characteristic = $(`characteristic-${index}`).value;
+                const example = $(`example-${index}`).value;
+
+                return {
+                    characteristic: characteristic === "" ? null : Number(characteristic),
+                    example: example === "" ? null : Number(example)
+                };
+            });
+        }
+
+        function getElapsedTime() {
+            if (startedAt === null) {
+                return "00:00";
+            }
+
+            const seconds = Math.floor((Date.now() - startedAt) / 1000);
+            const minutes = Math.floor(seconds / 60);
+            const remainder = seconds % 60;
+
+            return (
+                String(minutes).padStart(2, "0") +
+                ":" +
+                String(remainder).padStart(2, "0")
+            );
+        }
+
+        function getAnsweredCount() {
+            const testCount = getTestAnswers().filter(
+                (answer) => answer !== null
+            ).length;
+
+            const matchingCount = getMatchingAnswers().reduce(
+                (count, answer) =>
+                count +
+                Number(answer.characteristic !== null) +
+                Number(answer.example !== null),
+                0
+            );
+
+            return testCount + matchingCount;
+        }
+
+        function updateProgress() {
+            const answered = getAnsweredCount();
+
+            $("progressBar").max = maxScore;
+            $("progressBar").value = answered;
+            $("progressText").textContent =
+                `🎃 Заполнено: ${answered} / ${maxScore}`;
+
+            $("timerText").textContent = `⏳ ${getElapsedTime()}`;
+        }
+
+        function hasDuplicates(values) {
+            const chosen = values.filter((value) => value !== null);
+            return new Set(chosen).size !== chosen.length;
+        }
+
+        function updateMatchingNotice() {
+            const answers = getMatchingAnswers();
+
+            const repeatedCharacteristics = hasDuplicates(
+                answers.map((answer) => answer.characteristic)
+            );
+
+            const repeatedExamples = hasDuplicates(
+                answers.map((answer) => answer.example)
+            );
+
+            const messages = [];
+
+            if (repeatedCharacteristics) {
+                messages.push("Одна характеристика выбрана несколько раз.");
+            }
+
+            if (repeatedExamples) {
+                messages.push("Один пример выбран несколько раз.");
+            }
+
+            $("matchingNotice").textContent = messages.length ?
+                `${messages.join(" ")} Проверь соответствия.` :
+                "";
+        }
+
+        function startWork() {
+            const name = $("studentName").value.trim();
+            const group = $("studentGroup").value.trim();
+
+            if (!name || !group) {
+                $("introNotice").textContent = "Введи фамилию, имя и группу.";
+                (!name ? $("studentName") : $("studentGroup")).focus();
+                return;
+            }
+
+            startedAt = Date.now();
+
+            $("studentName").disabled = true;
+            $("studentGroup").disabled = true;
+            $("startButton").hidden = true;
+            $("introNotice").textContent = "Испытание началось. Удачи!";
+            $("work").hidden = false;
+
+            updateProgress();
+            timerId = window.setInterval(updateProgress, 1000);
+
+            $("work").scrollIntoView({
+                behavior: "smooth",
+                block: "start"
+            });
+        }
+
+        function calculateGrade(score) {
+            if (score >= 40) return 5;
+            if (score >= 33) return 4;
+            if (score >= 22) return 3;
+            return 2;
+        }
+
+        function getGradeMessage(grade) {
+            const messages = {
+                5: "🏆 Отлично! Ты справился с испытанием сетевых протоколов.",
+                4: "🦇 Хорошая работа! Повтори отмеченные ошибки.",
+                3: "🕯️ Основы освоены, но некоторые темы нужно закрепить.",
+                2: "📚 Повтори главу и разбери пояснения перед новой попыткой."
+            };
+
+            return messages[grade];
+        }
+
+        function finishWork() {
+            if (finished || startedAt === null) {
+                return;
+            }
+
+            const missing = maxScore - getAnsweredCount();
+
+            const confirmation = missing > 0 ?
+                `Без ответа осталось ${missing} пунктов. Завершить работу?` :
+                "Завершить работу и показать результат?";
+
+            if (!window.confirm(confirmation)) {
+                return;
+            }
+
+            finished = true;
+            window.clearInterval(timerId);
+
+            const testAnswers = getTestAnswers();
+            const matchingAnswers = getMatchingAnswers();
+            const elapsed = getElapsedTime();
+
+            let testScore = 0;
+            let matchingScore = 0;
+
+            const answerReport = [];
+
+            questions.forEach((question, index) => {
+                const selected = testAnswers[index];
+                const correct = selected === question.correct;
+
+                if (correct) {
+                    testScore++;
+                }
+
+                const fieldset = $(`question-${index}`);
+                fieldset.classList.add(correct ? "correct" : "incorrect");
+
+                const feedback = document.createElement("div");
+                feedback.className = "feedback";
+
+                feedback.append(
+                    createTextElement(
+                        "p",
+                        correct ? "✓ Верно" : "✗ Неверно или ответ не выбран"
+                    ),
+                    createTextElement(
+                        "p",
+                        `Правильный ответ: ${question.options[question.correct]}`
+                    ),
+                    createTextElement("p", question.explanation)
+                );
+
+                fieldset.appendChild(feedback);
+
+                answerReport.push(
+                    "",
+                    `${index + 1}. ${question.text}`,
+                    `Ваш ответ: ${
+            selected === null
+              ? "Не выбран"
+              : question.options[selected]
+          }`,
+                    `Правильный ответ: ${question.options[question.correct]}`,
+                    `Баллы: ${correct ? 1 : 0}/1`,
+                    question.explanation
+                );
+            });
+
+            answerReport.push("", "ЧАСТЬ 2. СООТВЕТСТВИЯ OSI");
+
+            levels.forEach((level, index) => {
+                const answer = matchingAnswers[index];
+
+                const characteristicCorrect = answer.characteristic === index;
+                const exampleCorrect = answer.example === index;
+
+                const rowScore =
+                    Number(characteristicCorrect) + Number(exampleCorrect);
+
+                matchingScore += rowScore;
+
+                const row = $(`match-${index}`);
+
+                row.classList.add(
+                    rowScore === 2 ? "correct" : "incorrect"
+                );
+
+                const feedback = document.createElement("div");
+                feedback.className = "feedback";
+
+                feedback.append(
+                    createTextElement(
+                        "p",
+                        `Характеристика: ${characteristicCorrect ? "✓" : "✗"}. ` +
+                        `Пример: ${exampleCorrect ? "✓" : "✗"}. ` +
+                        `Баллы: ${rowScore}/2.`
+                    ),
+                    createTextElement(
+                        "p",
+                        `Правильная характеристика: ${level.characteristic}`
+                    ),
+                    createTextElement(
+                        "p",
+                        `Правильный пример: ${level.example}`
+                    )
+                );
+
+                row.appendChild(feedback);
+
+                answerReport.push(
+                    "",
+                    `${index + 1}. ${level.name}`,
+                    `Выбранная характеристика: ${
+            answer.characteristic === null
+              ? "Не выбрана"
+              : levels[answer.characteristic].characteristic
+          }`,
+                    `Выбранный пример: ${
+            answer.example === null
+              ? "Не выбран"
+              : levels[answer.example].example
+          }`,
+                    `Правильная характеристика: ${level.characteristic}`,
+                    `Правильный пример: ${level.example}`,
+                    `Баллы: ${rowScore}/2`
+                );
+            });
+
+            const totalScore = testScore + matchingScore;
+            const grade = calculateGrade(totalScore);
+
+            $("resultStudent").textContent =
+                `${$("studentName").value.trim()} · ` +
+                $("studentGroup").value.trim();
+
+            $("resultScore").textContent =
+                `${totalScore} / ${maxScore} · оценка ${grade}`;
+
+            $("resultMessage").textContent = getGradeMessage(grade);
+            $("testScore").textContent = `${testScore} / 30`;
+            $("matchingScore").textContent = `${matchingScore} / 14`;
+            $("resultTime").textContent = elapsed;
+
+            reportText = [
+                "КОНТРОЛЬНАЯ РАБОТА",
+                "Ночь сетевых протоколов — расширенная глава 3",
+                "",
+                `ФИО: ${$("studentName").value.trim()}`,
+                `Группа: ${$("studentGroup").value.trim()}`,
+                `Дата: ${new Date().toLocaleString("ru-RU")}`,
+                `Время выполнения: ${elapsed}`,
+                "",
+                `Тест: ${testScore}/30`,
+                `Соответствия: ${matchingScore}/14`,
+                `Итого: ${totalScore}/${maxScore}`,
+                `Оценка: ${grade}`,
+                "",
+                "ЧАСТЬ 1. ТЕСТ",
+                ...answerReport
+            ].join("\n");
+
+            document.querySelectorAll(
+                '#quizForm input, #matchingContainer select'
+            ).forEach((element) => {
+                element.disabled = true;
+            });
+
+            $("finishButton").disabled = true;
+            $("matchingNotice").textContent = "";
+            $("result").hidden = false;
+
+            $("result").scrollIntoView({
+                behavior: "smooth",
+                block: "start"
+            });
+        }
+
+        function downloadReport() {
+            if (!finished) {
+                return;
+            }
+
+            const blob = new Blob(
+                ["\uFEFF", reportText], {
+                    type: "text/plain;charset=utf-8"
+                }
+            );
+
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+
+            link.href = url;
+            link.download = "Результат_контрольной_сетевые_протоколы.txt";
+
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+
+            window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+        }
+
+        function restartWork() {
+            const confirmed = window.confirm(
+                "Перед новой попыткой сохрани отчёт. Начать заново?"
+            );
+
+            if (confirmed) {
+                window.location.reload();
+            }
+        }
+
+        $("quizForm").addEventListener("submit", (event) => {
+            event.preventDefault();
+        });
+
+        $("startButton").addEventListener("click", startWork);
+        $("finishButton").addEventListener("click", finishWork);
+        $("downloadButton").addEventListener("click", downloadReport);
+        $("printButton").addEventListener("click", () => window.print());
+        $("restartButton").addEventListener("click", restartWork);
+
+        $("work").addEventListener("change", () => {
+            if (startedAt !== null && !finished) {
+                updateProgress();
+                updateMatchingNotice();
+            }
+        });
+
+        window.addEventListener("beforeunload", (event) => {
+            if (startedAt !== null && !finished) {
+                event.preventDefault();
+                event.returnValue = "";
+            }
+        });
+
+        renderQuestions();
+        renderMatching();
+
+    </script>
 </body>
-
-</html>
 
 </html>
